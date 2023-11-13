@@ -7,7 +7,6 @@ import Home from "./screens/Home";
 import FormPage from "./screens/FormPage";
 import TermsConditions from "./screens/TermsConditions";
 import InfoPage from "./screens/InfoPage";
-import Settings from "./screens/Settings";
 
 function App() {
   return (
@@ -17,7 +16,6 @@ function App() {
           <Route path="/formpage" element={<FormPage/>} />
           <Route path="/termsconditions" element={<TermsConditions/>} />
           <Route path="/infopage" element={<InfoPage/>} />
-          <Route path="/settings" element={<Settings/>} />
         </Routes>
     </Router>
   );
