@@ -1,18 +1,30 @@
 import React,  { useState, useEffect }  from "react";
 import { Link } from "react-router-dom";
-
+import sendRequest from "../components/utilFetch";
 import { isWithinInterval, parse, isToday } from 'date-fns';
 import NavBar from "../components/NavBar";
 
 const Home = () => {
     const [enquestes, setEnquestes] = useState([]);
-    const colorsEnquestes = {};
-  
+
     useEffect(() => {
       const handleEnquestes = async () => {
-        //let endPoint = `enquestes`;
-        //const data = await simpleFetch(endPoint, "GET", "")
-        //setEnquestes(data);
+
+        try {
+          const result = await sendRequest({
+            url: 'http://hattech.fib.upc.edu:40511/api/enquestes/',
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+  
+          console.log(result); 
+           //setEnquestes(data);
+        } catch (error) {
+          console.error("falla home", error); 
+        }
+       
         const enq = [
           { id: 1, nom: 'Encuesta 1', descripcio: 'prova 0', dataInici: '12-12-2022', dataFi: '12-12-2023', color: '#4CAF50'},
           { id: 2, nom: 'Encuesta 2', descripcio: 'prova 1', dataInici: '12-12-2022', dataFi: '12-11-2023', color: '#4CAF54'},
