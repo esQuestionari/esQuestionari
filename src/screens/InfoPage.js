@@ -1,54 +1,104 @@
-import React,  { useState, useEffect }  from "react";
-import { Link } from "react-router-dom";
-
-import { isWithinInterval, parse, isToday } from 'date-fns';
-import NavBar from "../components/NavBar";
+import React from "react";
 
 const InfoPage = () => {
-    const [enquestes, setEnquestes] = useState([]);
-  
-    useEffect(() => {
-      const handleEnquestes = async () => {
-        //let endPoint = `enquestes`;
-        //const data = await simpleFetch(endPoint, "GET", "")
-        //setEnquestes(data);
-        const enq = [
-          { id: 1, nom: 'Encuesta 1', descripcio: 'prova 0', dataInici: '12-12-2022', dataFi: '12-12-2023', color: '#4CAF50'},
-          { id: 2, nom: 'Encuesta 2', descripcio: 'prova 1', dataInici: '12-12-2022', dataFi: '12-11-2023', color: '#4CAF54'},
-          { id: 3, nom: 'Encuesta 3', descripcio: 'prova 2', dataInici: '12-12-2023', dataFi: '12-12-2023', color: '#4CAF58'},
-        ];
-        setEnquestes(enq);
-      };
-  
-    handleEnquestes();
-    }, []);
-
-    const enquestaDisponible = (enquesta) => {
-        const fechaHoy = new Date();
-        const fechaInicio = parse(enquesta.dataInici, 'dd-MM-yyyy', new Date());
-        const fechaFin = parse(enquesta.dataFi, 'dd-MM-yyyy', new Date());
-        return isWithinInterval(fechaHoy, { start: fechaInicio, end: fechaFin }) || isToday(fechaInicio) || isToday(fechaFin);
-      };
-
+  const info = [
+    "Estimado participante,",
+    "Esta investigación busca estudiar el conocimiento y percepción de riesgo en relación con la exposición al RADÓN en nuestra sociedad, todo ello dentro del proyecto REBORN.",
+    "No usaremos su nombre en ninguna fase de la gestión de datos. En todo momento puede retirarse o no responder a alguna pregunta. La información que proporcione será utilizada únicamente para esta encuesta y será guardada de forma anónima y confidencial. De acuerdo con el Reglamento General de Protección de Datos (GDPR), todos los datos de los participantes se destruirán tan pronto se finalice el análisis de datos."
+  ];
 
   return (
-    <>  <NavBar />
-    <div className="enquestes" >
-        <h2> Selecciona una encuesta </h2>
-        {enquestes.map((enquesta) => (
-          <div key={enquesta.id}>
-            {enquestaDisponible(enquesta) ? (
-                <div className="surveyBox" style={{ display: 'flex', flexDirection: 'column' }}>
-                    <h3>{enquesta.nom}</h3>
-                    <p>{enquesta.descripcio}</p>
-                    <Link to="/formPage" className="buttonini" > Start </Link>
-                </div>
-            ): null }
-          </div>
-        ))}
+    <div style={styles.container}>
+      <div style={styles.card}>
+        <div style={styles.titleContainer}>
+          <h1 style={styles.titleText}>Encuesta Radón</h1>
+        </div>
+        <div style={styles.infoContainer}>
+          {info.map((item, index) => (
+            <p key={index} style={styles.infoText}>
+              {item}
+            </p>
+          ))}
+        </div>
+      </div>
+      <div style={styles.buttonContainer}>
+        <button style={styles.button}>
+          <span style={styles.buttonText}>Empezar</span>
+        </button>
+      </div>
     </div>
-    </>
   );
+};
+
+const styles = {
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+    backgroundColor: "#b9fbc0"
+  },
+
+  card: {
+    backgroundColor: "#ffffff",
+    borderRadius: "20px",
+    marginTop: "30px",
+    margin: "20px",
+    boxShadow: "0px 2px 15px 0px rgba(0, 0, 0, 0.15)"
+  },
+
+  titleContainer: {
+    backgroundColor: "#30CE7A",
+    padding: "10px",
+    height: "75px",
+    borderTopLeftRadius: "20px",
+    borderTopRightRadius: "20px"
+  },
+
+  titleText: {
+    fontSize: "25px",
+    fontWeight: "bold",
+    color: "#333333",
+    marginTop: "10px"
+  },
+
+  infoContainer: {
+    backgroundColor: "#ffffff",
+    borderTopWidth: "2px",
+    borderTopColor: "#e0e0e0",
+    borderBottomRightRadius: "20px",
+    borderBottomLeftRadius: "20px",
+    padding: "10px"
+  },
+
+  infoText: {
+    fontSize: "13px",
+    textAlign: "justify",
+    marginVertical: "10px"
+  },
+
+  buttonContainer: {
+    display: "flex",
+    flexDirection: "row",
+    marginTop: "10px",
+    justifyContent: "center"
+  },
+
+  button: {
+    backgroundColor: "green",
+    borderRadius: "10px",
+    padding: "10px",
+    margin: "10px",
+    minWidth: "100px"
+  },
+
+  buttonText: {
+    fontSize: "18px",
+    fontWeight: "bold",
+    color: "#ffffff",
+    textAlign: "center"
+  }
 };
 
 export default InfoPage;
