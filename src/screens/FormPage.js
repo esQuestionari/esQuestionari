@@ -37,6 +37,14 @@ Fusce nec lectus imperdiet, ullamcorper arcu nec, iaculis risus. Etiam aliquam n
         tipus: 'options',
         options: ['Dog', 'Cat', 'Other'],
         dependsOn: 0, // Depends on the answer to the previous question
+        dependsOnValue: 'Yes', // Depends on the answer being 'Yes'
+      },
+      {
+        question: 'And would you like to have a pet?',
+        tipus: 'options',
+        options: ['Yes', 'No'],
+        dependsOn: 0, // Depends on the answer to the previous question
+        dependsOnValue: 'No', // Depends on the answer being 'No'
       },
       {
         question: 'What is your name?',
@@ -78,21 +86,21 @@ Fusce nec lectus imperdiet, ullamcorper arcu nec, iaculis risus. Etiam aliquam n
         options: ['Madrid', 'Barcelona', 'Seville', 'Valencia'],
         tipus: 'options',
       },
-      {
-        question: 'Who is the author of Don Quixote?',
-        options: ['Miguel de Cervantes', 'Gabriel García Márquez', 'Federico García Lorca', 'Pablo Neruda'],
-        tipus: 'options',
-      },
-      {
-        question: 'What is the name of the Spanish currency before the euro?',
-        options: ['Peso', 'Lira', 'Peseta', 'Franc'],
-        tipus: 'options',
-      },
-      {
-        question: 'What is the most spoken language in Spain?',
-        options: ['Spanish', 'Catalan', 'Basque', 'Galician'],
-        tipus: 'options',
-      },
+      // {
+      //   question: 'Who is the author of Don Quixote?',
+      //   options: ['Miguel de Cervantes', 'Gabriel García Márquez', 'Federico García Lorca', 'Pablo Neruda'],
+      //   tipus: 'options',
+      // },
+      // {
+      //   question: 'What is the name of the Spanish currency before the euro?',
+      //   options: ['Peso', 'Lira', 'Peseta', 'Franc'],
+      //   tipus: 'options',
+      // },
+      // {
+      //   question: 'What is the most spoken language in Spain?',
+      //   options: ['Spanish', 'Catalan', 'Basque', 'Galician'],
+      //   tipus: 'options',
+      // },
     ],
   },
   {
@@ -110,6 +118,7 @@ Fusce nec lectus imperdiet, ullamcorper arcu nec, iaculis risus. Etiam aliquam n
     ],
   }, 
 ];
+
 
 const FormPage = () => {
   const [currentSection, setCurrentSection] = useState(0);
@@ -159,13 +168,50 @@ const FormPage = () => {
   const checkSectionCompletion = (sectionIndex, currentAnswers) => {
     const questionsInCurrentSection = formData[sectionIndex].questions.length;
     const sectionAnswers = currentAnswers[sectionIndex];
-    const answeredQuestions = Object.keys(sectionAnswers).length;
-    if (answeredQuestions === questionsInCurrentSection) {
+  
+    // Create a set of answered questions that are not dependent on other questions
+    const independentQuestions = new Set(
+      Object.keys(sectionAnswers).filter(
+        (questionIndex) =>
+          !formData[sectionIndex].questions[questionIndex].dependsOn
+      )
+    );
+  
+    // Count the number of dependent questions that are currently hidden
+    const hiddenDependentQuestions = new Set(
+      Object.keys(sectionAnswers).filter(
+        (questionIndex) =>
+          formData[sectionIndex].questions[questionIndex].dependsOn !== undefined &&
+          (sectionAnswers[formData[sectionIndex].questions[questionIndex].dependsOn] !==
+            formData[sectionIndex].questions[questionIndex].dependsOnValue)
+      )
+    );
+  
+    // Count the number of dependent questions that have been answered and are currently visible
+    const answeredVisibleDependentQuestions = new Set(
+      Object.keys(sectionAnswers).filter(
+        (questionIndex) =>
+          formData[sectionIndex].questions[questionIndex].dependsOn !== undefined &&
+          formData[sectionIndex].questions[questionIndex].dependsOnValue !== undefined &&
+          sectionAnswers[formData[sectionIndex].questions[questionIndex].dependsOn] ===
+          formData[sectionIndex].questions[questionIndex].dependsOnValue &&
+          !hiddenDependentQuestions.has(questionIndex)
+      )
+    );
+  
+    // Check if the sum of answered questions and dependent questions is equal to or greater than the total questions
+    if (
+      independentQuestions.size + answeredVisibleDependentQuestions.size ===
+      questionsInCurrentSection - hiddenDependentQuestions.size
+    ) {
       setSectionValid(true);
     } else {
       setSectionValid(false);
     }
   };
+  
+  
+  
 
   const handleNextSection = () => {
     if (currentSection < formData.length - 1) {
@@ -209,66 +255,72 @@ const FormPage = () => {
               )}
               {section.tipus !== 'info' && section.questions.map((question, questionIndex) => (
                 <div key={questionIndex}>
-                  {question.tipus !== 'scale' && question.tipus !== 'trueFalse' && <p className='questionText'>{question.question}</p>}
+                  {question.tipus !== 'scale' && question.tipus !== 'trueFalse' && (question.dependsOn === undefined ||
+                    (answers[sectionIndex][question.dependsOn] === question.dependsOnValue)) && <p className='questionText'>{question.question}</p>}
                   {sectionIndex === currentSection && (
-                    question.tipus === 'options' ? (
-                      <div className='optionContainer'>
-                        {question.options.map((option, optionIndex) => (
-                          <button
-                            key={optionIndex}
-                            className={answers[sectionIndex][questionIndex] === option ? 'selectedOption' : 'option'}
-                            onClick={() => handleSelectOption(sectionIndex, questionIndex, option)}
-                          >
-                            {option}
-                          </button>
-                        ))}
-                      </div>
-                    ) : (
-                      question.tipus === 'trueFalse' ? (
-                        <div className='scaleQuestion'>
-                          <p className='questionText'>{question.question}</p>
-                          <div className='trueFalseButtons'>
+                    question.dependsOn === undefined ||
+                    (answers[sectionIndex][question.dependsOn] === question.dependsOnValue) ? (
+                      question.tipus === 'options' ? (
+                        <div className='optionContainer'>
+                          {question.options.map((option, optionIndex) => (
                             <button
-                              className={answers[sectionIndex][questionIndex] === true ? 'trueButtonSelected' : 'trueFalseButton'}
-                              onClick={() => handleTrueFalseAnswer(sectionIndex, questionIndex, true)}
+                              key={optionIndex}
+                              className={answers[sectionIndex][questionIndex] === option ? 'selectedOption' : 'option'}
+                              onClick={() => handleSelectOption(sectionIndex, questionIndex, option)}
                             >
-                              True
+                              {option}
                             </button>
-                            <button
-                              className={answers[sectionIndex][questionIndex] === false ? 'falseButtonSelected' : 'trueFalseButton'}
-                              onClick={() => handleTrueFalseAnswer(sectionIndex, questionIndex, false)}
-                            >
-                              False
-                            </button>
-                          </div>
+                          ))}
                         </div>
                       ) : (
-                        question.tipus === 'scale' ? (
+                        question.tipus === 'trueFalse' ? (
                           <div className='scaleQuestion'>
                             <p className='questionText'>{question.question}</p>
-                            <div className='scaleOptions'>
-                              {question.scaleOptions.map((color, colorIndex) => (
-                                <button
-                                  key={colorIndex}
-                                  className={answers[sectionIndex][questionIndex] === color ? 'scaleOptionSelected' : 'scaleOption'}
-                                  style={answers[sectionIndex][questionIndex] === color
-                                    ? { backgroundColor: color, opacity: 1 }
-                                    : { backgroundColor: color, opacity: 0.4 }}
-                                  onClick={() => handleScaleAnswer(sectionIndex, questionIndex, color)}
-                                />
-                              ))}
+                            <div className='trueFalseButtons'>
+                              <button
+                                className={answers[sectionIndex][questionIndex] === true ? 'trueButtonSelected' : 'trueFalseButton'}
+                                onClick={() => handleTrueFalseAnswer(sectionIndex, questionIndex, true)}
+                              >
+                                True
+                              </button>
+                              <button
+                                className={answers[sectionIndex][questionIndex] === false ? 'falseButtonSelected' : 'trueFalseButton'}
+                                onClick={() => handleTrueFalseAnswer(sectionIndex, questionIndex, false)}
+                              >
+                                False
+                              </button>
                             </div>
                           </div>
                         ) : (
-                          <input
-                            type="text"
-                            className="inputField"
-                            placeholder="Your Answer"
-                            onChange={(e) => handleTextAnswer(sectionIndex, questionIndex, e.target.value)}
-                          />
+                          question.tipus === 'scale' ? (
+                            <div className='scaleQuestion'>
+                              <p className='questionText'>{question.question}</p>
+                              <div className='scaleOptions'>
+                                {question.scaleOptions.map((color, colorIndex) => (
+                                  <button
+                                    key={colorIndex}
+                                    className={answers[sectionIndex][questionIndex] === color ? 'scaleOptionSelected' : 'scaleOption'}
+                                    style={answers[sectionIndex][questionIndex] === color
+                                      ? { backgroundColor: color, opacity: 1 }
+                                      : { backgroundColor: color, opacity: 0.4 }}
+                                    onClick={() => handleScaleAnswer(sectionIndex, questionIndex, color)}
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          ) : (
+                            question.tipus === 'text' ? (
+                              <input
+                                type="text"
+                                className="inputField"
+                                placeholder="Your Answer"
+                                onChange={(e) => handleTextAnswer(sectionIndex, questionIndex, e.target.value)}
+                              />
+                            ) : null
+                          )
                         )
                       )
-                    )
+                    ) : null
                   )}
                 </div>
               ))}
@@ -276,13 +328,13 @@ const FormPage = () => {
           )
         ))}
         <div className='buttonContainer'>
-          <button
+          {!isFormComplete() && (<button
             className={(!sectionValid || isFormComplete()) ? 'nextButtonDisabled' : 'nextButton'}
             onClick={handleNextSection}
             disabled={!sectionValid || isFormComplete()}
           >
             Next
-          </button>
+          </button>)}
           {isFormComplete() && (
             <button className="finishButton" onClick={handleFinishForm}>
               Finish
