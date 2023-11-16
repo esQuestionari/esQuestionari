@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import NavBar from "../components/NavBar";
+
 
 const Terms = () => {
   const lista = [
@@ -22,7 +25,8 @@ const Terms = () => {
   };
 
   return (
-    <div style={styles.container}>
+    <>  <NavBar />
+    <div className="container">
       <div style={styles.card}>
         <div style={styles.titleContainer}>
           <h2 style={styles.titleText}>Términos y condiciones</h2>
@@ -53,12 +57,13 @@ const Terms = () => {
               backgroundColor: isEnabled ? "#08693e" : "gray"
             }}
             disabled={!isEnabled}
-          >
-            <span style={styles.buttonText}>Continuar</span>
+            >
+            <Link to="/FormPage" className="button buttonText" > Continuar </Link>          
           </button>
         </div>
       </div>
     </div>
+    </>
   );
 };
 
@@ -105,7 +110,7 @@ const styles = {
   },
 
   info: {
-    fontSize: "13px",
+    fontSize: "18px",
     textAlign: "justify"
   },
 
@@ -142,7 +147,7 @@ const styles = {
     borderRadius: "10px",
     padding: "10px",
     marginLeft: "10px",
-    width: "30%"
+    width: "30%", 
   },
 
   buttonText: {

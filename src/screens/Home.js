@@ -8,6 +8,7 @@ const Home = () => {
     const [enquestes, setEnquestes] = useState([]);
 
     useEffect(() => {
+      console.log('entra');
       const handleEnquestes = async () => {
 
         try {
@@ -53,9 +54,11 @@ const Home = () => {
           <div key={enquesta.id}>
             {enquestaDisponible(enquesta) ? (
                 <div className="surveyBox" style={{ display: 'flex', flexDirection: 'column' }}>
-                    <h3>{enquesta.nom}</h3>
-                    <p>{enquesta.descripcio}</p>
-                    <Link to="/formPage" className="buttonini" > Start </Link>
+                    <p className="titol">{enquesta.nom}</p>
+                    <p className="questionText">{enquesta.descripcio}</p>
+                    <div className="buttonContainer">
+                      <Link to="/InfoPage" className="buttonini" > Start </Link>
+                    </div>
                 </div>
             ): null }
           </div>

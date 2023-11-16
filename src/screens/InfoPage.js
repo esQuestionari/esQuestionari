@@ -1,4 +1,7 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import NavBar from "../components/NavBar";
+
 
 const InfoPage = () => {
   const info = [
@@ -8,36 +11,49 @@ const InfoPage = () => {
   ];
 
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <div style={styles.titleContainer}>
-          <h1 style={styles.titleText}>Encuesta Radón</h1>
+    <div className="screen">
+      < >  <NavBar />
+      <div className="container">
+        <div style={styles.card}>
+          <div style={styles.titleContainer}>
+            <h1 style={styles.titleText}>Encuesta Radón</h1>
+          </div>
+          <div style={styles.infoContainer}>
+            {info.map((item, index) => (
+              <p key={index} style={styles.infoText}>
+                {item}
+              </p>
+            ))}
+          </div>
         </div>
-        <div style={styles.infoContainer}>
-          {info.map((item, index) => (
-            <p key={index} style={styles.infoText}>
-              {item}
-            </p>
-          ))}
+        <div style={styles.buttonContainer}>
+          <button style={styles.button}>
+            <Link to="/TermsConditions" className="button buttonText" > Empezar </Link>
+          </button>
         </div>
       </div>
-      <div style={styles.buttonContainer}>
-        <button style={styles.button}>
-          <span style={styles.buttonText}>Empezar</span>
-        </button>
-      </div>
+      </>
     </div>
   );
 };
 
 const styles = {
+
+  // screen: {
+  //   display: "flex",
+  //   flexDirection: "column",
+  //   height: "10vh",
+  // },
+
   container: {
     display: "flex",
+    flex: 1,
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "space-between",
     width: "100%",
-    backgroundColor: "#b9fbc0"
+    backgroundColor: "#b9fbc0",
+    minHeight: "100vh"
   },
 
   card: {
@@ -73,7 +89,7 @@ const styles = {
   },
 
   infoText: {
-    fontSize: "13px",
+    fontSize: "18px",
     textAlign: "justify",
     marginVertical: "10px"
   },
