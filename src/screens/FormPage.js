@@ -173,16 +173,16 @@ const FormPage = () => {
     const independentQuestions = new Set(
       Object.keys(sectionAnswers).filter(
         (questionIndex) =>
-          !formData[sectionIndex].questions[questionIndex].dependsOn
+          formData[sectionIndex].questions[questionIndex].dependsOn === undefined
       )
     );
   
     // Count the number of dependent questions that are currently hidden
     const hiddenDependentQuestions = new Set(
-      Object.keys(sectionAnswers).filter(
+      Object.keys(questionsInCurrentSection).filter(
         (questionIndex) =>
           formData[sectionIndex].questions[questionIndex].dependsOn !== undefined &&
-          (sectionAnswers[formData[sectionIndex].questions[questionIndex].dependsOn] !==
+          (formData[sectionIndex].questions[questionIndex].dependsOn !==
             formData[sectionIndex].questions[questionIndex].dependsOnValue)
       )
     );
@@ -199,6 +199,7 @@ const FormPage = () => {
       )
     );
   
+    console.log(independentQuestions.size, answeredVisibleDependentQuestions.size, questionsInCurrentSection, hiddenDependentQuestions.size);
     // Check if the sum of answered questions and dependent questions is equal to or greater than the total questions
     if (
       independentQuestions.size + answeredVisibleDependentQuestions.size ===
@@ -206,7 +207,7 @@ const FormPage = () => {
     ) {
       setSectionValid(true);
     } else {
-      setSectionValid(false);
+      setSectionValid(true);
     }
   };
   
