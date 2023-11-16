@@ -83,7 +83,8 @@ const styles = {
     margin: "20px",
     border: "1px solid white",
     borderRadius: "20px",
-    boxShadow: "0px 2px 15px 0px rgba(0, 0, 0, 0.30)"
+    boxShadow: "0px 2px 15px 0px rgba(0, 0, 0, 0.30)",
+    minWidth: "95%"
   },
 
   titleContainer: {
@@ -110,7 +111,7 @@ const styles = {
   },
 
   info: {
-    fontSize: "18px",
+    fontSize: "15px",
     textAlign: "justify"
   },
 

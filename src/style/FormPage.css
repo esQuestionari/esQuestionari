@@ -70,6 +70,7 @@
     border-width: 0px;
     cursor: pointer;
     font-size: 15px;
+    color: black;
   }
   
   .selectedOption {
@@ -81,6 +82,7 @@
     text-align: left;
     border-width: 0px;
     font-size: 15px;
+    color: black;
   }
 
   .buttonContainer {

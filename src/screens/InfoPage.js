@@ -89,7 +89,7 @@ const styles = {
   },
 
   infoText: {
-    fontSize: "18px",
+    fontSize: "15px",
     textAlign: "justify",
     marginVertical: "10px"
   },
