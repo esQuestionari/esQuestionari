@@ -1,14 +1,19 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import NavBar from "../components/NavBar";
-
+import { useNavigate } from 'react-router-dom';
 
 const InfoPage = () => {
+  const navigate = useNavigate();
   const info = [
     "Estimado participante,",
     "Esta investigación busca estudiar el conocimiento y percepción de riesgo en relación con la exposición al RADÓN en nuestra sociedad, todo ello dentro del proyecto REBORN.",
     "No usaremos su nombre en ninguna fase de la gestión de datos. En todo momento puede retirarse o no responder a alguna pregunta. La información que proporcione será utilizada únicamente para esta encuesta y será guardada de forma anónima y confidencial. De acuerdo con el Reglamento General de Protección de Datos (GDPR), todos los datos de los participantes se destruirán tan pronto se finalice el análisis de datos."
   ];
+
+  const handleStart = () => {
+    navigate("/TermsConditions");
+  }
+
 
   return (
     <div className="screen">
@@ -27,8 +32,8 @@ const InfoPage = () => {
           </div>
         </div>
         <div style={styles.buttonContainer}>
-          <button style={styles.button}>
-            <Link to="/TermsConditions" className="button buttonText" > Empezar </Link>
+          <button className="button buttonText" style={styles.button} onClick={handleStart}>
+              Empezar 
           </button>
         </div>
       </div>
@@ -38,13 +43,6 @@ const InfoPage = () => {
 };
 
 const styles = {
-
-  // screen: {
-  //   display: "flex",
-  //   flexDirection: "column",
-  //   height: "10vh",
-  // },
-
   container: {
     display: "flex",
     flex: 1,
@@ -98,7 +96,8 @@ const styles = {
     display: "flex",
     flexDirection: "row",
     marginTop: "10px",
-    justifyContent: "center"
+    justifyContent: "center",
+    cursor: "pointer",
   },
 
   button: {
@@ -106,7 +105,8 @@ const styles = {
     borderRadius: "10px",
     padding: "10px",
     margin: "10px",
-    minWidth: "100px"
+    minWidth: "100px",
+    cursor: "pointer",
   },
 
   buttonText: {

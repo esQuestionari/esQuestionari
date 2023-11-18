@@ -1,10 +1,11 @@
 import React,  { useState, useEffect }  from "react";
-import { Link } from "react-router-dom";
 import sendRequest from "../components/utilFetch";
 import { isWithinInterval, parse, isToday } from 'date-fns';
 import NavBar from "../components/NavBar";
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
+    const navigate = useNavigate();
     const [enquestes, setEnquestes] = useState([]);
 
     useEffect(() => {
@@ -45,6 +46,9 @@ const Home = () => {
         return isWithinInterval(fechaHoy, { start: fechaInicio, end: fechaFin }) || isToday(fechaInicio) || isToday(fechaFin);
       };
 
+    const handleStart = () => {
+      navigate("/InfoPage");
+    }
 
   return (
     <>  <NavBar />
@@ -56,8 +60,10 @@ const Home = () => {
                 <div className="surveyBox" style={{ display: 'flex', flexDirection: 'column' }}>
                     <p className="titol">{enquesta.nom}</p>
                     <p className="questionText">{enquesta.descripcio}</p>
-                    <div className="buttonContainer">
-                      <Link to="/InfoPage" className="buttonini" > Start </Link>
+                    <div className="buttonContainer"> 
+                      <button className='buttonini' onClick={handleStart}    >                 
+                        Start
+                      </button>
                     </div>
                 </div>
             ): null }

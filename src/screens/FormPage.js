@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import NavBar from "../components/NavBar";
+import { useNavigate } from 'react-router-dom';
 
 import '../style/FormPage.css'; // Import your CSS file
 
@@ -121,6 +122,7 @@ Fusce nec lectus imperdiet, ullamcorper arcu nec, iaculis risus. Etiam aliquam n
 
 
 const FormPage = () => {
+  const navigate = useNavigate();
   const [currentSection, setCurrentSection] = useState(0);
   const [answers, setAnswers] = useState(Array(formData.length).fill({}));
   const [sectionValid, setSectionValid] = useState(formData[0].tipus === 'info');
@@ -232,11 +234,12 @@ const FormPage = () => {
   };
 
   const handleFinishForm = () => {
-    alert('You have completed the form. Thank you for your feedback.');
+    //alert('You have completed the form. Thank you for your feedback.');
     const newAnswers = Array(formData.length).fill({});
     setAnswers(newAnswers);
     setCurrentSection(0);
     setSectionValid(false);
+    navigate("/end");
   };
 
   return (

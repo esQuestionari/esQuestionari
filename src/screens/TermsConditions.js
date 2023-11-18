@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import NavBar from "../components/NavBar";
-
+import { useNavigate } from 'react-router-dom';
 
 const Terms = () => {
+  const navigate = useNavigate();
   const lista = [
     "He leído y entendido la hoja de información del participante.",
     "Entiendo de qué se trata el proyecto y para qué se utilizarán los resultados.",
@@ -12,21 +12,19 @@ const Terms = () => {
   ];
 
   const [isEnabled, setIsEnabled] = useState(false);
-  const [text, setText] = useState("Rechazar");
 
   const toggleSwitch = () => {
-    if (isEnabled) {
-      setText("Rechazar");
-    } else {
-      setText("Aceptar");
-    }
-
     setIsEnabled((previousState) => !previousState);
   };
 
+  const handleContinue = () => {
+    navigate("/FormPage");
+  }
+
   return (
-    <>  <NavBar />
-    <div className="container">
+    <div className='h-full' style={{ backgroundColor: '#b9fbc0', height: '100%', width: '100%' }}>  
+    <NavBar />
+    <div style={styles.termscontainer} >
       <div style={styles.card}>
         <div style={styles.titleContainer}>
           <h2 style={styles.titleText}>Términos y condiciones</h2>
@@ -52,30 +50,33 @@ const Terms = () => {
         <div style={styles.switchContainer}>
           <input type="checkbox" onChange={toggleSwitch} checked={isEnabled} />
           <button
+            className="button buttonText"
             style={{
               ...styles.button,
               backgroundColor: isEnabled ? "#08693e" : "gray"
             }}
             disabled={!isEnabled}
+            onClick={handleContinue}
             >
-            <Link to="/FormPage" className="button buttonText" > Continuar </Link>          
+             Continuar        
           </button>
         </div>
       </div>
     </div>
-    </>
+    </div>
   );
 };
 
 const styles = {
-  container: {
+  termscontainer: {
     display: "flex",
     flex: 1,
-    backgroundColor: "#b9fbc0",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "space-between",
-    width: "100%"
+    width: "100%",
+    backgroundColor: "#b9fbc0",
+    overflowX: "hidden",
   },
 
   card: {
@@ -121,7 +122,7 @@ const styles = {
 
   listItem: {
     display: "flex",
-    flexDirection: "row", // Cambiado de "row" a "column"
+    flexDirection: "row", 
     flexWrap: "wrap",
     alignItems: "flex-start",
     margin: "8px",
@@ -149,6 +150,7 @@ const styles = {
     padding: "10px",
     marginLeft: "10px",
     width: "30%", 
+    cursor: "pointer",
   },
 
   buttonText: {
@@ -156,7 +158,18 @@ const styles = {
     fontWeight: "bold",
     color: "#ffffff",
     textAlign: "center"
-  }
+  },
+  '@media (max-width: 768px)': {
+    titleText: {
+      fontSize: "24px", // Reducir el tamaño del título para pantallas más pequeñas
+    },
+    listItem: {
+      width: "100%", // Hacer que los elementos de la lista ocupen el 100% del ancho
+    },
+    button: {
+      width: "100%", // Hacer que el botón ocupe el 100% del ancho
+    },
+  },
 };
 
 export default Terms;
