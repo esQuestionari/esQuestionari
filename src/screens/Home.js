@@ -14,11 +14,11 @@ const Home = () => {
 
         try {
           const result = await sendRequest({
-            url: 'https://nattech.fib.upc.edu:40511/api/enquestes/',
+            url: 'http://nattech.fib.upc.edu:40511/api/enquestes/',
             method: 'GET',
             headers: {
+              'Accept': 'application/json',
               'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': '*',
             },
           });
   
