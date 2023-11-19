@@ -117,24 +117,23 @@ const styles = {
   },
 
   listContainer: {
-    width: "200%"
+    width: "100%"
   },
 
   listItem: {
     display: "flex",
-    flexDirection: "row", 
-    flexWrap: "wrap",
     alignItems: "flex-start",
     margin: "8px",
-    width: "50%"
   },
-
+  
   bullet: {
     width: "8px",
     height: "8px",
-    borderRadius: "4px",
+    borderRadius: "50%",
     backgroundColor: "black",
-    margin: "15px"
+    marginRight: "8px",
+    marginTop: "18px",
+    flexShrink: 0, 
   },
 
   switchContainer: {
