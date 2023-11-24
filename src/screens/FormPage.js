@@ -108,12 +108,10 @@ Fusce nec lectus imperdiet, ullamcorper arcu nec, iaculis risus. Etiam aliquam n
 
 
 const FormPage = (idEnquesta) => {
-  idEnquesta = 1;
-
   const handleInfoEnquesta = async (idEnquesta) => {
     try {
       const result = await sendRequest({
-        url: `http://nattech.fib.upc.edu:40511/api/enquestes/${idEnquesta}`,
+        url: `http://nattech.fib.upc.edu:40511/api/enquestes/${enquestaId}`,
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -122,6 +120,7 @@ const FormPage = (idEnquesta) => {
       });
   
       console.log(result); 
+      result.numApartats = 1;
       setInfoEnquesta(result);
     } catch (error) {
       console.error("falla formPage info enquesta", error); 
@@ -183,41 +182,29 @@ const FormPage = (idEnquesta) => {
 
   
   const handleSelectOption = (questionIndex, option) => {
-    const newAnswers = [...answers];
-    newAnswers = {
-      ...newAnswers,
-      [questionIndex]: option,
-    };
+    let newAnswers = [...answers];
+    newAnswers[questionIndex] = option;
     setAnswers(newAnswers);
     checkSectionCompletion(newAnswers);
   };
 
   const handleScaleAnswer = (questionIndex, selectedColor) => {
-    const newAnswers = [...answers];
-    newAnswers = {
-      ...newAnswers,
-      [questionIndex]: selectedColor,
-    };
+    let newAnswers = [...answers];
+    newAnswers[questionIndex] = selectedColor;
     setAnswers(newAnswers);
     checkSectionCompletion(newAnswers);
   };
 
   const handleTrueFalseAnswer = (questionIndex, isTrue) => {
-    const newAnswers = [...answers];
-    newAnswers = {
-      ...newAnswers,
-      [questionIndex]: isTrue,
-    };
+    let newAnswers = [...answers];
+    newAnswers[questionIndex] = isTrue;
     setAnswers(newAnswers);
     checkSectionCompletion(newAnswers);
   };
 
   const handleTextAnswer = (questionIndex, text) => {
-    const newAnswers = [...answers];
-    newAnswers = {
-      ...newAnswers,
-      [questionIndex]: text,
-    };
+    let newAnswers = [...answers];
+    newAnswers[questionIndex] =  text;
     setAnswers(newAnswers);
     checkSectionCompletion(newAnswers);
   };
