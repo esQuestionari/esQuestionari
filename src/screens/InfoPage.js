@@ -1,9 +1,10 @@
 import React from "react";
 import NavBar from "../components/NavBar";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const InfoPage = () => {
   const navigate = useNavigate();
+  const { enquestaId } = useParams();
   const info = [
     "Estimado participante,",
     "Esta investigación busca estudiar el conocimiento y percepción de riesgo en relación con la exposición al RADÓN en nuestra sociedad, todo ello dentro del proyecto REBORN.",
@@ -11,7 +12,7 @@ const InfoPage = () => {
   ];
 
   const handleStart = () => {
-    navigate("/TermsConditions");
+    navigate(`/${enquestaId}/TermsConditions`);
   }
 
 

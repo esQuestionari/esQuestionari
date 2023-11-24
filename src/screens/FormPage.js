@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import NavBar from "../components/NavBar";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams} from 'react-router-dom';
 
 import '../style/FormPage.css'; // Import your CSS file
 
@@ -123,6 +123,7 @@ Fusce nec lectus imperdiet, ullamcorper arcu nec, iaculis risus. Etiam aliquam n
 
 const FormPage = () => {
   const navigate = useNavigate();
+  const {enquestaId} = useParams(); 
   const [currentSection, setCurrentSection] = useState(0);
   const [answers, setAnswers] = useState(Array(formData.length).fill({}));
   const [sectionValid, setSectionValid] = useState(formData[0].tipus === 'info');
@@ -239,7 +240,7 @@ const FormPage = () => {
     setAnswers(newAnswers);
     setCurrentSection(0);
     setSectionValid(false);
-    navigate("/end");
+    navigate(`/${enquestaId}/end`);
   };
 
   return (

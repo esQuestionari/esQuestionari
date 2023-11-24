@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import NavBar from "../components/NavBar";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const Terms = () => {
   const navigate = useNavigate();
+  const { enquestaId } = useParams();
   const lista = [
     "He leído y entendido la hoja de información del participante.",
     "Entiendo de qué se trata el proyecto y para qué se utilizarán los resultados.",
@@ -18,7 +19,7 @@ const Terms = () => {
   };
 
   const handleContinue = () => {
-    navigate("/FormPage");
+    navigate(`/${enquestaId}/FormPage`);
   }
 
   return (
