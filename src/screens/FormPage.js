@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import NavBar from "../components/NavBar";
 import { useNavigate } from 'react-router-dom';
+import sendRequest from "../components/utilFetch";
 
 import '../style/FormPage.css'; // Import your CSS file
 
@@ -86,22 +87,7 @@ Fusce nec lectus imperdiet, ullamcorper arcu nec, iaculis risus. Etiam aliquam n
         question: 'What is the capital of Spain?',
         options: ['Madrid', 'Barcelona', 'Seville', 'Valencia'],
         tipus: 'options',
-      },
-      // {
-      //   question: 'Who is the author of Don Quixote?',
-      //   options: ['Miguel de Cervantes', 'Gabriel García Márquez', 'Federico García Lorca', 'Pablo Neruda'],
-      //   tipus: 'options',
-      // },
-      // {
-      //   question: 'What is the name of the Spanish currency before the euro?',
-      //   options: ['Peso', 'Lira', 'Peseta', 'Franc'],
-      //   tipus: 'options',
-      // },
-      // {
-      //   question: 'What is the most spoken language in Spain?',
-      //   options: ['Spanish', 'Catalan', 'Basque', 'Galician'],
-      //   tipus: 'options',
-      // },
+      }
     ],
   },
   {
@@ -121,61 +107,128 @@ Fusce nec lectus imperdiet, ullamcorper arcu nec, iaculis risus. Etiam aliquam n
 ];
 
 
-const FormPage = () => {
-  const navigate = useNavigate();
-  const [currentSection, setCurrentSection] = useState(0);
-  const [answers, setAnswers] = useState(Array(formData.length).fill({}));
-  const [sectionValid, setSectionValid] = useState(formData[0].tipus === 'info');
+const FormPage = (idEnquesta) => {
+  idEnquesta = 0;
 
-  const handleSelectOption = (sectionIndex, questionIndex, option) => {
+  const handleInfoEnquesta = async (idEnquesta) => {
+    try {
+      const result = await sendRequest({
+        url: `http://nattech.fib.upc.edu:40511/api/enquestes/${idEnquesta}`,
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      console.log(result); 
+      setInfoEnquesta(result);
+    } catch (error) {
+      console.error("falla formPage info enquesta", error); 
+    }
+  } ;
+  
+  const handleInfoApartat = async () => {
+    try {
+      const result = await sendRequest({
+        url: `http://nattech.fib.upc.edu:40511/api/apartats/${currentSection}/`,
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      console.log(result); 
+      setSection(result);
+      setAnswers(Array(result.preguntes.length).fill({}));
+    } catch (error) {
+      console.error("falla formPage info apartat", error); 
+    }
+  } ;
+  
+  // const handleQuestions = async () => {
+  //   try {
+  //     const result = await sendRequest({
+  //       url: `http://nattech.fib.upc.edu:40511/api/enquestes/${idEnquesta}`,
+  //       method: 'GET',
+  //       headers: {
+  //         'Accept': 'application/json',
+  //         'Content-Type': 'application/json',
+  //       },
+  //     });
+  
+  //     console.log(result); 
+  //     setQuestions(result);
+  //   } catch (error) {
+  //     console.error("falla formPage", error); 
+  //   }
+  // } ;
+
+  useEffect(() => {
+    setCurrentSection(0);
+    handleInfoEnquesta(idEnquesta);
+    handleInfoApartat();
+    //handleQuestions();
+  }, []);
+
+  const navigate = useNavigate();
+  const [infoEnquesta, setInfoEnquesta] = useState({});
+  const [section, setSection] = useState({});
+  //const [questions, setQuestions] = useState([]);
+  const [currentSection, setCurrentSection] = useState(0);
+  const [answers, setAnswers] = useState([]);
+  const [sectionValid, setSectionValid] = useState(false);
+
+  
+  const handleSelectOption = (questionIndex, option) => {
     const newAnswers = [...answers];
-    newAnswers[sectionIndex] = {
-      ...newAnswers[sectionIndex],
+    newAnswers = {
+      ...newAnswers,
       [questionIndex]: option,
     };
     setAnswers(newAnswers);
-    checkSectionCompletion(sectionIndex, newAnswers);
+    checkSectionCompletion(newAnswers);
   };
 
-  const handleScaleAnswer = (sectionIndex, questionIndex, selectedColor) => {
+  const handleScaleAnswer = (questionIndex, selectedColor) => {
     const newAnswers = [...answers];
-    newAnswers[sectionIndex] = {
-      ...newAnswers[sectionIndex],
+    newAnswers = {
+      ...newAnswers,
       [questionIndex]: selectedColor,
     };
     setAnswers(newAnswers);
-    checkSectionCompletion(sectionIndex, newAnswers);
+    checkSectionCompletion(newAnswers);
   };
 
-  const handleTrueFalseAnswer = (sectionIndex, questionIndex, isTrue) => {
+  const handleTrueFalseAnswer = (questionIndex, isTrue) => {
     const newAnswers = [...answers];
-    newAnswers[sectionIndex] = {
-      ...newAnswers[sectionIndex],
+    newAnswers = {
+      ...newAnswers,
       [questionIndex]: isTrue,
     };
     setAnswers(newAnswers);
-    checkSectionCompletion(sectionIndex, newAnswers);
+    checkSectionCompletion(newAnswers);
   };
 
-  const handleTextAnswer = (sectionIndex, questionIndex, text) => {
+  const handleTextAnswer = (questionIndex, text) => {
     const newAnswers = [...answers];
-    newAnswers[sectionIndex] = {
-      ...newAnswers[sectionIndex],
+    newAnswers = {
+      ...newAnswers,
       [questionIndex]: text,
     };
     setAnswers(newAnswers);
-    checkSectionCompletion(sectionIndex, newAnswers);
+    checkSectionCompletion(newAnswers);
   };
 
-  const checkSectionCompletion = (sectionIndex, currentAnswers) => {
-    const questionsInCurrentSection = formData[sectionIndex].questions.length;
-    const sectionAnswers = currentAnswers[sectionIndex];
+  const checkSectionCompletion = (sectionAnswers) => {
+    const questionsInCurrentSection = section.preguntes.length;
   
     // Create a set of answered questions that are not dependent on other questions
     const independentQuestions = new Set(
       Object.keys(sectionAnswers).filter(
         (questionIndex) =>
-          formData[sectionIndex].questions[questionIndex].dependsOn === undefined
+          section.preguntes[questionIndex].dependsOn === undefined
       )
     );
   
@@ -183,9 +236,9 @@ const FormPage = () => {
     const hiddenDependentQuestions = new Set(
       Object.keys(questionsInCurrentSection).filter(
         (questionIndex) =>
-          formData[sectionIndex].questions[questionIndex].dependsOn !== undefined &&
-          (formData[sectionIndex].questions[questionIndex].dependsOn !==
-            formData[sectionIndex].questions[questionIndex].dependsOnValue)
+          section.preguntes[questionIndex].dependsOn !== undefined &&
+          (section.preguntes[questionIndex].dependsOn !==
+            section.preguntes[questionIndex].dependsOnValue)
       )
     );
   
@@ -193,10 +246,10 @@ const FormPage = () => {
     const answeredVisibleDependentQuestions = new Set(
       Object.keys(sectionAnswers).filter(
         (questionIndex) =>
-          formData[sectionIndex].questions[questionIndex].dependsOn !== undefined &&
-          formData[sectionIndex].questions[questionIndex].dependsOnValue !== undefined &&
-          sectionAnswers[formData[sectionIndex].questions[questionIndex].dependsOn] ===
-          formData[sectionIndex].questions[questionIndex].dependsOnValue &&
+          section.preguntes[questionIndex].dependsOn !== undefined &&
+          section.preguntes[questionIndex].dependsOnValue !== undefined &&
+          sectionAnswers[section.preguntes[questionIndex].dependsOn] ===
+          section.preguntes[questionIndex].dependsOnValue &&
           !hiddenDependentQuestions.has(questionIndex)
       )
     );
@@ -217,7 +270,7 @@ const FormPage = () => {
   
 
   const handleNextSection = () => {
-    if (currentSection < formData.length - 1) {
+    if (currentSection < infoEnquesta.numApartats - 1) {
       const nextSection = formData[currentSection + 1];
       if (nextSection.tipus !== 'info') {
         setCurrentSection(currentSection + 1);
@@ -230,12 +283,12 @@ const FormPage = () => {
   };
 
   const isFormComplete = () => {
-    return currentSection === formData.length - 1 && sectionValid;
+    return currentSection === infoEnquesta.numApartats - 1 && sectionValid;
   };
 
   const handleFinishForm = () => {
     //alert('You have completed the form. Thank you for your feedback.');
-    const newAnswers = Array(formData.length).fill({});
+    const newAnswers = Array(section.preguntes.length).fill({});
     setAnswers(newAnswers);
     setCurrentSection(0);
     setSectionValid(false);
@@ -246,91 +299,87 @@ const FormPage = () => {
     <>
       <NavBar />
       <div className="container">
-        {formData.map((section, sectionIndex) => (
-          sectionIndex === currentSection && (
-            <div key={sectionIndex} className="card">
-              {section.tipus !== 'info' && <p className='sectionNumber'>Section {sectionIndex + 1} of {formData.length}</p>}
-              <h2 className='titol'>{section.titol}</h2>
-              {section.tipus === 'info' && (
-                <div className='infoSection'>
-                  <p className='infoText'>{section.info.text}</p>
-                  {/* Handle image rendering if needed */}
-                </div>
-              )}
-              {section.tipus !== 'info' && section.questions.map((question, questionIndex) => (
-                <div key={questionIndex}>
-                  {question.tipus !== 'scale' && question.tipus !== 'trueFalse' && (question.dependsOn === undefined ||
-                    (answers[sectionIndex][question.dependsOn] === question.dependsOnValue)) && <p className='questionText'>{question.question}</p>}
-                  {sectionIndex === currentSection && (
-                    question.dependsOn === undefined ||
-                    (answers[sectionIndex][question.dependsOn] === question.dependsOnValue) ? (
-                      question.tipus === 'options' ? (
-                        <div className='optionContainer'>
-                          {question.options.map((option, optionIndex) => (
-                            <button
-                              key={optionIndex}
-                              className={answers[sectionIndex][questionIndex] === option ? 'selectedOption' : 'option'}
-                              onClick={() => handleSelectOption(sectionIndex, questionIndex, option)}
-                            >
-                              {option}
-                            </button>
-                          ))}
+        <div key={currentSection} className="card">
+          {<p className='sectionNumber'>Section {currentSection + 1} of {infoEnquesta.numApartats}</p>}
+          <h2 className='titol'>{section.titol}</h2>
+          {section.introduccio !== undefined && (
+            <div className='infoSection'>
+              <p className='infoText'>{section.introduccio}</p>
+              {/* Handle image rendering if needed */}
+            </div>
+          )}
+          {false && section.preguntes.map((question, questionIndex) => (
+            <div key={questionIndex}>
+              {question.tipus !== 'escala' && question.tipus !== 'certofals' && (question.dependsOn === undefined ||
+                (answers[question.dependsOn] === question.dependsOnValue)) && <p className='questionText'>{question.question}</p>}
+              {(
+                question.dependsOn === undefined ||
+                (answers[question.dependsOn] === question.dependsOnValue) ? (
+                  question.tipus === 'opcions' ? (
+                    <div className='optionContainer'>
+                      {question.opcions.map((option, optionIndex) => (
+                        <button
+                          key={optionIndex}
+                          className={answers[questionIndex] === option ? 'selectedOption' : 'option'}
+                          onClick={() => handleSelectOption(questionIndex, option)}
+                        >
+                          {option}
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    question.tipus === 'certofals' ? (
+                      <div className='scaleQuestion'>
+                        <p className='questionText'>{question.question}</p>
+                        <div className='trueFalseButtons'>
+                          <button
+                            className={answers[questionIndex] === true ? 'trueButtonSelected' : 'trueFalseButton'}
+                            onClick={() => handleTrueFalseAnswer(questionIndex, true)}
+                          >
+                            True
+                          </button>
+                          <button
+                            className={answers[questionIndex] === false ? 'falseButtonSelected' : 'trueFalseButton'}
+                            onClick={() => handleTrueFalseAnswer(questionIndex, false)}
+                          >
+                            False
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      question.tipus === 'escala' ? (
+                        <div className='scaleQuestion'>
+                          <p className='questionText'>{question.question}</p>
+                          <div className='scaleOptions'>
+                            {question.opcions.map((color, colorIndex) => (
+                              <button
+                                key={colorIndex}
+                                className={answers[questionIndex] === color ? 'scaleOptionSelected' : 'scaleOption'}
+                                style={answers[questionIndex] === color
+                                  ? { backgroundColor: color, opacity: 1 }
+                                  : { backgroundColor: color, opacity: 0.4 }}
+                                onClick={() => handleScaleAnswer(questionIndex, color)}
+                              />
+                            ))}
+                          </div>
                         </div>
                       ) : (
-                        question.tipus === 'trueFalse' ? (
-                          <div className='scaleQuestion'>
-                            <p className='questionText'>{question.question}</p>
-                            <div className='trueFalseButtons'>
-                              <button
-                                className={answers[sectionIndex][questionIndex] === true ? 'trueButtonSelected' : 'trueFalseButton'}
-                                onClick={() => handleTrueFalseAnswer(sectionIndex, questionIndex, true)}
-                              >
-                                True
-                              </button>
-                              <button
-                                className={answers[sectionIndex][questionIndex] === false ? 'falseButtonSelected' : 'trueFalseButton'}
-                                onClick={() => handleTrueFalseAnswer(sectionIndex, questionIndex, false)}
-                              >
-                                False
-                              </button>
-                            </div>
-                          </div>
-                        ) : (
-                          question.tipus === 'scale' ? (
-                            <div className='scaleQuestion'>
-                              <p className='questionText'>{question.question}</p>
-                              <div className='scaleOptions'>
-                                {question.scaleOptions.map((color, colorIndex) => (
-                                  <button
-                                    key={colorIndex}
-                                    className={answers[sectionIndex][questionIndex] === color ? 'scaleOptionSelected' : 'scaleOption'}
-                                    style={answers[sectionIndex][questionIndex] === color
-                                      ? { backgroundColor: color, opacity: 1 }
-                                      : { backgroundColor: color, opacity: 0.4 }}
-                                    onClick={() => handleScaleAnswer(sectionIndex, questionIndex, color)}
-                                  />
-                                ))}
-                              </div>
-                            </div>
-                          ) : (
-                            question.tipus === 'text' ? (
-                              <input
-                                type="text"
-                                className="inputField"
-                                placeholder="Your Answer"
-                                onChange={(e) => handleTextAnswer(sectionIndex, questionIndex, e.target.value)}
-                              />
-                            ) : null
-                          )
-                        )
+                        question.tipus === 'text' ? (
+                          <input
+                            type="text"
+                            className="inputField"
+                            placeholder="Your Answer"
+                            onChange={(e) => handleTextAnswer(questionIndex, e.target.value)}
+                          />
+                        ) : null
                       )
-                    ) : null
-                  )}
-                </div>
-              ))}
+                    )
+                  )
+                ) : null
+              )}
             </div>
-          )
-        ))}
+          ))}
+        </div>
         <div className='buttonContainer'>
           {!isFormComplete() && (<button
             className={(!sectionValid || isFormComplete()) ? 'nextButtonDisabled' : 'nextButton'}
