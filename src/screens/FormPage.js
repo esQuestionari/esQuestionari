@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import NavBar from "../components/NavBar";
 import { useNavigate, useParams} from 'react-router-dom';
 import sendRequest from "../components/utilFetch";
@@ -186,12 +187,14 @@ const FormPage = (idEnquesta) => {
     newAnswers[questionIndex] = option;
     setAnswers(newAnswers);
     checkSectionCompletion(newAnswers);
+    checkSectionCompletion(newAnswers);
   };
 
   const handleScaleAnswer = (questionIndex, selectedColor) => {
     let newAnswers = [...answers];
     newAnswers[questionIndex] = selectedColor;
     setAnswers(newAnswers);
+    checkSectionCompletion(newAnswers);
     checkSectionCompletion(newAnswers);
   };
 
@@ -200,6 +203,7 @@ const FormPage = (idEnquesta) => {
     newAnswers[questionIndex] = isTrue;
     setAnswers(newAnswers);
     checkSectionCompletion(newAnswers);
+    checkSectionCompletion(newAnswers);
   };
 
   const handleTextAnswer = (questionIndex, text) => {
@@ -207,8 +211,11 @@ const FormPage = (idEnquesta) => {
     newAnswers[questionIndex] =  text;
     setAnswers(newAnswers);
     checkSectionCompletion(newAnswers);
+    checkSectionCompletion(newAnswers);
   };
 
+  const checkSectionCompletion = (sectionAnswers) => {
+    const questionsInCurrentSection = section.preguntes.length;
   const checkSectionCompletion = (sectionAnswers) => {
     const questionsInCurrentSection = section.preguntes.length;
   
@@ -216,6 +223,7 @@ const FormPage = (idEnquesta) => {
     const independentQuestions = new Set(
       Object.keys(sectionAnswers).filter(
         (questionIndex) =>
+          section.preguntes[questionIndex].enCasDe === null
           section.preguntes[questionIndex].enCasDe === null
       )
     );
@@ -227,6 +235,9 @@ const FormPage = (idEnquesta) => {
           section.preguntes[questionIndex].enCasDe !== null &&
           (section.preguntes[questionIndex].enCasDe !==
             section.preguntes[questionIndex].opcioEnCasDe)
+          section.preguntes[questionIndex].enCasDe !== null &&
+          (section.preguntes[questionIndex].enCasDe !==
+            section.preguntes[questionIndex].opcioEnCasDe)
       )
     );
   
@@ -234,6 +245,10 @@ const FormPage = (idEnquesta) => {
     const answeredVisibleDependentQuestions = new Set(
       Object.keys(sectionAnswers).filter(
         (questionIndex) =>
+          section.preguntes[questionIndex].enCasDe !== null &&
+          section.preguntes[questionIndex].opcioEnCasDe !== null &&
+          sectionAnswers[section.preguntes[questionIndex].enCasDe] ===
+          section.preguntes[questionIndex].opcioEnCasDe &&
           section.preguntes[questionIndex].enCasDe !== null &&
           section.preguntes[questionIndex].opcioEnCasDe !== null &&
           sectionAnswers[section.preguntes[questionIndex].enCasDe] ===
@@ -259,6 +274,7 @@ const FormPage = (idEnquesta) => {
 
   const handleNextSection = () => {
     if (currentSection < infoEnquesta.numApartats - 1) {
+    if (currentSection < infoEnquesta.numApartats - 1) {
       const nextSection = formData[currentSection + 1];
       if (nextSection.tipus !== 'info') {
         setCurrentSection(currentSection + 1);
@@ -272,10 +288,12 @@ const FormPage = (idEnquesta) => {
 
   const isFormComplete = () => {
     return currentSection === infoEnquesta.numApartats - 1 && sectionValid;
+    return currentSection === infoEnquesta.numApartats - 1 && sectionValid;
   };
 
   const handleFinishForm = () => {
     //alert('You have completed the form. Thank you for your feedback.');
+    const newAnswers = Array(section.preguntes.length).fill({});
     const newAnswers = Array(section.preguntes.length).fill({});
     setAnswers(newAnswers);
     setCurrentSection(0);
@@ -287,6 +305,87 @@ const FormPage = (idEnquesta) => {
     <>
       <NavBar />
       <div className="container">
+        <div key={currentSection} className="card">
+          {<p className='sectionNumber'>Section {currentSection + 1} of {infoEnquesta.numApartats}</p>}
+          <h2 className='titol'>{section.titol}</h2>
+          {section.introduccio !== undefined && (
+            <div className='infoSection'>
+              <p className='infoText'>{section.introduccio}</p>
+              {/* Handle image rendering if needed */}
+            </div>
+          )}
+          {section.preguntes && section.preguntes.map((question, questionIndex) => (
+            <div key={questionIndex}>
+              {question.tipus !== 'escala' && question.tipus !== 'certofals' && (question.enCasDe === null ||
+                (answers[question.enCasDe] === question.opcioEnCasDe)) && <p className='questionText'>{question.text}</p>}
+              {(
+                question.enCasDe === null ||
+                (answers[question.enCasDe] === question.opcioEnCasDe) ? (
+                  question.tipus === 'opcions' ? (
+                    <div className='optionContainer'>
+                      {question.opcions.map((option, optionIndex) => (
+                        <button
+                          key={optionIndex}
+                          className={answers[questionIndex] === option ? 'selectedOption' : 'option'}
+                          onClick={() => handleSelectOption(questionIndex, option)}
+                        >
+                          {option}
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    question.tipus === 'certofals' ? (
+                      <div className='scaleQuestion'>
+                        <p className='questionText'>{question.question}</p>
+                        <div className='trueFalseButtons'>
+                          <button
+                            className={answers[questionIndex] === true ? 'trueButtonSelected' : 'trueFalseButton'}
+                            onClick={() => handleTrueFalseAnswer(questionIndex, true)}
+                          >
+                            True
+                          </button>
+                          <button
+                            className={answers[questionIndex] === false ? 'falseButtonSelected' : 'trueFalseButton'}
+                            onClick={() => handleTrueFalseAnswer(questionIndex, false)}
+                          >
+                            False
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      question.tipus === 'escala' ? (
+                        <div className='scaleQuestion'>
+                          <p className='questionText'>{question.question}</p>
+                          <div className='scaleOptions'>
+                            {question.opcions.map((color, colorIndex) => (
+                              <button
+                                key={colorIndex}
+                                className={answers[questionIndex] === color ? 'scaleOptionSelected' : 'scaleOption'}
+                                style={answers[questionIndex] === color
+                                  ? { backgroundColor: color, opacity: 1 }
+                                  : { backgroundColor: color, opacity: 0.4 }}
+                                onClick={() => handleScaleAnswer(questionIndex, color)}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      ) : (
+                        question.tipus === 'text' ? (
+                          <input
+                            type="text"
+                            className="inputField"
+                            placeholder="Your Answer"
+                            onChange={(e) => handleTextAnswer(questionIndex, e.target.value)}
+                          />
+                        ) : null
+                      )
+                    )
+                  )
+                ) : null
+              )}
+            </div>
+          ))}
+        </div>
         <div key={currentSection} className="card">
           {<p className='sectionNumber'>Section {currentSection + 1} of {infoEnquesta.numApartats}</p>}
           <h2 className='titol'>{section.titol}</h2>
