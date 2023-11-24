@@ -39,8 +39,8 @@ const Home = () => {
     return isWithinInterval(fechaHoy, { start: fechaInicio, end: fechaFin }) || isToday(fechaInicio) || isToday(fechaFin);
   };
 
-  const handleStart = () => {
-    navigate("/InfoPage");
+  const handleStart = (enquestaId) => {
+    navigate(`/${enquestaId}/InfoPage`);
   };
 
   return (
@@ -55,7 +55,7 @@ const Home = () => {
                 <p className="titol">{enquesta.nom}</p>
                 <p className="questionText">{enquesta.descripcio}</p>
                 <div className="buttonContainer">
-                  <button className='buttonini' onClick={handleStart}>
+                  <button className='buttonini' onClick={() => handleStart(enquesta.id)}>
                     Start
                   </button>
                 </div>

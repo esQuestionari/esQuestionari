@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import NavBar from "../components/NavBar";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart, Line,  PieChart, Pie, Cell } from 'recharts';
 
 const FinalPage = () => {
   const navigate = useNavigate();
+  const {enquestaIc} = useParams();
   const [checkbox1, setCheckbox1] = useState(false);
   const [checkbox2, setCheckbox2] = useState(false);
   const [email2, setEmail2] = useState('');
