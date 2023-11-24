@@ -38,15 +38,15 @@ Fusce nec lectus imperdiet, ullamcorper arcu nec, iaculis risus. Etiam aliquam n
         question: 'What type of pet do you have?',
         tipus: 'options',
         options: ['Dog', 'Cat', 'Other'],
-        dependsOn: 0, // Depends on the answer to the previous question
-        dependsOnValue: 'Yes', // Depends on the answer being 'Yes'
+        enCasDe: 0, // Depends on the answer to the previous question
+        opcioEnCasDe: 'Yes', // Depends on the answer being 'Yes'
       },
       {
         question: 'And would you like to have a pet?',
         tipus: 'options',
         options: ['Yes', 'No'],
-        dependsOn: 0, // Depends on the answer to the previous question
-        dependsOnValue: 'No', // Depends on the answer being 'No'
+        enCasDe: 0, // Depends on the answer to the previous question
+        opcioEnCasDe: 'No', // Depends on the answer being 'No'
       },
       {
         question: 'What is your name?',
@@ -108,7 +108,7 @@ Fusce nec lectus imperdiet, ullamcorper arcu nec, iaculis risus. Etiam aliquam n
 
 
 const FormPage = (idEnquesta) => {
-  idEnquesta = 0;
+  idEnquesta = 1;
 
   const handleInfoEnquesta = async (idEnquesta) => {
     try {
@@ -131,7 +131,7 @@ const FormPage = (idEnquesta) => {
   const handleInfoApartat = async () => {
     try {
       const result = await sendRequest({
-        url: `http://nattech.fib.upc.edu:40511/api/apartats/${currentSection}/`,
+        url: `http://nattech.fib.upc.edu:40511/api/apartats/1/`,
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -229,7 +229,7 @@ const FormPage = (idEnquesta) => {
     const independentQuestions = new Set(
       Object.keys(sectionAnswers).filter(
         (questionIndex) =>
-          section.preguntes[questionIndex].dependsOn === undefined
+          section.preguntes[questionIndex].enCasDe === null
       )
     );
   
@@ -237,9 +237,9 @@ const FormPage = (idEnquesta) => {
     const hiddenDependentQuestions = new Set(
       Object.keys(questionsInCurrentSection).filter(
         (questionIndex) =>
-          section.preguntes[questionIndex].dependsOn !== undefined &&
-          (section.preguntes[questionIndex].dependsOn !==
-            section.preguntes[questionIndex].dependsOnValue)
+          section.preguntes[questionIndex].enCasDe !== null &&
+          (section.preguntes[questionIndex].enCasDe !==
+            section.preguntes[questionIndex].opcioEnCasDe)
       )
     );
   
@@ -247,10 +247,10 @@ const FormPage = (idEnquesta) => {
     const answeredVisibleDependentQuestions = new Set(
       Object.keys(sectionAnswers).filter(
         (questionIndex) =>
-          section.preguntes[questionIndex].dependsOn !== undefined &&
-          section.preguntes[questionIndex].dependsOnValue !== undefined &&
-          sectionAnswers[section.preguntes[questionIndex].dependsOn] ===
-          section.preguntes[questionIndex].dependsOnValue &&
+          section.preguntes[questionIndex].enCasDe !== null &&
+          section.preguntes[questionIndex].opcioEnCasDe !== null &&
+          sectionAnswers[section.preguntes[questionIndex].enCasDe] ===
+          section.preguntes[questionIndex].opcioEnCasDe &&
           !hiddenDependentQuestions.has(questionIndex)
       )
     );
@@ -309,13 +309,13 @@ const FormPage = (idEnquesta) => {
               {/* Handle image rendering if needed */}
             </div>
           )}
-          {false && section.preguntes.map((question, questionIndex) => (
+          {section.preguntes && section.preguntes.map((question, questionIndex) => (
             <div key={questionIndex}>
-              {question.tipus !== 'escala' && question.tipus !== 'certofals' && (question.dependsOn === undefined ||
-                (answers[question.dependsOn] === question.dependsOnValue)) && <p className='questionText'>{question.question}</p>}
+              {question.tipus !== 'escala' && question.tipus !== 'certofals' && (question.enCasDe === null ||
+                (answers[question.enCasDe] === question.opcioEnCasDe)) && <p className='questionText'>{question.text}</p>}
               {(
-                question.dependsOn === undefined ||
-                (answers[question.dependsOn] === question.dependsOnValue) ? (
+                question.enCasDe === null ||
+                (answers[question.enCasDe] === question.opcioEnCasDe) ? (
                   question.tipus === 'opcions' ? (
                     <div className='optionContainer'>
                       {question.opcions.map((option, optionIndex) => (
