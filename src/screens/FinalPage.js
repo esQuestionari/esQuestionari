@@ -35,6 +35,17 @@ const FinalPage = () => {
   const [checkbox2, setCheckbox2] = useState(false);
   const [email2, setEmail2] = useState('');
 
+  function obtenerColorUnico(index) {
+    const base = 150; 
+    const factor = 40; 
+  
+    const red = (base + (index+1) * factor) % 256;
+    const green = (base + (index+1) * factor * 2) % 256;
+    const blue = (base + (index+1) * factor * 3) % 256;
+  
+    return `rgb(${red}, ${green}, ${blue})`;
+  }
+
   const transformarResultados = (resultados) => {
     return Object.keys(resultados).map((key) => ({
       name: key,
@@ -100,16 +111,29 @@ const FinalPage = () => {
           <div key={index}>
             {grafic.tipusGrafic === 'Barplot' && 
             <div >
-              <BarChart width={400} height={300} data={transformarResultados(grafic.resultats)}>
-                <text x={0} y={0} textAnchor="middle" dominantBaseline="middle">
-                  {grafic.nom}
-                </text>
+               <text x={20} y={5} textAnchor="middle" style={{ fontSize: '16px', fontWeight: 'bold' }}>
+                {grafic.nom}
+              </text>
+              <BarChart width={400} height={300} data={transformarResultados(grafic.resultats)}  barCategoryGap={10} >    
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
+                <XAxis
+                  dataKey="name"
+                  interval={0}
+                  dy={15}
+                  tick={(props) => (
+                    <text {...props} >
+                      {props.payload.value.length > 10 ? `${props.payload.value.substring(0, 10)}...` : props.payload.value}
+                    </text>
+                  )}
+                />
                 <YAxis />
                 <Tooltip />
-                <Legend />
-                <Bar dataKey="respuestas" fill="#8884d8" />
+                
+                <Bar dataKey="respuestas"  >
+                {transformarResultados(grafic.resultats).map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={obtenerColorUnico(index)} />
+                ))}
+                </Bar>
               </BarChart> 
               </div>
             }
@@ -131,7 +155,7 @@ const FinalPage = () => {
             {grafic.tipusGrafic === 'Piechart' &&
             <div >
               <PieChart width={400} height={300}>
-                <text  x={50} y={50} textAnchor="middle" dominantBaseline="middle">
+                <text  x={0} y={50} style={{ fontSize: '16px', fontWeight: 'bold' }}>
                   {grafic.nom}
                 </text>
                 <Pie
@@ -141,11 +165,11 @@ const FinalPage = () => {
                   startAngle={0}
                   endAngle={360}
                   outerRadius={80}
-                  fill="#8884d8"
                   dataKey="respuestas"
                 >
-                  <Cell fill="#FF6384" />
-                  <Cell fill="#36A2EB" />
+                  {transformarResultados(grafic.resultats).map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={obtenerColorUnico(index)} />
+                  ))}
                 </Pie>
                 <Tooltip />
                 <Legend />
