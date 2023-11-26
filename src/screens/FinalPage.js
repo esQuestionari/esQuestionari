@@ -1,31 +1,57 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import NavBar from "../components/NavBar";
 import { useNavigate, useParams } from 'react-router-dom';
+import sendRequest from "../components/utilFetch";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart, Line,  PieChart, Pie, Cell } from 'recharts';
 
 const FinalPage = () => {
   const navigate = useNavigate();
-  const {enquestaIc} = useParams();
+  const { enquestaId } = useParams();
+  const [estadistiques, setEstadistiques] = useState([]);
+
+  useEffect(() => {
+    const handleEnquestes = async () => {
+      try {
+        const result = await sendRequest({
+          url: `http://nattech.fib.upc.edu:40511/api/enquestes/${enquestaId}/estadistiques`,
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+        });
+
+        console.log(result);
+        setEstadistiques(result);
+      } catch (error) {
+        console.error("falla home", error);
+      }
+    };
+
+    handleEnquestes();
+  }, [enquestaId]);
+
   const [checkbox1, setCheckbox1] = useState(false);
   const [checkbox2, setCheckbox2] = useState(false);
   const [email2, setEmail2] = useState('');
 
-  const [chartData, setChartData] = useState([
-    { name: 'Opción 1', respuestas: 6 },
-    { name: 'Opción 2', respuestas: 0 },
-  ]);
+  function obtenerColorUnico(index) {
+    const base = 150; 
+    const factor = 40; 
+  
+    const red = (base + (index+1) * factor) % 256;
+    const green = (base + (index+1) * factor * 2) % 256;
+    const blue = (base + (index+1) * factor * 3) % 256;
+  
+    return `rgb(${red}, ${green}, ${blue})`;
+  }
 
-  const [lineChartData, setLineChartData] = useState([
-    { name: 'Semana 1', respuestas: 0 },
-    { name: 'Semana 2', respuestas: 3 },
-    { name: 'Semana 3', respuestas: 7 },
-    // Puedes ajustar los datos según tus necesidades
-  ]);
-
-  const [pieChartData, setPieChartData] = useState([
-    { name: 'Opción 1', respuestas: 1 },
-    { name: 'Opción 2', respuestas: 2 },
-  ]);
+  const transformarResultados = (resultados) => {
+    return Object.keys(resultados).map((key) => ({
+      name: key,
+      respuestas: resultados[key],
+    }));
+  };
 
 
   const handleCheckbox1Change = () => {
@@ -80,45 +106,78 @@ const FinalPage = () => {
         )}
         <br />
         <button className='buttonini' onClick={handleSave}>Guardar</button>
-        <div>
-          <BarChart width={400} height={300} data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="respuestas" fill="#8884d8" />
-          </BarChart>
-        </div>
-        <div>
-          <LineChart width={400} height={300} data={lineChartData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="respuestas" stroke="#8884d8" />
-          </LineChart>
-        </div>
-        <div>
-          <PieChart width={400} height={300}>
-            <Pie
-              data={pieChartData}
-              cx={200}
-              cy={150}
-              startAngle={90}
-              endAngle={-90}
-              outerRadius={80}
-              fill="#8884d8"
-              dataKey="respuestas"
-            >
-              <Cell fill="#FF6384" />
-              <Cell fill="#36A2EB" />
-            </Pie>
-            <Tooltip />
-            <Legend />
-          </PieChart>
-        </div>
+        
+        {estadistiques.map((grafic, index) => (
+          <div key={index}>
+            {grafic.tipusGrafic === 'Barplot' && 
+            <div >
+               <text x={20} y={5} textAnchor="middle" style={{ fontSize: '16px', fontWeight: 'bold' }}>
+                {grafic.nom}
+              </text>
+              <BarChart width={400} height={300} data={transformarResultados(grafic.resultats)}  barCategoryGap={10} >    
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="name"
+                  interval={0}
+                  dy={15}
+                  tick={(props) => (
+                    <text {...props} >
+                      {props.payload.value.length > 10 ? `${props.payload.value.substring(0, 10)}...` : props.payload.value}
+                    </text>
+                  )}
+                />
+                <YAxis />
+                <Tooltip />
+                
+                <Bar dataKey="respuestas"  >
+                {transformarResultados(grafic.resultats).map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={obtenerColorUnico(index)} />
+                ))}
+                </Bar>
+              </BarChart> 
+              </div>
+            }
+            {grafic.tipusGrafic === 'Lineplot' &&
+            <div >
+              <LineChart width={400} height={300} data={transformarResultados(grafic.resultats)}>
+                <text x={50} y={50} textAnchor="middle" dominantBaseline="middle">
+                  {grafic.nom}
+                </text>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="respuestas" stroke="#8884d8" />
+              </LineChart>
+              </div>
+            }
+            {grafic.tipusGrafic === 'Piechart' &&
+            <div >
+              <PieChart width={400} height={300}>
+                <text  x={0} y={50} style={{ fontSize: '16px', fontWeight: 'bold' }}>
+                  {grafic.nom}
+                </text>
+                <Pie
+                  data={transformarResultados(grafic.resultats)}
+                  cx={200}
+                  cy={150}
+                  startAngle={0}
+                  endAngle={360}
+                  outerRadius={80}
+                  dataKey="respuestas"
+                >
+                  {transformarResultados(grafic.resultats).map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={obtenerColorUnico(index)} />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+              </div>
+            }
+          </div>
+        ))}
       </div>
     </div>
   );
