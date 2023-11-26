@@ -130,7 +130,7 @@ const FormPage = (idEnquesta) => {
   const handleInfoApartat = async () => {
     try {
       const result = await sendRequest({
-        url: `http://nattech.fib.upc.edu:40511/api/apartats/1/`,
+        url: `http://nattech.fib.upc.edu:40511/api/enquestes/${enquestaId}/apartats/1/`,
         method: 'GET',
         headers: {
           'Accept': 'application/json',
