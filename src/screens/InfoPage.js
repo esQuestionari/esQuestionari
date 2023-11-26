@@ -1,19 +1,40 @@
 import React from "react";
 import NavBar from "../components/NavBar";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from 'react-router-dom';
+import sendRequest from "../components/utilFetch";
 
 const InfoPage = () => {
   const navigate = useNavigate();
   const { enquestaId } = useParams();
-  const info = [
-    "Estimado participante,",
-    "Esta investigación busca estudiar el conocimiento y percepción de riesgo en relación con la exposición al RADÓN en nuestra sociedad, todo ello dentro del proyecto REBORN.",
-    "No usaremos su nombre en ninguna fase de la gestión de datos. En todo momento puede retirarse o no responder a alguna pregunta. La información que proporcione será utilizada únicamente para esta encuesta y será guardada de forma anónima y confidencial. De acuerdo con el Reglamento General de Protección de Datos (GDPR), todos los datos de los participantes se destruirán tan pronto se finalice el análisis de datos."
-  ];
+  const [info, setInfo] = useState("");
 
   const handleStart = () => {
     navigate(`/${enquestaId}/TermsConditions`);
   }
+
+  useEffect(() => {
+    const handleInfo = async () => {
+      try {
+        const result = await sendRequest({
+          url: `http://nattech.fib.upc.edu:40511/api/enquestes/${enquestaId}`,
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          });
+
+          console.log(result);
+          if (typeof result.introduccio === 'string') {
+            setInfo(result.introduccio);
+          }
+        } catch (error) {
+        console.error("Falla infoPage", error)
+      }
+    };
+    handleInfo();
+  }, []);
 
 
   return (
@@ -25,11 +46,7 @@ const InfoPage = () => {
             <h1 style={styles.titleText}>Encuesta Radón</h1>
           </div>
           <div style={styles.infoContainer}>
-            {info.map((item, index) => (
-              <p key={index} style={styles.infoText}>
-                {item}
-              </p>
-            ))}
+              <p style={styles.infoText}> {info}</p>
           </div>
         </div>
         <div style={styles.buttonContainer}>
