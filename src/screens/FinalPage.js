@@ -74,7 +74,7 @@ const FinalPage = () => {
   };
 
   return (
-    <div className='h-full' style={{ backgroundColor: '#b9fbc0', height: '100%', width: '100%' }}>
+    <div className='h-full' style={{ backgroundColor: '#f5f4f2', height: '100%', minHeight: 'calc(100vh - 105px)', width: '100%' }}>
       <NavBar />
       <div className='h-full' style={{ marginLeft: '20px' }}>
         <h2>¡Gracias por completar el cuestionario!</h2>

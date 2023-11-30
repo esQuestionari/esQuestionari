@@ -19,11 +19,11 @@ const Terms = () => {
   };
 
   const handleContinue = () => {
-    navigate(`/${enquestaId}/FormPage`);
+    navigate(`/${enquestaId}/email`);
   }
 
   return (
-    <div className='h-full' style={{ backgroundColor: '#b9fbc0', height: '100%', width: '100%' }}>  
+    <div className='h-full' style={{ backgroundColor: '#f5f4f2', height: '100%', width: '100%' }}>  
     <NavBar />
     <div style={styles.termscontainer} >
       <div style={styles.card}>
@@ -76,7 +76,7 @@ const styles = {
     alignItems: "center",
     justifyContent: "space-between",
     width: "100%",
-    backgroundColor: "#b9fbc0",
+    backgroundColor: "#f5f4f2",
     overflowX: "hidden",
   },
 

@@ -1,0 +1,81 @@
+/* EmailScreen.css */
+
+.email-container {
+    display: flex;
+    flex-direction: column;
+    background-color: #f5f4f2;
+    align-items: center;
+    justify-content: center;
+    padding: 25px;
+    min-height: calc(100vh - 105px);
+  }
+  
+  .email-card {
+    min-width: 95%;
+    min-height: 95%;
+    background-color: #ffffff;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .email-title {
+    font-size: 26px;
+    font-weight: bold;
+    color: #333333;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .email-inputField {
+    background-color: #f0f0f0;
+    height: 40px;
+    border: 3px solid gray;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    width: calc(100% - 18px);
+    font-size: 15px;
+    padding: 10px;
+  }
+
+ 
+  .email-inputField.valid {
+    background-color: #a8fdb075;
+    border: 3px solid green; /* Adjust the border color for valid email */
+  }
+  
+  
+  .email-buttonContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .email-continueButton {
+    min-width: 160px;
+    background-color: #08693e;
+    border-radius: 20px;
+    padding: 15px 0px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+    text-align: center;
+    border-width: 0px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  .email-continueButton:hover {
+    background-color: #075d34;
+  }
+
+  .email-continueButton:disabled {
+    background-color: gray; /* Set the background color for disabled state */
+    cursor: not-allowed;
+  }
+  

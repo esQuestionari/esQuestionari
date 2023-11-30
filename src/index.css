@@ -2,6 +2,7 @@ html, body, #root {
     margin: 0;
     padding: 0;
     height: 100%;
+    background-color: #f5f4f2;
 }
 
 .screen {
@@ -125,4 +126,5 @@ th:hover {
 
 .enquestes {
   padding: 0 20px;
+  background-color: #f5f4f2;
 }
