@@ -1,36 +1,23 @@
-import React, { useState, useEffect} from "react";
+import React, { useState } from "react";
 import NavBar from "../components/NavBar";
-import Toggle from "../components/Toggle";
 import { useNavigate, useParams } from 'react-router-dom';
-import sendRequest from "../components/utilFetch";
-
 
 const Terms = () => {
   const navigate = useNavigate();
   const { enquestaId } = useParams();
-
-  useEffect(() => {
-    const handleTerms = async () => {
-      try {
-        const result = await sendRequest({
-          url: `http://nattech.fib.upc.edu:40511/api/enquestes/${enquestaId}`,
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type' : 'application/json',
-          },
-        });
-        console.log(result);
-        setTermsConditions(result.condicions)
-      } catch(error) {
-        console.error("Falla terms&conditions(mai falla ;)", error);
-      }
-    };
-    handleTerms();
-  }, []);
+  const lista = [
+    "He leído y entendido la hoja de información del participante.",
+    "Entiendo de qué se trata el proyecto y para qué se utilizarán los resultados.",
+    "Sé que mi participación es voluntaria y que puedo retirarme del proyecto en cualquier momento sin dar el motivo.",
+    "Soy consciente de que mi información y mis respuestas se mantendrán confidenciales."
+  ];
 
   const [isEnabled, setIsEnabled] = useState(false);
-  const [termsConditions, setTermsConditions] = useState([]);
+
+  const toggleSwitch = () => {
+    setIsEnabled((previousState) => !previousState);
+  };
+
   const handleContinue = () => {
     navigate(`/${enquestaId}/FormPage`);
   }
@@ -43,40 +30,38 @@ const Terms = () => {
         <div style={styles.titleContainer}>
           <h2 style={styles.titleText}>Términos y condiciones</h2>
         </div>
-        {termsConditions.map((item, index) => (
-          <div key={index} style={styles.infoContainer}>
-            {index === 0 && (
-              <p style={styles.info}> {item} </p>
-            )}
-
-            {(index !== 0 && index !== 4) && (
-              <div style={styles.listContainer}>
-                <li style={styles.info}> {item} </li>
+        <div style={styles.infoContainer}>
+          <p style={styles.info}>
+            Lea las siguientes declaraciones antes de aceptar participar en la
+            encuesta.
+          </p>
+          <div style={styles.listContainer}>
+            {lista.map((item, index) => (
+              <div key={index} style={styles.listItem}>
+                <div style={styles.bullet} />
+                <p style={styles.info}>{item}</p>
               </div>
-            )}
+            ))}
           </div>
-        ))}
-        <div style={styles.switchContainer}>
-          <Toggle />
-          {termsConditions.map((item, index) => (
-            <div>
-            {index === termsConditions.length-1 && (
-              <p> {item} </p>
-            )}
-            </div>
-          ))}
+          <p style={styles.info}>
+            Habiendo leído la información anterior, ¿consiente participar en el
+            cuestionario?
+          </p>
         </div>
-        <button
-          className="button buttonText"
-          style={{
-            ...styles.button,
-            backgroundColor: isEnabled ? "#08693e" : "gray"
-          }}
-          disabled={!isEnabled}
-          onClick={handleContinue}
-          >
-            Continuar        
-        </button>
+        <div style={styles.switchContainer}>
+          <input type="checkbox" onChange={toggleSwitch} checked={isEnabled} />
+          <button
+            className="button buttonText"
+            style={{
+              ...styles.button,
+              backgroundColor: isEnabled ? "#08693e" : "gray"
+            }}
+            disabled={!isEnabled}
+            onClick={handleContinue}
+            >
+             Continuar        
+          </button>
+        </div>
       </div>
     </div>
     </div>
@@ -97,8 +82,6 @@ const styles = {
 
   card: {
     backgroundColor: "white",
-    display: "flex",
-    flexDirection: "column",
     margin: "20px",
     border: "1px solid white",
     borderRadius: "20px",
@@ -131,7 +114,7 @@ const styles = {
 
   info: {
     fontSize: "15px",
-    textAlign: "justify",
+    textAlign: "justify"
   },
 
   listContainer: {
@@ -165,7 +148,7 @@ const styles = {
   button: {
     borderRadius: "10px",
     padding: "10px",
-    margin: "10px",
+    marginLeft: "10px",
     width: "30%", 
     cursor: "pointer",
   },

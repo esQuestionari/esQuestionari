@@ -221,6 +221,9 @@ useEffect(() => {
       handleInfoApartat(apartatsIds, currentSection + 1);
       setCurrentSection(currentSection + 1);
       setSectionValid(true);
+      window.scrollTo({
+          top: 0,
+      });
     }
   };
 
