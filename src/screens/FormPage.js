@@ -1,114 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect } from 'react';
 import NavBar from "../components/NavBar";
 import { useNavigate, useParams} from 'react-router-dom';
 import sendRequest from "../components/utilFetch";
 
-import '../style/FormPage.css'; // Import your CSS file
+import '../style/FormPage.css'; 
 
-let formData = [
-  {
-    titol: 'Per què és perillós el radó?',
-    tipus: 'info',
-    info: {
-      // You can add information and an image here
-      text: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent vulputate sed quam ut sollicitudin. Sed ante erat, tempus nec ipsum at, ultricies sollicitudin lorem. Maecenas lacinia purus et sodales porttitor. Donec convallis nibh ornare, egestas lacus eget, varius enim. Proin lobortis dolor sed turpis fringilla, ac cursus ligula hendrerit. Aliquam in ipsum sit amet ante egestas ultrices malesuada sed turpis. Integer tempus rhoncus lectus sit amet elementum. Etiam sodales nisi nunc, nec pretium lectus placerat id. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Cras quis pretium urna. Proin laoreet dictum orci ac vulputate. Vestibulum in nisi quis ipsum accumsan dictum.
-
-Nam in dapibus nunc, in convallis augue. Nam sed bibendum tortor, in dapibus metus. Ut blandit aliquam nisi, in accumsan velit accumsan non. Vivamus consequat mattis lorem in convallis. Sed nulla mi, varius ac vehicula vitae, finibus eget libero. Etiam dolor odio, sollicitudin sed blandit non, ultrices non eros. Duis vestibulum sollicitudin ipsum eget pretium. Quisque at faucibus justo. Duis vitae mauris turpis. Quisque et sapien metus. Sed sed velit in nulla suscipit rutrum vel rhoncus massa. Maecenas condimentum ac odio sit amet imperdiet. Vestibulum aliquam elit eget leo dapibus, vitae ullamcorper urna condimentum. Phasellus mattis lacinia eros, ac aliquam metus egestas sed. Maecenas accumsan neque at egestas dapibus.
-      
-Fusce nec lectus imperdiet, ullamcorper arcu nec, iaculis risus. Etiam aliquam nisl leo, vel finibus justo interdum a. Integer aliquam vitae nibh id malesuada. Donec arcu nisl, malesuada sed justo ut, ullamcorper laoreet mi. Maecenas eu orci ante. Nam mollis vel est eu congue. Integer et lacus congue, aliquet lorem non, aliquet diam. Praesent a nunc mauris.`,
-    },
-    questions: [
-      // Include any questions specific to this section
-      {
-        question: 'What do you think of the new section?',
-        tipus: 'options',
-        options: ['Great', 'Not bad', 'Meh'],
-      },
-    ],
-  },
-  {
-    titol: 'Personal Information',
-    questions: [
-      {
-        question: 'Do you have a pet?',
-        tipus: 'options',
-        options: ['Yes', 'No'],
-      },
-      {
-        question: 'What type of pet do you have?',
-        tipus: 'options',
-        options: ['Dog', 'Cat', 'Other'],
-        enCasDe: 0, // Depends on the answer to the previous question
-        opcioEnCasDe: 'Yes', // Depends on the answer being 'Yes'
-      },
-      {
-        question: 'And would you like to have a pet?',
-        tipus: 'options',
-        options: ['Yes', 'No'],
-        enCasDe: 0, // Depends on the answer to the previous question
-        opcioEnCasDe: 'No', // Depends on the answer being 'No'
-      },
-      {
-        question: 'What is your name?',
-        tipus: 'text',
-      },
-      {
-        question: 'What is your email address?',
-        tipus: 'text',
-      },
-      {
-        question: 'This is a large question and answer to see what happens with long texts and how it behaves in small screens',
-        tipus: 'options',
-        options: ['For the first option I am using a random text', 
-        'The second possible answer will be a little short but long enough to see if it displays the answer properly when the width is small',
-        'This is another answer but please do not select it if you would like to win, is just to show what happens with an even larger answer. I was thinking to use lorem ipsum dolore but I prefer to write some weird stuff. I am adding more text to see if it wraps properly, otherwise all the text will appear in one line and we do not want that', 
-        'Last but not least this answer is the shortest one :('],
-      },
-      {
-        question: 'Is this a true or false question?',
-        tipus: 'trueFalse',
-      },
-      {
-        question: 'How satisfied are you with our service?',
-        tipus: 'scale',
-        scaleOptions: ['red', 'orange', 'yellow', 'green'],
-      },
-      {
-        question: 'You can use only three colors :)',
-        tipus: 'scale',
-        scaleOptions: ['red', 'orange', 'green'],
-      },
-      {
-        question: 'And other colors jeje',
-        tipus: 'scale',
-        scaleOptions: ['purple', 'pink', 'yellow', 'blue', 'black'],
-      },
-      {
-        question: 'What is the capital of Spain?',
-        options: ['Madrid', 'Barcelona', 'Seville', 'Valencia'],
-        tipus: 'options',
-      }
-    ],
-  },
-  {
-    titol: 'Feedback',
-    questions: [
-      {
-        question: 'How satisfied are you with our service?',
-        tipus: 'options',
-        options: ['Very Satisfied', 'Satisfied', 'Neutral', 'Dissatisfied', 'Very Dissatisfied'],
-      },
-      {
-        question: 'Any additional comments or feedback?',
-        tipus: 'text',
-      },
-    ],
-  }, 
-];
-
-
-const FormPage = (idEnquesta) => {
-  const handleInfoEnquesta = async (idEnquesta) => {
+const FormPage = () => {
+  const handleInfoEnquesta = async () => {
     try {
       const result = await sendRequest({
         url: `http://nattech.fib.upc.edu:40511/api/enquestes/${enquestaId}`,
@@ -119,23 +17,45 @@ const FormPage = (idEnquesta) => {
         },
       });
   
-      console.log(result); 
-      result.numApartats = 1;
+      console.log("enquesta: ", result); 
       setInfoEnquesta(result);
+      return(result);
     } catch (error) {
       console.error("falla formPage info enquesta", error); 
     }
-  } ;
+  };
   
-  const handleInfoApartat = async () => {
+  const handleApartatsEnquesta = async () => {
     try {
       const result = await sendRequest({
-        url: `http://nattech.fib.upc.edu:40511/api/apartats/1/`,
+        url: `http://nattech.fib.upc.edu:40511/api/enquestes/${enquestaId}/apartats/`,
         method: 'GET',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
         },
+      });
+  
+      console.log("apartats enquesta: ", result); 
+      let apartats = result.map(it => it.id); 
+      console.log("apartats:", apartats);
+      setApartatsIds(apartats);
+      handleInfoApartat(apartats, currentSection);
+    } catch (error) {
+      console.error("falla formPage get apartats", error); 
+    }
+  };
+
+  const handleInfoApartat = async (apartats, idx) => {
+    console.log("apartatsIds after setApartats:", apartats);
+    try {
+      const result = await sendRequest({
+        url: `http://nattech.fib.upc.edu:40511/api/enquestes/${enquestaId}/apartats/${apartats[idx]}/`,
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        }
       });
   
       console.log(result); 
@@ -144,41 +64,77 @@ const FormPage = (idEnquesta) => {
     } catch (error) {
       console.error("falla formPage info apartat", error); 
     }
-  } ;
+  };
   
-  // const handleQuestions = async () => {
-  //   try {
-  //     const result = await sendRequest({
-  //       url: `http://nattech.fib.upc.edu:40511/api/enquestes/${idEnquesta}`,
-  //       method: 'GET',
-  //       headers: {
-  //         'Accept': 'application/json',
-  //         'Content-Type': 'application/json',
-  //       },
-  //     });
-  
-  //     console.log(result); 
-  //     setQuestions(result);
-  //   } catch (error) {
-  //     console.error("falla formPage", error); 
-  //   }
-  // } ;
-
-  useEffect(() => {
-    setCurrentSection(0);
-    handleInfoEnquesta(idEnquesta);
-    handleInfoApartat();
-    //handleQuestions();
-  }, []);
-
   const navigate = useNavigate();
   const {enquestaId} = useParams(); 
+  const [isLoading, setLoading] = useState(true);
   const [infoEnquesta, setInfoEnquesta] = useState({});
+  const [apartatsIds, setApartatsIds] = useState([]);
   const [section, setSection] = useState({});
-  //const [questions, setQuestions] = useState([]);
   const [currentSection, setCurrentSection] = useState(0);
   const [answers, setAnswers] = useState([]);
-  const [sectionValid, setSectionValid] = useState(false);
+  const [sectionValid, setSectionValid] = useState(true);
+
+  const initializeData = async () => {
+    setCurrentSection(0);
+    const result = await handleInfoEnquesta();
+    //setInfoEnquesta(result);
+    const apartats = await handleApartatsEnquesta();
+    //setApartatsIds(apartats);
+    const seccio = await handleInfoApartat(apartats, currentSection);
+    //setSection(seccio);
+    setLoading(false);
+  };
+
+useEffect(() => {
+  initializeData();
+}, [])
+
+// useEffect(() => {
+//   const fetchData = async () => {
+//     try {
+//       window.scrollTo(0, 0);
+//       setCurrentSection(0);
+//       const result = await handleInfoEnquesta();
+//       setInfoEnquesta(result);
+//       setLoadingEnquesta(false);
+//     } catch (error) {
+//       console.error("Error fetching info enquesta:", error);
+//     }
+//   };
+//   fetchData();
+//   console.log("info enquesta: ", infoEnquesta);
+// }, [setInfoEnquesta]);
+
+// useEffect(() => {
+//   const fetchData = async () => {
+//     try {
+//       const apartats = await handleApartatsEnquesta();
+//       setApartatsIds(apartats);
+//       setLoadingApartatsIds(false);
+//     } catch (error) {
+//       console.error("Error fetching apartats:", error);
+//     }
+//   };
+//   fetchData();
+//   console.log("apartats: ", apartatsIds);
+// }, [setApartatsIds]);
+
+// useEffect(() => {
+//   const fetchData = async () => {
+//     try {
+//       const seccio = await handleInfoApartat(apartatsIds, currentSection);
+//       setSection(seccio);
+//       setLoading(false);
+//     } catch (error) {
+//       console.error("Error fetching info apartat:", error);
+//     }
+//   };
+//   fetchData();
+//   console.log("preguntes apartat: ", section);
+// }, [apartatsIds]);
+
 
   
   const handleSelectOption = (questionIndex, option) => {
@@ -259,14 +215,12 @@ const FormPage = (idEnquesta) => {
 
   const handleNextSection = () => {
     if (currentSection < infoEnquesta.numApartats - 1) {
-      const nextSection = formData[currentSection + 1];
-      if (nextSection.tipus !== 'info') {
-        setCurrentSection(currentSection + 1);
-        setSectionValid(false);
-      } else {
-        setCurrentSection(currentSection + 1);
-        setSectionValid(true);
-      }
+      console.log("next section: ", currentSection+1);
+      console.log("apartats: ", apartatsIds);
+      console.log("next section id: ", apartatsIds[currentSection + 1])
+      handleInfoApartat(apartatsIds, currentSection + 1);
+      setCurrentSection(currentSection + 1);
+      setSectionValid(true);
     }
   };
 
@@ -283,12 +237,36 @@ const FormPage = (idEnquesta) => {
     navigate(`/${enquestaId}/end`);
   };
 
+  if (isLoading) {
+    return (
+      <>
+      <NavBar />
+      <div className="container">
+        <div key={currentSection} className="card">
+          <div
+              style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "100vh",
+              }}
+          >
+              Loading the data{" "}
+              {console.log("loading state")}
+          </div>
+        </div>
+      </div>
+    </>
+    );
+}
+
   return (
     <>
       <NavBar />
       <div className="container">
         <div key={currentSection} className="card">
-          {<p className='sectionNumber'>Section {currentSection + 1} of {infoEnquesta.numApartats}</p>}
+          {<p className='sectionNumber'>Sección {currentSection + 1} de {infoEnquesta.numApartats}</p>}
           <h2 className='titol'>{section.titol}</h2>
           {section.introduccio !== undefined && (
             <div className='infoSection'>
@@ -374,11 +352,11 @@ const FormPage = (idEnquesta) => {
             onClick={handleNextSection}
             disabled={!sectionValid || isFormComplete()}
           >
-            Next
+            Siguiente
           </button>)}
           {isFormComplete() && (
             <button className="finishButton" onClick={handleFinishForm}>
-              Finish
+              Finalizar
             </button>
           )}
         </div>
