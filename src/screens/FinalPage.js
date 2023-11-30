@@ -35,18 +35,39 @@ const FinalPage = () => {
   const [checkbox2, setCheckbox2] = useState(false);
   const [email2, setEmail2] = useState('');
 
-  function obtenerColorUnico(index) {
-    const base = 150; 
-    const factor = 40; 
+  function obtenerColorUnico(graficoIndex, entryIndex) {
+    const base = 150;
+    const factor = 50;
   
-    const red = (base + (index+1) * factor) % 256;
-    const green = (base + (index+1) * factor * 2) % 256;
-    const blue = (base + (index+1) * factor * 3) % 256;
+    const red = (base + (graficoIndex ) * factor) % 256;
+    const green = (base + (graficoIndex ) * factor * 2) % 256;
+    const blue = (base + (graficoIndex ) * factor * 3) % 256;
   
-    return `rgb(${red}, ${green}, ${blue})`;
+    const entryFactor = 20;
+    const adjustedEntryIndex = (entryIndex + 1) * entryFactor;
+  
+    const finalRed = (red + adjustedEntryIndex) % 256;
+    const finalGreen = (green + adjustedEntryIndex * 2) % 256;
+    const finalBlue = (blue + adjustedEntryIndex * 3) % 256;
+  
+    return `rgb(${finalRed}, ${finalGreen}, ${finalBlue})`;
   }
 
-  const transformarResultados = (resultados) => {
+  const transformarResultados = (resultados, tipus) => {
+    if (tipus === 'Temporal') {
+      const resultadosArray = Object.entries(resultados);
+      const inici = [{ name: 'Inicio', respuestas: 0 }];
+      let acumulado = 0;
+      const resultadosTransformados = resultadosArray.map(([clave, valor, index]) => {
+        acumulado += valor;
+        return {
+          name: clave,
+          respuestas:  acumulado,
+        };
+      });
+      const datosTransformados = inici.concat(resultadosTransformados);
+      return datosTransformados;   
+    }
     return Object.keys(resultados).map((key) => ({
       name: key,
       respuestas: resultados[key],
@@ -131,33 +152,32 @@ const FinalPage = () => {
                 
                 <Bar dataKey="respuestas"  >
                 {transformarResultados(grafic.resultats).map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={obtenerColorUnico(index)} />
+                    <Cell key={`cell-${index}`} fill={obtenerColorUnico(grafic.id, index)} />
                 ))}
                 </Bar>
               </BarChart> 
               </div>
             }
-            {grafic.tipusGrafic === 'Lineplot' &&
+            {grafic.tipusGrafic === 'Temporal' &&
             <div >
-              <LineChart width={400} height={300} data={transformarResultados(grafic.resultats)}>
-                <text x={50} y={50} textAnchor="middle" dominantBaseline="middle">
+              <text x={20} y={5} textAnchor="middle" style={{ fontSize: '16px', fontWeight: 'bold' }}>
                   {grafic.nom}
                 </text>
+              <LineChart width={400} height={300} data={transformarResultados(grafic.resultats, grafic.tipusGrafic)}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
-                <Legend />
-                <Line type="monotone" dataKey="respuestas" stroke="#8884d8" />
+                <Line type="monotone" dataKey="respuestas" stroke="#8884d8"  />
               </LineChart>
               </div>
             }
             {grafic.tipusGrafic === 'Piechart' &&
             <div >
-              <PieChart width={400} height={300}>
-                <text  x={0} y={50} style={{ fontSize: '16px', fontWeight: 'bold' }}>
+              <text  x={0} y={20} style={{ fontSize: '16px', fontWeight: 'bold' }}>
                   {grafic.nom}
-                </text>
+              </text>
+              <PieChart width={400} height={300}>
                 <Pie
                   data={transformarResultados(grafic.resultats)}
                   cx={200}
@@ -168,7 +188,7 @@ const FinalPage = () => {
                   dataKey="respuestas"
                 >
                   {transformarResultados(grafic.resultats).map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={obtenerColorUnico(index)} />
+                    <Cell key={`cell-${index}`} fill={obtenerColorUnico(grafic.id, index)} />
                   ))}
                 </Pie>
                 <Tooltip />
