@@ -240,29 +240,6 @@ useEffect(() => {
     navigate(`/${enquestaId}/end`);
   };
 
-  if (isLoading) {
-    return (
-      <>
-      <NavBar />
-      <div className="container">
-        <div key={currentSection} className="card">
-          <div
-              style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  height: "100vh",
-              }}
-          >
-              Loading the data{" "}
-              {console.log("loading state")}
-          </div>
-        </div>
-      </div>
-    </>
-    );
-}
 
   return (
     <>
@@ -302,13 +279,13 @@ useEffect(() => {
                         <p className='questionText'>{question.question}</p>
                         <div className='trueFalseButtons'>
                           <button
-                            className={answers[questionIndex] === true ? 'trueButtonSelected' : 'trueFalseButton'}
+                            className={`trueFalseButton ${answers[questionIndex] === true ? 'true' : ''}`}
                             onClick={() => handleTrueFalseAnswer(questionIndex, true)}
                           >
                             True
                           </button>
                           <button
-                            className={answers[questionIndex] === false ? 'falseButtonSelected' : 'trueFalseButton'}
+                            className={`trueFalseButton ${answers[questionIndex] === false ? 'false' : ''}`}
                             onClick={() => handleTrueFalseAnswer(questionIndex, false)}
                           >
                             False
@@ -351,14 +328,14 @@ useEffect(() => {
         </div>
         <div className='buttonContainer'>
           {!isFormComplete() && (<button
-            className={(!sectionValid || isFormComplete()) ? 'nextButtonDisabled' : 'nextButton'}
+            className={`nextButton${(sectionValid || isFormComplete()) ? '' : ' disabled'}`}
             onClick={handleNextSection}
             disabled={!sectionValid || isFormComplete()}
           >
             Siguiente
           </button>)}
           {isFormComplete() && (
-            <button className="finishButton" onClick={handleFinishForm}>
+            <button className="nextButton" onClick={handleFinishForm}>
               Finalizar
             </button>
           )}

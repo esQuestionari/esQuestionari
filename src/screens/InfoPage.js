@@ -51,7 +51,7 @@ const styles = {
     alignItems: "center",
     justifyContent: "space-between",
     width: "100%",
-    backgroundColor: "#b9fbc0",
+    backgroundColor: "#f5f4f2",
     minHeight: "100vh"
   },
 

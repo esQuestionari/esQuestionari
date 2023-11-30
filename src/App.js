@@ -8,6 +8,7 @@ import FormPage from "./screens/FormPage";
 import TermsConditions from "./screens/TermsConditions";
 import InfoPage from "./screens/InfoPage";
 import FinalPage from "./screens/FinalPage";
+import EmailPage from "./screens/EmailPage";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/:enquestaId/formpage" element={<FormPage/>} />
           <Route path="/:enquestaId/termsconditions" element={<TermsConditions/>} />
+          <Route path="/:enquestaId/email" element={<EmailPage/>} />
           <Route path="/:enquestaId/infopage" element={<InfoPage/>} />
           <Route path="/:enquestaId/end" element={<FinalPage/>} />
         </Routes>
