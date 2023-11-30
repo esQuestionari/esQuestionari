@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect } from 'react';
 import NavBar from "../components/NavBar";
 import { useNavigate, useParams} from 'react-router-dom';
 import sendRequest from "../components/utilFetch";
 
-import '../style/FormPage.css'; // Import your CSS file
+import '../style/FormPage.css'; 
 
 const FormPage = () => {
   const handleInfoEnquesta = async () => {
@@ -19,10 +19,11 @@ const FormPage = () => {
   
       console.log("enquesta: ", result); 
       setInfoEnquesta(result);
+      return(result);
     } catch (error) {
       console.error("falla formPage info enquesta", error); 
     }
-  } ;
+  };
   
   const handleApartatsEnquesta = async () => {
     try {
@@ -39,16 +40,17 @@ const FormPage = () => {
       let apartats = result.map(it => it.id); 
       console.log("apartats:", apartats);
       setApartatsIds(apartats);
+      handleInfoApartat(apartats, currentSection);
     } catch (error) {
       console.error("falla formPage get apartats", error); 
     }
   };
 
-  const handleInfoApartat = async (idx) => {
-    console.log("apartatsIds after setApartats:", apartatsIds);
+  const handleInfoApartat = async (apartats, idx) => {
+    console.log("apartatsIds after setApartats:", apartats);
     try {
       const result = await sendRequest({
-        url: `http://nattech.fib.upc.edu:40511/api/enquestes/${enquestaId}/apartats/${apartatsIds[idx]}/`,
+        url: `http://nattech.fib.upc.edu:40511/api/enquestes/${enquestaId}/apartats/${apartats[idx]}/`,
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -62,26 +64,76 @@ const FormPage = () => {
     } catch (error) {
       console.error("falla formPage info apartat", error); 
     }
-  } ;
+  };
   
   const navigate = useNavigate();
   const {enquestaId} = useParams(); 
+  const [isLoading, setLoading] = useState(true);
   const [infoEnquesta, setInfoEnquesta] = useState({});
   const [apartatsIds, setApartatsIds] = useState([]);
   const [section, setSection] = useState({});
   const [currentSection, setCurrentSection] = useState(0);
   const [answers, setAnswers] = useState([]);
-  const [sectionValid, setSectionValid] = useState(false);
+  const [sectionValid, setSectionValid] = useState(true);
 
-  useEffect(() => {
-    const initializeData = async () => {
-      setCurrentSection(0);
-      await handleInfoEnquesta();
-      await handleApartatsEnquesta();
-      await handleInfoApartat(currentSection);
-    };
-    initializeData();
-  }, []);
+  const initializeData = async () => {
+    setCurrentSection(0);
+    const result = await handleInfoEnquesta();
+    //setInfoEnquesta(result);
+    const apartats = await handleApartatsEnquesta();
+    //setApartatsIds(apartats);
+    const seccio = await handleInfoApartat(apartats, currentSection);
+    //setSection(seccio);
+    setLoading(false);
+  };
+
+useEffect(() => {
+  initializeData();
+}, [])
+
+// useEffect(() => {
+//   const fetchData = async () => {
+//     try {
+//       window.scrollTo(0, 0);
+//       setCurrentSection(0);
+//       const result = await handleInfoEnquesta();
+//       setInfoEnquesta(result);
+//       setLoadingEnquesta(false);
+//     } catch (error) {
+//       console.error("Error fetching info enquesta:", error);
+//     }
+//   };
+//   fetchData();
+//   console.log("info enquesta: ", infoEnquesta);
+// }, [setInfoEnquesta]);
+
+// useEffect(() => {
+//   const fetchData = async () => {
+//     try {
+//       const apartats = await handleApartatsEnquesta();
+//       setApartatsIds(apartats);
+//       setLoadingApartatsIds(false);
+//     } catch (error) {
+//       console.error("Error fetching apartats:", error);
+//     }
+//   };
+//   fetchData();
+//   console.log("apartats: ", apartatsIds);
+// }, [setApartatsIds]);
+
+// useEffect(() => {
+//   const fetchData = async () => {
+//     try {
+//       const seccio = await handleInfoApartat(apartatsIds, currentSection);
+//       setSection(seccio);
+//       setLoading(false);
+//     } catch (error) {
+//       console.error("Error fetching info apartat:", error);
+//     }
+//   };
+//   fetchData();
+//   console.log("preguntes apartat: ", section);
+// }, [apartatsIds]);
 
 
   
@@ -164,18 +216,11 @@ const FormPage = () => {
   const handleNextSection = () => {
     if (currentSection < infoEnquesta.numApartats - 1) {
       console.log("next section: ", currentSection+1);
-      console.log("apartats: ", infoEnquesta.apartatsIds);
-      console.log("next section id: ", infoEnquesta.apartatsIds[currentSection + 1])
-      handleInfoApartat(currentSection + 1);
-      // if (nextSection.tipus !== 'info') {
-      //   setCurrentSection(currentSection + 1);
-      //   setSectionValid(false);
-      // } else {
-      //   setCurrentSection(currentSection + 1);
-      //   setSectionValid(true);
-      // }
+      console.log("apartats: ", apartatsIds);
+      console.log("next section id: ", apartatsIds[currentSection + 1])
+      handleInfoApartat(apartatsIds, currentSection + 1);
       setCurrentSection(currentSection + 1);
-      setSectionValid(false);
+      setSectionValid(true);
     }
   };
 
@@ -191,6 +236,30 @@ const FormPage = () => {
     setSectionValid(false);
     navigate(`/${enquestaId}/end`);
   };
+
+  if (isLoading) {
+    return (
+      <>
+      <NavBar />
+      <div className="container">
+        <div key={currentSection} className="card">
+          <div
+              style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "100vh",
+              }}
+          >
+              Loading the data{" "}
+              {console.log("loading state")}
+          </div>
+        </div>
+      </div>
+    </>
+    );
+}
 
   return (
     <>
