@@ -54,16 +54,19 @@ const FinalPage = () => {
   }
 
   const transformarResultados = (resultados, tipus) => {
-    if (tipus === 'Lineplot') {
+    if (tipus === 'Temporal') {
+      const resultadosArray = Object.entries(resultados);
+      const inici = [{ name: 'Inicio', respuestas: 0 }];
       let acumulado = 0;
-
-      return resultados.map((resultado) => {
-        acumulado += resultado.respuestas;
+      const resultadosTransformados = resultadosArray.map(([clave, valor, index]) => {
+        acumulado += valor;
         return {
-          ...resultado,
-          respuestas: acumulado,
+          name: clave,
+          respuestas:  acumulado,
         };
       });
+      const datosTransformados = inici.concat(resultadosTransformados);
+      return datosTransformados;   
     }
     return Object.keys(resultados).map((key) => ({
       name: key,
@@ -155,7 +158,7 @@ const FinalPage = () => {
               </BarChart> 
               </div>
             }
-            {grafic.tipusGrafic === 'Lineplot' &&
+            {grafic.tipusGrafic === 'Temporal' &&
             <div >
               <text x={20} y={5} textAnchor="middle" style={{ fontSize: '16px', fontWeight: 'bold' }}>
                   {grafic.nom}
@@ -165,17 +168,16 @@ const FinalPage = () => {
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
-                <Legend />
-                <Line type="monotone" dataKey="respuestas" stroke="#8884d8" />
+                <Line type="monotone" dataKey="respuestas" stroke="#8884d8"  />
               </LineChart>
               </div>
             }
             {grafic.tipusGrafic === 'Piechart' &&
             <div >
-              <PieChart width={400} height={300}>
-                <text  x={0} y={50} style={{ fontSize: '16px', fontWeight: 'bold' }}>
+              <text  x={0} y={20} style={{ fontSize: '16px', fontWeight: 'bold' }}>
                   {grafic.nom}
-                </text>
+              </text>
+              <PieChart width={400} height={300}>
                 <Pie
                   data={transformarResultados(grafic.resultats)}
                   cx={200}
