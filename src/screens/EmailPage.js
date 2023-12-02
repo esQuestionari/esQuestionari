@@ -91,11 +91,14 @@ const EmailPage = () => {
           } else if (response.status === 400) {
             // Handle specific status code 400 (Bad Request)
             const userWantsToGoToFinal = window.confirm(
-              'Este correo ya ha completado la encuesta. ¿Quiere ver información relacionada con la encuesta?'
+              'Este correo ya ha completado la encuesta. ¿Quiere ver información relacionada con la encuesta? (si le das a Cancelar podrás contestar de nuevo la encuesta)'
             );
     
             if (userWantsToGoToFinal) {
-              navigate(`/${enquestaId}/end`); // Replace with the actual path to your final page
+              navigate(`/${enquestaId}/end`); 
+            }
+            else {
+              navigate(`/${enquestaId}/FormPage`);
             }
           } else {
             // Handle other status codes
@@ -139,32 +142,34 @@ const EmailPage = () => {
                 </button>
               )}
             </div>
-  
-            {/* OR Separator */}
-            <div className="or-separator">
-              <span>OR</span>
-            </div>
-  
-            {/* Manual Email Input Card */}
-            <div className="login-card manual-email">
-              <p className='title'>Enter Email Manually</p>
-              <div className="email-input-container">
-                <input
-                  type="email"
-                  className={`email-inputField ${isEmailValid() ? 'valid' : 'invalid'}`}
-                  placeholder="clinic@gmail.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-            </div>
+            {!profile && (
+              <>
+                <div className="or-separator">
+                  <span>OR</span>
+                </div>
+      
+                
+                <div className="login-card manual-email">
+                  <p className='title'>Enter Email Manually</p>
+                  <div className="email-input-container">
+                    <input
+                      type="email"
+                      className={`email-inputField ${isEmailValid() ? 'valid' : 'invalid'}`}
+                      placeholder="clinic@gmail.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
           </div>
   
           <div className="email-buttonContainer">
             <button
               className="email-continueButton"
               onClick={handleContinue}
-              disabled={!isEmailValid() || !profile}
+              disabled={!isEmailValid() && !profile}
             >
               Continuar
             </button>

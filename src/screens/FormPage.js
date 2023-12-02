@@ -70,7 +70,7 @@ const FormPage = () => {
   const {enquestaId} = useParams(); 
   const [isLoading, setLoading] = useState(true);
   const [infoEnquesta, setInfoEnquesta] = useState({});
-  const [apartatsIds, setApartatsIds] = useState([]);
+  const [apartatsIds, setApartatsIds] = useState(null);
   const [section, setSection] = useState({});
   const [currentSection, setCurrentSection] = useState(0);
   const [answers, setAnswers] = useState([]);
@@ -84,12 +84,18 @@ const FormPage = () => {
     //setApartatsIds(apartats);
     const seccio = await handleInfoApartat(apartats, currentSection);
     //setSection(seccio);
-    setLoading(false);
+    //setLoading(false);
   };
 
 useEffect(() => {
   initializeData();
 }, [])
+
+useEffect(() => {
+  if(apartatsIds) {
+    setLoading(false);
+  }
+}, [apartatsIds])
 
 // useEffect(() => {
 //   const fetchData = async () => {
@@ -240,6 +246,32 @@ useEffect(() => {
     navigate(`/${enquestaId}/end`);
   };
 
+  if  (isLoading) {
+    return (
+      <>
+        <NavBar />
+        <div className="container">
+          <div key={currentSection} className="card">
+            <h2>Loading...</h2>
+          </div>
+          <div className='buttonContainer'>
+            {!isFormComplete() && (<button
+              className={`nextButton${(sectionValid || isFormComplete()) ? '' : ' disabled'}`}
+              onClick={handleNextSection}
+              disabled={!sectionValid || isFormComplete()}
+            >
+              Siguiente
+            </button>)}
+            {isFormComplete() && (
+              <button className="nextButton" onClick={handleFinishForm}>
+                Finalizar
+              </button>
+            )}
+          </div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
