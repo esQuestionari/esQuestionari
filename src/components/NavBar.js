@@ -1,6 +1,8 @@
 import React, {useState} from "react";
 import { Link } from "react-router-dom";
 import logo from "../img/logo.jpeg";
+import logoClinic from "../img/logoClinic.png";
+
 
 function NavBar() {
   const [redirectToHome, setRedirectToHome] = useState(false);
@@ -14,6 +16,14 @@ function NavBar() {
     }
   };
 
+  const handleClinicClick = () => {
+    const userConfirmed = window.confirm("¿Seguro que deseas ir a la web del Hospital Clínic?");
+    
+    if (userConfirmed) {
+      window.location.href = "https://www.clinicbarcelona.org/";
+    }
+  };
+
 
   return (
     <header>
@@ -22,7 +32,7 @@ function NavBar() {
             // Redireccionar a la página principal
             window.location.assign("/")
           ) : (
-            // Mostrar el logo con el evento onClick
+            <>
             <img
               src={logo}
               id="logo"
@@ -30,6 +40,15 @@ function NavBar() {
               onClick={handleLogoClick}
               style={{ cursor: "pointer" }}
             />
+            {/*logo clinic*/}
+            <img
+              src={logoClinic}
+              id="hospitalClinic"
+              alt="Hospital Clínic"
+              onClick={handleClinicClick}
+              style={{ cursor: "pointer" }}
+            />
+            </>
           )}
         </nav>
     </header>
