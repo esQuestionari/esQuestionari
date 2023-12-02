@@ -1,14 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { googleLogout, useGoogleLogin } from '@react-oauth/google';
+import axios from 'axios';
 import sendRequestWithStatus from "../components/utilFetchMarc";
 import NavBar from "../components/NavBar";
 import '../style//EmailPage.css';
 
 
 const EmailPage = () => {
-  const [email, setEmail] = useState('');
+  const [ user, setUser ] = useState([]);
+  const [ profile, setProfile ] = useState([]);
   const { enquestaId } = useParams();
+  const [email, setEmail] = useState('');
   const navigate = useNavigate();
+
+  const login = useGoogleLogin({
+      onSuccess: (codeResponse) => setUser(codeResponse),
+      onError: (error) => console.log('Login Failed:', error)
+  });
+
+  useEffect(
+      () => {
+          if (user && user.access_token !== undefined) {
+              axios
+                  .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`, {
+                      headers: {
+                          Authorization: `Bearer ${user.access_token}`,
+                          Accept: 'application/json'
+                      }
+                  })
+                  .then((res) => {
+                      setProfile(res.data);
+                      setEmail(res.data.email);
+                      //handleContinue(res.data.email)
+                  })
+                  .catch((err) => console.log(err));
+          }
+      },
+      [ user ]
+  );
+
+  useEffect(
+    () => {
+      if (!user || user.access_token === undefined) {
+        setUser([]);
+        setProfile(null)
+      }
+    }, []);
+
+  // log out function to log the user out of google and set the profile array to null
+  const logOut = () => {
+      googleLogout();
+      setProfile(null);
+  };
 
   const isEmailValid = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -75,20 +119,52 @@ const EmailPage = () => {
       <div className="email-container">
         <div className="email-card">
           <h2 className="email-title">Correo Electrónico</h2>
-          <div className="email-input-container">
-            <input
-              type="email"
-              className={`email-inputField ${isEmailValid() ? 'valid' : 'invalid'}`}
-              placeholder="clinic@gmail.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+          
+          <div className="login-options">
+  
+            {/* Google Login Card */}
+            <div className="login-card google-login">
+              <p className='title'>Sign in with Google</p>
+              {profile ? (
+                <div>
+                  <img src={profile.picture} alt="user image" />
+                  <h3>Hola, {String(profile.name).split(' ')[0]}!</h3>
+                  <button className="google-logout" onClick={logOut}>
+                    Log out
+                  </button>
+                </div>
+              ) : (
+                <button className="google-login" onClick={() => login()}>
+                  Sign in with Google 🚀
+                </button>
+              )}
+            </div>
+  
+            {/* OR Separator */}
+            <div className="or-separator">
+              <span>OR</span>
+            </div>
+  
+            {/* Manual Email Input Card */}
+            <div className="login-card manual-email">
+              <p className='title'>Enter Email Manually</p>
+              <div className="email-input-container">
+                <input
+                  type="email"
+                  className={`email-inputField ${isEmailValid() ? 'valid' : 'invalid'}`}
+                  placeholder="clinic@gmail.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+            </div>
           </div>
+  
           <div className="email-buttonContainer">
             <button
               className="email-continueButton"
               onClick={handleContinue}
-              disabled={!isEmailValid()}
+              disabled={!isEmailValid() || !profile}
             >
               Continuar
             </button>
@@ -97,6 +173,6 @@ const EmailPage = () => {
       </div>
     </>
   );
-};
+}
 
 export default EmailPage;

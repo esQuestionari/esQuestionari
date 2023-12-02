@@ -9,6 +9,7 @@ import TermsConditions from "./screens/TermsConditions";
 import InfoPage from "./screens/InfoPage";
 import FinalPage from "./screens/FinalPage";
 import EmailPage from "./screens/EmailPage";
+import LoginScreen from "./screens/LoginScreen";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/:enquestaId/email" element={<EmailPage/>} />
           <Route path="/:enquestaId/infopage" element={<InfoPage/>} />
           <Route path="/:enquestaId/end" element={<FinalPage/>} />
+          <Route path="/:enquestaId/login" element={<LoginScreen/>} />
         </Routes>
     </Router>
   );
