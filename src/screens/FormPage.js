@@ -92,6 +92,8 @@ useEffect(() => {
 }, [])
 
 useEffect(() => {
+  const user = JSON.parse(localStorage.getItem('profile'));
+  console.log("user", user.given_name); //aqui tots els atributs que vulguis
   if(apartatsIds) {
     setLoading(false);
   }

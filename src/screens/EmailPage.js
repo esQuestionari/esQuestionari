@@ -32,6 +32,17 @@ const EmailPage = () => {
                   .then((res) => {
                       setProfile(res.data);
                       setEmail(res.data.email);
+                      localStorage.setItem('profile', JSON.stringify({
+                        id: res.data.id,
+                        email: res.data.email,
+                        verified_email: res.data.verified_email,
+                        name: res.data.name,
+                        given_name: res.data.given_name,
+                        family_name: res.data.family_name,
+                        picture: res.data.picture,
+                        locale: res.data.locale,
+                        hd: res.data.hd
+                      }));
                       //handleContinue(res.data.email)
                   })
                   .catch((err) => console.log(err));
