@@ -1,10 +1,12 @@
 import React, {useState} from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../img/logo.jpeg";
 import logoClinic from "../img/logoClinic.png";
+import userIcon from "../img/user.png";
 
 
 function NavBar() {
+  const navigate = useNavigate();
   const [redirectToHome, setRedirectToHome] = useState(false);
 
   const handleLogoClick = () => {
@@ -22,6 +24,11 @@ function NavBar() {
     if (userConfirmed) {
       window.location.href = "https://www.clinicbarcelona.org/";
     }
+  };
+
+  const handleLoginClick = () => {
+    // Redirect to the email page
+    navigate("/email");
   };
 
 
@@ -48,6 +55,15 @@ function NavBar() {
               onClick={handleClinicClick}
               style={{ cursor: "pointer" }}
             />
+             <Link to="/email">
+              <img
+                src={userIcon}
+                id="userLogo"
+                alt="Login"
+                onClick={handleLoginClick}
+                style={{ cursor: "pointer" }}
+              />
+            </Link>
             </>
           )}
         </nav>

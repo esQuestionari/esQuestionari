@@ -87,6 +87,15 @@ html, body, #root {
   transition: all 0.3s ease;
 }
 
+#userLogo {
+  height: 30px;
+  float: left;
+  padding: 2.5px 0;
+  margin: 2.5px 0;
+  transition: all 0.3s ease;
+}
+
+
 nav a, th, .plink {
   transition: all 0.3s ease;
 }

@@ -11,11 +11,16 @@ const EmailPage = () => {
   const [ user, setUser ] = useState([]);
   const [ profile, setProfile ] = useState([]);
   const { enquestaId } = useParams();
-  const [email, setEmail] = useState('');
+  const [ email, setEmail] = useState('');
   const navigate = useNavigate();
 
   const login = useGoogleLogin({
-      onSuccess: (codeResponse) => setUser(codeResponse),
+      onSuccess: (codeResponse) => {
+        setUser(codeResponse);
+        localStorage.setItem('user', JSON.stringify({
+          access_token: user.access_token
+        }));
+      },
       onError: (error) => console.log('Login Failed:', error)
   });
 
@@ -54,8 +59,21 @@ const EmailPage = () => {
   useEffect(
     () => {
       if (!user || user.access_token === undefined) {
-        setUser([]);
-        setProfile(null)
+        const savedUser = localStorage.getItem('user');
+        console.log('user:', savedUser);
+        if (savedUser && savedUser.name){
+          console.log('saved user:', savedUser);
+          setUser(savedUser);
+          const savedProfile = localStorage.getItem('profile');
+          setProfile(savedProfile);
+        }
+        else {
+          setUser([]);
+          setProfile(null);
+        }
+      }
+      else {
+        console.log('saved user');
       }
     }, []);
 
@@ -72,56 +90,62 @@ const EmailPage = () => {
   
   const handleContinue = () => {
     if (isEmailValid) {
-      const handleUser = async () => {
-        try {
-          const response = await sendRequestWithStatus({
-            url: 'http://nattech.fib.upc.edu:40511/api/usuaris/',
-            method: 'POST',
-            body: JSON.stringify({ email: email }),
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-            },
-          });
-          console.log(response);
-          if (response.status === 201) {
-            console.log("status 201");
-            // Server returned a 201 status code
-            const result = response.data;
-  
-            // Check if the response includes a unique ID
-            if (result.id) {
-              // Navigate to the form page with the unique ID as a query parameter
-              //navigate(`/form?id=${result.id}`);
-              console.log("id returned: ", result.id);
-              navigate(`/${enquestaId}/FormPage`);
-            } else {
-              // Handle the case where the server response is missing the expected ID
-              alert('Unexpected response from the server. Please try again.');
-            }
-          } else if (response.status === 400) {
-            // Handle specific status code 400 (Bad Request)
-            const userWantsToGoToFinal = window.confirm(
-              'Este correo ya ha completado la encuesta. ¿Quiere ver información relacionada con la encuesta? (si le das a Cancelar podrás contestar de nuevo la encuesta)'
-            );
+      if (enquestaId) {
+        const handleUser = async () => {
+          try {
+            const response = await sendRequestWithStatus({
+              url: 'http://nattech.fib.upc.edu:40511/api/usuaris/',
+              method: 'POST',
+              body: JSON.stringify({ email: email }),
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+              },
+            });
+            console.log(response);
+            if (response.status === 201) {
+              console.log("status 201");
+              // Server returned a 201 status code
+              const result = response.data;
     
-            if (userWantsToGoToFinal) {
-              navigate(`/${enquestaId}/end`); 
+              // Check if the response includes a unique ID
+              if (result.id) {
+                // Navigate to the form page with the unique ID as a query parameter
+                //navigate(`/form?id=${result.id}`);
+                console.log("id returned: ", result.id);
+                navigate(`/${enquestaId}/FormPage`);
+              } else {
+                // Handle the case where the server response is missing the expected ID
+                alert('Unexpected response from the server. Please try again.');
+              }
+            } else if (response.status === 400) {
+              // Handle specific status code 400 (Bad Request)
+              const userWantsToGoToFinal = window.confirm(
+                'Este correo ya ha completado la encuesta. ¿Quiere ver información relacionada con la encuesta? (si le das a Cancelar podrás contestar de nuevo la encuesta)'
+              );
+      
+              if (userWantsToGoToFinal) {
+                navigate(`/${enquestaId}/end`); 
+              }
+              else {
+                navigate(`/${enquestaId}/FormPage`);
+              }
+            } else {
+              // Handle other status codes
+              alert('Server error. Please try again.');
             }
-            else {
-              navigate(`/${enquestaId}/FormPage`);
-            }
-          } else {
-            // Handle other status codes
-            alert('Server error. Please try again.');
+          } catch (error) {
+            console.error("falla email", error);
           }
-        } catch (error) {
-          console.error("falla email", error);
-        }
-      };
-      handleUser();
-      //navigate(`/${enquestaId}/FormPage`);
-    } else {
+        };
+        handleUser();
+        //navigate(`/${enquestaId}/FormPage`);
+      }
+      else {
+        navigate(-1);
+      }
+    } 
+    else {
       // Handle invalid email case, show an error message or take appropriate action
       alert('Por favor, introduzca una dirección de correo válida.');
     }
