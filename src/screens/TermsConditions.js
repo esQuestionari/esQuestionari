@@ -64,7 +64,7 @@ const Terms = () => {
             </div>
           ))}
         </div>
-          <div style={{display:"flex", lignItems:"center", justifyContent: "center"}}>
+          <div style={{display:"flex", alignItems:"center", justifyContent: "center"}}>
             <div className="switch-checkbox">
               <label className="switch">
                 <input type="checkbox" onChange={() => setIsEnabled(!isEnabled)} />

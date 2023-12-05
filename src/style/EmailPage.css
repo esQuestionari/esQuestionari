@@ -1,0 +1,217 @@
+/* EmailScreen.css */
+
+.email-container {
+  display: flex;
+  flex-direction: column;
+  background-color: #f5f4f2;
+  align-items: center;
+  justify-content: center;
+  padding: 25px;
+  min-height: calc(100vh - 105px);
+}
+
+.email-card {
+  min-width: 95%;
+  min-height: 95%;
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+}
+
+.email-title {
+  font-size: 30px;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.google-login button,
+.google-logout button {
+  align-items: center;
+  appearance: none;
+  background-color: #fff;
+  border-radius: 24px;
+  border-style: none;
+  box-shadow: rgba(0, 0, 0, .2) 0 3px 5px -1px,rgba(0, 0, 0, .14) 0 6px 10px 0,rgba(0, 0, 0, .12) 0 1px 18px 0;
+  box-sizing: border-box;
+  color: #3c4043;
+  cursor: pointer;
+  display: inline-flex;
+  fill: currentcolor;
+  font-family: "Google Sans",Roboto,Arial,sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  height: 48px;
+  justify-content: center;
+  letter-spacing: .25px;
+  line-height: normal;
+  max-width: 100%;
+  overflow: visible;
+  padding: 2px 24px;
+  position: relative;
+  text-align: center;
+  text-transform: none;
+  transition: box-shadow 280ms cubic-bezier(.4, 0, .2, 1),opacity 15ms linear 30ms,transform 270ms cubic-bezier(0, 0, .2, 1) 0ms;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: auto;
+  will-change: transform,opacity;
+  z-index: 0;
+}
+
+.google-login button:hover,
+.google-logout button:hover {
+  background: #F6F9FE;
+  color: #174ea6;
+}
+
+.google-login button:active,
+.google-logout button:active {
+  box-shadow: 0 4px 4px 0 rgb(60 64 67 / 30%), 0 8px 12px 6px rgb(60 64 67 / 15%);
+  outline: none;
+}
+
+.google-login button:focus,
+.google-logout button:focus {
+  outline: none;
+  border: 2px solid #4285f4;
+}
+
+.google-login button:not(:disabled),
+.google-logout button:not(:disabled) {
+  box-shadow: rgba(60, 64, 67, .3) 0 1px 3px 0, rgba(60, 64, 67, .15) 0 4px 8px 3px;
+}
+
+.google-login button:not(:disabled):hover,
+.google-logout button:not(:disabled):hover {
+  box-shadow: rgba(60, 64, 67, .3) 0 2px 3px 0, rgba(60, 64, 67, .15) 0 6px 10px 4px;
+}
+
+.google-login button:not(:disabled):focus,
+.google-logout button:not(:disabled):focus {
+  box-shadow: rgba(60, 64, 67, .3) 0 1px 3px 0, rgba(60, 64, 67, .15) 0 4px 8px 3px;
+}
+
+.google-login button:not(:disabled):active,
+.google-logout button:not(:disabled):active {
+  box-shadow: rgba(60, 64, 67, .3) 0 4px 4px 0, rgba(60, 64, 67, .15) 0 8px 12px 6px;
+}
+
+.google-login button:disabled,
+.google-logout button:disabled {
+  box-shadow: rgba(60, 64, 67, .3) 0 1px 3px 0, rgba(60, 64, 67, .15) 0 4px 8px 3px;
+}
+
+
+.google-login {
+  width: 100%;
+  text-align: center;
+}
+
+.login-options {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: column;
+}
+
+.login-card {
+  background-color: #f5f4f2;
+  border-radius: 15px;
+  padding: 0px 0px 20px 0px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  text-align: center;
+}
+
+.or-separator {
+  padding: 10px;
+  height: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #555555;
+  font-weight: bold;
+}
+
+.manual-email {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.or-separator span {
+  background-color: #ffffff;
+  padding: 0 15px;
+}
+
+.google-login img,
+.google-logout img {
+  border-radius: 50%;
+  width: 100px; /* Adjust the width as needed */
+  height: 100px; /* Adjust the height as needed */
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: bold;
+  border: 0px;
+}
+
+.email-inputField {
+  background-color: #f0f0f0;
+  height: 30px;
+  border: 3px solid gray;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+  width: calc(100% - 18px);
+  font-size: 15px;
+  padding: 10px;
+}
+
+
+.email-inputField.valid {
+  background-color: #a8fdb075;
+  border: 3px solid green; /* Adjust the border color for valid email */
+}
+
+
+.email-buttonContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.email-continueButton {
+  min-width: 160px;
+  background-color: #08693e;
+  border-radius: 20px;
+  padding: 15px 0px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #ffffff;
+  text-align: center;
+  border-width: 0px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.email-continueButton:hover {
+  background-color: #075d34;
+}
+
+.email-continueButton:disabled {
+  background-color: gray; /* Set the background color for disabled state */
+  cursor: not-allowed;
+}
