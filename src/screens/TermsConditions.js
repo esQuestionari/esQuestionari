@@ -1,67 +1,88 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import NavBar from "../components/NavBar";
+import '../style/Toggle.css';
 import { useNavigate, useParams } from 'react-router-dom';
+import sendRequest from "../components/utilFetch";
 
 const Terms = () => {
   const navigate = useNavigate();
   const { enquestaId } = useParams();
-  const lista = [
-    "He leído y entendido la hoja de información del participante.",
-    "Entiendo de qué se trata el proyecto y para qué se utilizarán los resultados.",
-    "Sé que mi participación es voluntaria y que puedo retirarme del proyecto en cualquier momento sin dar el motivo.",
-    "Soy consciente de que mi información y mis respuestas se mantendrán confidenciales."
-  ];
+
+  useEffect(() => {
+    const handleTerms = async () => {
+      try {
+        const result = await sendRequest({
+          url: `http://nattech.fib.upc.edu:40511/api/enquestes/${enquestaId}`,
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type' : 'application/json',
+          },
+        });
+        console.log(result);
+        setTermsConditions(result.condicions)
+      } catch(error) {
+        console.error("Falla terms&conditions(mai falla ;)", error);
+      }
+    };
+    handleTerms();
+  }, []);
 
   const [isEnabled, setIsEnabled] = useState(false);
-
-  const toggleSwitch = () => {
-    setIsEnabled((previousState) => !previousState);
-  };
-
+  const [termsConditions, setTermsConditions] = useState([]);
   const handleContinue = () => {
-    navigate(`/${enquestaId}/email`);
+    navigate(`/${enquestaId}/FormPage`);
   }
 
   return (
-    <div className='h-full' style={{ backgroundColor: '#f5f4f2', height: '100%', width: '100%' }}>  
+    <div className='h-full' style={{ backgroundColor: '#b9fbc0', height: '100%', width: '100%' }}>  
     <NavBar />
     <div style={styles.termscontainer} >
       <div style={styles.card}>
         <div style={styles.titleContainer}>
           <h2 style={styles.titleText}>Términos y condiciones</h2>
         </div>
-        <div style={styles.infoContainer}>
-          <p style={styles.info}>
-            Lea las siguientes declaraciones antes de aceptar participar en la
-            encuesta.
-          </p>
-          <div style={styles.listContainer}>
-            {lista.map((item, index) => (
-              <div key={index} style={styles.listItem}>
-                <div style={styles.bullet} />
-                <p style={styles.info}>{item}</p>
+        {termsConditions.map((item, index) => (
+          <div key={index} style={styles.infoContainer}>
+            {index === 0 && (
+              <p style={styles.info}> {item} </p>
+            )}
+
+            {(index !== 0 && index !== 4) && (
+              <div style={styles.listContainer}>
+                <li style={styles.info}> {item} </li>
               </div>
-            ))}
+            )}
           </div>
-          <p style={styles.info}>
-            Habiendo leído la información anterior, ¿consiente participar en el
-            cuestionario?
-          </p>
+        ))}
+        <div style={styles.endContainer}>
+          {termsConditions.map((item, index) => (
+            <div key={index}>
+              {index === termsConditions.length - 1 ? (
+                <p style={styles.info}>{item}</p>
+              ) : null}
+            </div>
+          ))}
         </div>
-        <div style={styles.switchContainer}>
-          <input type="checkbox" onChange={toggleSwitch} checked={isEnabled} />
-          <button
-            className="button buttonText"
-            style={{
-              ...styles.button,
-              backgroundColor: isEnabled ? "#08693e" : "gray"
-            }}
-            disabled={!isEnabled}
-            onClick={handleContinue}
+          <div style={{display:"flex", alignItems:"center", justifyContent: "center"}}>
+            <div className="switch-checkbox">
+              <label className="switch">
+                <input type="checkbox" onChange={() => setIsEnabled(!isEnabled)} />
+                <span className="slider round"> </span>
+              </label>
+            </div>
+            <button
+              className="button buttonText"
+              style={{
+                ...styles.button,
+                backgroundColor: isEnabled ? "#08693e" : "gray"
+              }}
+              disabled={!isEnabled}
+              onClick={handleContinue}
             >
-             Continuar        
-          </button>
-        </div>
+              Continuar
+            </button>
+          </div>
       </div>
     </div>
     </div>
@@ -76,22 +97,23 @@ const styles = {
     alignItems: "center",
     justifyContent: "space-between",
     width: "100%",
-    backgroundColor: "#f5f4f2",
+    backgroundColor: "#b9fbc0",
     overflowX: "hidden",
   },
 
   card: {
     backgroundColor: "white",
+    display: "flex",
+    flexDirection: "column",
     margin: "20px",
     border: "1px solid white",
     borderRadius: "20px",
-    boxShadow: "0px 2px 15px 0px rgba(0, 0, 0, 0.30)",
-    minWidth: "95%"
+    boxShadow: "0px 2px 15px 0px rgba(0, 0, 0, 0.35)",
+    minWidth: "95%",
   },
 
   titleContainer: {
     padding: "10px",
-    boxShadow: "0px 2px 15px 0px rgba(0, 0, 0, 0.15)"
   },
 
   titleText: {
@@ -105,50 +127,40 @@ const styles = {
 
   infoContainer: {
     backgroundColor: "#ffffff",
-    flex: 1,
     flexDirection: "row",
-    flexWrap: "wrap",
-    padding: "10px",
-    marginRight: "15px"
+    padding: "5px",
+    marginRight: "5px",
+    marginLeft: "5px"
   },
 
   info: {
     fontSize: "15px",
-    textAlign: "justify"
+    textAlign: "justify",
+    lineHeight: "1.5",
   },
 
   listContainer: {
-    width: "100%"
+    width: "100%",
   },
 
   listItem: {
     display: "flex",
     alignItems: "flex-start",
-    margin: "8px",
-  },
-  
-  bullet: {
-    width: "8px",
-    height: "8px",
-    borderRadius: "50%",
-    backgroundColor: "black",
-    marginRight: "8px",
-    marginTop: "18px",
-    flexShrink: 0, 
   },
 
-  switchContainer: {
+  endContainer: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    padding: "20px",
-    borderTop: "1px solid #e0e0e0"
+    borderTop: "1px solid #e0e0e0",
+    margin: 0,
+    padding: "5px",
   },
 
   button: {
     borderRadius: "10px",
     padding: "10px",
-    marginLeft: "10px",
+    margin: "10px",
     width: "30%", 
     cursor: "pointer",
   },
@@ -159,6 +171,7 @@ const styles = {
     color: "#ffffff",
     textAlign: "center"
   },
+  
   '@media (max-width: 768px)': {
     titleText: {
       fontSize: "24px", // Reducir el tamaño del título para pantallas más pequeñas
