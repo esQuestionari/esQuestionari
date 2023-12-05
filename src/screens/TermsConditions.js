@@ -1,9 +1,8 @@
 import React, { useState, useEffect} from "react";
 import NavBar from "../components/NavBar";
-import Toggle from "../components/Toggle";
+import '../style/Toggle.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import sendRequest from "../components/utilFetch";
-
 
 const Terms = () => {
   const navigate = useNavigate();
@@ -56,27 +55,34 @@ const Terms = () => {
             )}
           </div>
         ))}
-        <div style={styles.switchContainer}>
-          <Toggle />
+        <div style={styles.endContainer}>
           {termsConditions.map((item, index) => (
-            <div>
-            {index === termsConditions.length-1 && (
-              <p> {item} </p>
-            )}
+            <div key={index}>
+              {index === termsConditions.length - 1 ? (
+                <p style={styles.info}>{item}</p>
+              ) : null}
             </div>
           ))}
         </div>
-        <button
-          className="button buttonText"
-          style={{
-            ...styles.button,
-            backgroundColor: isEnabled ? "#08693e" : "gray"
-          }}
-          disabled={!isEnabled}
-          onClick={handleContinue}
-          >
-            Continuar        
-        </button>
+          <div style={{display:"flex", lignItems:"center", justifyContent: "center"}}>
+            <div className="switch-checkbox">
+              <label className="switch">
+                <input type="checkbox" onChange={() => setIsEnabled(!isEnabled)} />
+                <span className="slider round"> </span>
+              </label>
+            </div>
+            <button
+              className="button buttonText"
+              style={{
+                ...styles.button,
+                backgroundColor: isEnabled ? "#08693e" : "gray"
+              }}
+              disabled={!isEnabled}
+              onClick={handleContinue}
+            >
+              Continuar
+            </button>
+          </div>
       </div>
     </div>
     </div>
@@ -102,13 +108,12 @@ const styles = {
     margin: "20px",
     border: "1px solid white",
     borderRadius: "20px",
-    boxShadow: "0px 2px 15px 0px rgba(0, 0, 0, 0.30)",
-    minWidth: "95%"
+    boxShadow: "0px 2px 15px 0px rgba(0, 0, 0, 0.35)",
+    minWidth: "95%",
   },
 
   titleContainer: {
     padding: "10px",
-    boxShadow: "0px 2px 15px 0px rgba(0, 0, 0, 0.15)"
   },
 
   titleText: {
@@ -122,44 +127,34 @@ const styles = {
 
   infoContainer: {
     backgroundColor: "#ffffff",
-    flex: 1,
     flexDirection: "row",
-    flexWrap: "wrap",
-    padding: "10px",
-    marginRight: "15px"
+    padding: "5px",
+    marginRight: "5px",
+    marginLeft: "5px"
   },
 
   info: {
     fontSize: "15px",
     textAlign: "justify",
+    lineHeight: "1.5",
   },
 
   listContainer: {
-    width: "100%"
+    width: "100%",
   },
 
   listItem: {
     display: "flex",
     alignItems: "flex-start",
-    margin: "8px",
-  },
-  
-  bullet: {
-    width: "8px",
-    height: "8px",
-    borderRadius: "50%",
-    backgroundColor: "black",
-    marginRight: "8px",
-    marginTop: "18px",
-    flexShrink: 0, 
   },
 
-  switchContainer: {
+  endContainer: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    padding: "20px",
-    borderTop: "1px solid #e0e0e0"
+    borderTop: "1px solid #e0e0e0",
+    margin: 0,
+    padding: "5px",
   },
 
   button: {
@@ -176,6 +171,7 @@ const styles = {
     color: "#ffffff",
     textAlign: "center"
   },
+  
   '@media (max-width: 768px)': {
     titleText: {
       fontSize: "24px", // Reducir el tamaño del título para pantallas más pequeñas
