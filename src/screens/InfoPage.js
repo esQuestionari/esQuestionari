@@ -5,6 +5,16 @@ import { useNavigate, useParams } from 'react-router-dom';
 const InfoPage = () => {
   const navigate = useNavigate();
   const { enquestaId } = useParams();
+  const info2 = (
+    <>
+      Estimado participante,
+      <br /><br />
+      Esta investigación busca estudiar el conocimiento y percepción de riesgo en relación con la exposición al RADÓN en nuestra sociedad, todo ello dentro del proyecto REBORN.
+      <br /><br />
+      No usaremos su nombre en ninguna fase de la gestión de datos. En todo momento puede retirarse o no responder a alguna pregunta. La información que proporcione será utilizada únicamente para esta encuesta y será guardada de forma anónima y confidencial. De acuerdo con el Reglamento General de Protección de Datos (GDPR), todos los datos de los participantes se destruirán tan pronto se finalice el análisis de datos.
+    </>
+  );
+
   const info = [
     "Estimado participante,",
     "Esta investigación busca estudiar el conocimiento y percepción de riesgo en relación con la exposición al RADÓN en nuestra sociedad, todo ello dentro del proyecto REBORN.",
@@ -19,23 +29,21 @@ const InfoPage = () => {
   return (
     <div className="screen">
       < >  <NavBar />
-      <div className="container">
-        <div style={styles.card}>
-          <div style={styles.titleContainer}>
-            <h1 style={styles.titleText}>Encuesta Radón</h1>
+      <div className="contenidor">
+        <div className="cards">
+          <div>
+            <div className="information [ cardEnquesta ]">
+              <h2 className="titleHome">Encuesta sobre el gas radón</h2>
+              <p className="infoHome" style={{color:'#5E5E5E'}}>{info2}</p>
+              <button className="button" onClick={() => handleStart()}>
+                <span>Empezar</span>
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="none">
+                  <path d="M0 0h24v24H0V0z" fill="none" />
+                  <path d="M16.01 11H4v2h12.01v3L20 12l-3.99-4v3z" fill="currentColor" />
+                </svg>
+              </button>
+            </div>
           </div>
-          <div style={styles.infoContainer}>
-            {info.map((item, index) => (
-              <p key={index} style={styles.infoText}>
-                {item}
-              </p>
-            ))}
-          </div>
-        </div>
-        <div style={styles.buttonContainer}>
-          <button className="button buttonText" style={styles.button} onClick={handleStart}>
-              Empezar 
-          </button>
         </div>
       </div>
       </>

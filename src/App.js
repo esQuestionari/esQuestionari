@@ -16,6 +16,7 @@ function App() {
     <Router>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/email" element={<EmailPage/>} />
           <Route path="/:enquestaId/formpage" element={<FormPage/>} />
           <Route path="/:enquestaId/termsconditions" element={<TermsConditions/>} />
           <Route path="/:enquestaId/email" element={<EmailPage/>} />
