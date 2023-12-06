@@ -1,7 +1,10 @@
 import React, { useEffect, useState} from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-
+import "leaflet.markercluster/dist/MarkerCluster.css";
+import "leaflet.markercluster/dist/MarkerCluster.Default.css";
+import "leaflet.markercluster";
+import "leaflet-dvf";
 
 const Map = () => {
   const postalCodes = [
@@ -73,33 +76,51 @@ const Map = () => {
 
       const fetchUbi = async () => {
         try {
-          const coord = await Promise.all(
+          const coords = await Promise.all(
             postalCodes.map(async ({ postalCode, population }) => {
               const c = await getLatLngFromPostalCode(postalCode);
-              console.log("c", c);
               if (c[0].lat !== undefined && c[0].lng !== undefined) {
-                console.log("result", c[0].lat, c[0].lng);
-                console.log("pers", population);
-                return { postalCode, lat: c[0].lat, lng: c[0].lng, population };
+                return L.marker([c[0].lat, c[0].lng, population], {
+                  icon: L.divIcon({
+                    className: "custom-pin",
+                    html: `<div class="top-circle"></div><div class="bottom-triangle"></div><div class="population">${population}</div>`,
+                  }),
+                }).bindPopup(`Postal Code: ${postalCode}<br>Population: ${population}`);
               } else {
                 console.log(`No se pudieron obtener coordenadas para el código postal ${postalCode}`);
                 return null;
               }
             })
           );
-          console.log("coord", coord)
       
-            coord.forEach(({ lat, lng, population }) => {
-              const customIcon = L.divIcon({
-                className: "custom-pin",
-                html: `<div class="top-circle"></div><div class="bottom-triangle"></div><div class="population">${population}</div>`,
+          const markerClusterGroup = L.markerClusterGroup({
+            iconCreateFunction: function (cluster) {
+              let totalPopulation = 0;
+      
+              cluster.getAllChildMarkers().forEach((marker) => {
+                totalPopulation += marker._latlng.alt;
               });
-              L.marker([lat, lng], { icon: customIcon }).addTo(map);
-            });
+      
+              return L.divIcon({
+                html: `<div class="cluster-population">${totalPopulation}</div>`,
+                className: 'custom-cluster-icon',
+                iconSize: L.point(40, 40, true),
+              });
+            },
+          });
+      
+          coords.forEach((marker) => {
+            if (marker) {
+              markerClusterGroup.addLayer(marker);
+            }
+          });
+      
+          map.addLayer(markerClusterGroup);
         } catch (error) {
           console.error("Error al obtener ubicaciones:", error);
         }
       };
+      
 
       useEffect( () =>  {
         fetchUbi();

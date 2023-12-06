@@ -137,6 +137,19 @@ th:hover {
   background-color: #f5f4f2;
 }
 
+.custom-cluster-icon {
+  background-color: #3388ff; 
+  border-radius: 50%; 
+  text-align: center;
+  line-height: 40px; 
+  color: #fff; 
+  font-weight: bold;
+}
+
+.cluster-population {
+  font-size: 14px;
+}
+
 .custom-pin {
   width: 30px;
   height: 40px;

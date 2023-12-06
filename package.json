@@ -11,6 +11,8 @@
     "axios": "^1.6.2",
     "date-fns": "^2.30.0",
     "leaflet": "^1.9.4",
+    "leaflet-dvf": "^0.3.1",
+    "leaflet.markercluster": "^1.5.3",
     "lodash": "4.17.21",
     "node-fetch": "^3.3.2",
     "prop-types": "15.8.1",

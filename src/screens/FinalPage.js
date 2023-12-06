@@ -186,6 +186,7 @@ const FinalPage = () => {
                   endAngle={360}
                   outerRadius={80}
                   dataKey="respuestas"
+                  label={({ percent }) => `${(percent * 100).toFixed(2)}%`} 
                 >
                   {transformarResultados(grafic.resultats).map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={obtenerColorUnico(grafic.id, index)} />
