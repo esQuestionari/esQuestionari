@@ -4,6 +4,7 @@ import { useNavigate, useParams} from 'react-router-dom';
 import sendRequest from "../components/utilFetch";
 
 import '../style/FormPage.css'; 
+import '../index.css'; 
 
 const FormPage = () => {
   const handleInfoEnquesta = async () => {
@@ -278,101 +279,103 @@ useEffect(() => {
   return (
     <>
       <NavBar />
-      <div className="container">
-        <div key={currentSection} className="card">
-          {<p className='sectionNumber'>Sección {currentSection + 1} de {infoEnquesta.numApartats}</p>}
-          <h2 className='titol'>{section.titol}</h2>
-          {section.introduccio !== undefined && (
-            <div className='infoSection'>
-              <p className='infoText'>{section.introduccio}</p>
-              {/* Handle image rendering if needed */}
-            </div>
-          )}
-          {section.preguntes && section.preguntes.map((question, questionIndex) => (
-            <div key={questionIndex}>
-              {question.tipus !== 'escala' && question.tipus !== 'certofals' && (question.enCasDe === null ||
-                (answers[question.enCasDe] === question.opcioEnCasDe)) && <p className='questionText'>{question.text}</p>}
-              {(
-                question.enCasDe === null ||
-                (answers[question.enCasDe] === question.opcioEnCasDe) ? (
-                  question.tipus === 'opcions' ? (
-                    <div className='optionContainer'>
-                      {question.opcions.map((option, optionIndex) => (
-                        <button
-                          key={optionIndex}
-                          className={answers[questionIndex] === option ? 'selectedOption' : 'option'}
-                          onClick={() => handleSelectOption(questionIndex, option)}
-                        >
-                          {option}
-                        </button>
-                      ))}
-                    </div>
-                  ) : (
-                    question.tipus === 'certofals' ? (
-                      <div className='scaleQuestion'>
-                        <p className='questionText'>{question.question}</p>
-                        <div className='trueFalseButtons'>
+      <div className="contenidor">
+        <div className="cards">
+          <div className="information [ cardEnquesta ]">
+            {<p className='sectionNumber'>Sección {currentSection + 1} de {infoEnquesta.numApartats}</p>}
+            <h2 className='titol'>{section.titol}</h2>
+            {section.introduccio !== undefined && (
+              <div className='infoSection'>
+                <p className='infoText'>{section.introduccio}</p>
+                {/* Handle image rendering if needed */}
+              </div>
+            )}
+            {section.preguntes && section.preguntes.map((question, questionIndex) => (
+              <div key={questionIndex}>
+                {question.tipus !== 'escala' && question.tipus !== 'certofals' && (question.enCasDe === null ||
+                  (answers[question.enCasDe] === question.opcioEnCasDe)) && <p className='questionText'>{question.text}</p>}
+                {(
+                  question.enCasDe === null ||
+                  (answers[question.enCasDe] === question.opcioEnCasDe) ? (
+                    question.tipus === 'opcions' ? (
+                      <div className='optionContainer'>
+                        {question.opcions.map((option, optionIndex) => (
                           <button
-                            className={`trueFalseButton ${answers[questionIndex] === true ? 'true' : ''}`}
-                            onClick={() => handleTrueFalseAnswer(questionIndex, true)}
+                            key={optionIndex}
+                            className={answers[questionIndex] === option ? 'selectedOption' : 'option'}
+                            onClick={() => handleSelectOption(questionIndex, option)}
                           >
-                            True
+                            {option}
                           </button>
-                          <button
-                            className={`trueFalseButton ${answers[questionIndex] === false ? 'false' : ''}`}
-                            onClick={() => handleTrueFalseAnswer(questionIndex, false)}
-                          >
-                            False
-                          </button>
-                        </div>
+                        ))}
                       </div>
                     ) : (
-                      question.tipus === 'escala' ? (
+                      question.tipus === 'certofals' ? (
                         <div className='scaleQuestion'>
                           <p className='questionText'>{question.question}</p>
-                          <div className='scaleOptions'>
-                            {question.opcions.map((color, colorIndex) => (
-                              <button
-                                key={colorIndex}
-                                className={answers[questionIndex] === color ? 'scaleOptionSelected' : 'scaleOption'}
-                                style={answers[questionIndex] === color
-                                  ? { backgroundColor: color, opacity: 1 }
-                                  : { backgroundColor: color, opacity: 0.4 }}
-                                onClick={() => handleScaleAnswer(questionIndex, color)}
-                              />
-                            ))}
+                          <div className='trueFalseButtons'>
+                            <button
+                              className={`trueFalseButton ${answers[questionIndex] === true ? 'true' : ''}`}
+                              onClick={() => handleTrueFalseAnswer(questionIndex, true)}
+                            >
+                              True
+                            </button>
+                            <button
+                              className={`trueFalseButton ${answers[questionIndex] === false ? 'false' : ''}`}
+                              onClick={() => handleTrueFalseAnswer(questionIndex, false)}
+                            >
+                              False
+                            </button>
                           </div>
                         </div>
                       ) : (
-                        question.tipus === 'text' ? (
-                          <input
-                            type="text"
-                            className="inputField"
-                            placeholder="Your Answer"
-                            onChange={(e) => handleTextAnswer(questionIndex, e.target.value)}
-                          />
-                        ) : null
+                        question.tipus === 'escala' ? (
+                          <div className='scaleQuestion'>
+                            <p className='questionText'>{question.question}</p>
+                            <div className='scaleOptions'>
+                              {question.opcions.map((color, colorIndex) => (
+                                <button
+                                  key={colorIndex}
+                                  className={answers[questionIndex] === color ? 'scaleOptionSelected' : 'scaleOption'}
+                                  style={answers[questionIndex] === color
+                                    ? { backgroundColor: color, opacity: 1 }
+                                    : { backgroundColor: color, opacity: 0.4 }}
+                                  onClick={() => handleScaleAnswer(questionIndex, color)}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        ) : (
+                          question.tipus === 'text' ? (
+                            <input
+                              type="text"
+                              className="inputField"
+                              placeholder="Your Answer"
+                              onChange={(e) => handleTextAnswer(questionIndex, e.target.value)}
+                            />
+                          ) : null
+                        )
                       )
                     )
-                  )
-                ) : null
-              )}
-            </div>
-          ))}
-        </div>
-        <div className='buttonContainer'>
-          {!isFormComplete() && (<button
-            className={`nextButton${(sectionValid || isFormComplete()) ? '' : ' disabled'}`}
-            onClick={handleNextSection}
-            disabled={!sectionValid || isFormComplete()}
-          >
-            Siguiente
-          </button>)}
-          {isFormComplete() && (
-            <button className="nextButton" onClick={handleFinishForm}>
-              Finalizar
-            </button>
-          )}
+                  ) : null
+                )}
+              </div>
+            ))}
+          </div>
+          <div className='buttonContainer'>
+            {!isFormComplete() && (<button
+              className={`nextButton${(sectionValid || isFormComplete()) ? '' : ' disabled'}`}
+              onClick={handleNextSection}
+              disabled={!sectionValid || isFormComplete()}
+            >
+              Siguiente
+            </button>)}
+            {isFormComplete() && (
+              <button className="nextButton" onClick={handleFinishForm}>
+                Finalizar
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </>
