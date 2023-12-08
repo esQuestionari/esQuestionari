@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import NavBar from "../components/NavBar";
 import { useNavigate, useParams } from 'react-router-dom';
 import sendRequest from "../components/utilFetch";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart, Line,  PieChart, Pie, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart, Line,  PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
 const FinalPage = () => {
   const navigate = useNavigate();
@@ -95,112 +95,122 @@ const FinalPage = () => {
   };
 
   return (
-    <div className='h-full' style={{ backgroundColor: '#f5f4f2', height: '100%', minHeight: 'calc(100vh - 105px)', width: '100%' }}>
+    <>
       <NavBar />
-      <div className='h-full' style={{ marginLeft: '20px' }}>
-        <h2>¡Gracias por completar el cuestionario!</h2>
-        <p>Selecciona las opciones deseadas:</p>
-        <label>
-          <input
-            type="checkbox"
-            checked={checkbox1}
-            onChange={handleCheckbox1Change}
-          />
-          Opción 1
-        </label>
-        <br />
-        <label>
-          <input
-            type="checkbox"
-            checked={checkbox2}
-            onChange={handleCheckbox2Change}
-          />
-          Opción 2
-        </label>
-        {(checkbox2 || checkbox1) && (
-          <div>
-            <label>
-              Correo:
-              <input type="text" value={email2} onChange={handleEmail2Change} />
-            </label>
-          </div>
-        )}
-        <br />
-        <button className='buttonini' onClick={handleSave}>Guardar</button>
-        
-        {estadistiques.map((grafic, index) => (
-          <div key={index}>
-            {grafic.tipusGrafic === 'Barplot' && 
-            <div >
-               <text x={20} y={5} textAnchor="middle" style={{ fontSize: '16px', fontWeight: 'bold' }}>
-                {grafic.nom}
-              </text>
-              <BarChart width={400} height={300} data={transformarResultados(grafic.resultats)}  barCategoryGap={10} >    
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
-                  dataKey="name"
-                  interval={0}
-                  dy={15}
-                  tick={(props) => (
-                    <text {...props} >
-                      {props.payload.value.length > 10 ? `${props.payload.value.substring(0, 10)}...` : props.payload.value}
-                    </text>
-                  )}
+      <div className="contenidor">
+        <p className="titolHome">¡Gracias por completar el cuestionario!</p>
+
+
+        <div className="cards">
+          <div className="information [ cardEnquesta ]" style={{flexDirection: 'row'}}>
+            <h2 className="titleHome" style={{fontSize: '20px'}}>Selecciona las opciones deseadas</h2>
+            <div style={{margin: '15px 0 15px 0'}}>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={checkbox1}
+                  onChange={handleCheckbox1Change}
                 />
-                <YAxis />
-                <Tooltip />
-                
-                <Bar dataKey="respuestas"  >
-                {transformarResultados(grafic.resultats).map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={obtenerColorUnico(grafic.id, index)} />
-                ))}
-                </Bar>
-              </BarChart> 
-              </div>
-            }
-            {grafic.tipusGrafic === 'Temporal' &&
-            <div >
-              <text x={20} y={5} textAnchor="middle" style={{ fontSize: '16px', fontWeight: 'bold' }}>
-                  {grafic.nom}
-                </text>
-              <LineChart width={400} height={300} data={transformarResultados(grafic.resultats, grafic.tipusGrafic)}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Line type="monotone" dataKey="respuestas" stroke="#8884d8"  />
-              </LineChart>
-              </div>
-            }
-            {grafic.tipusGrafic === 'Piechart' &&
-            <div >
-              <text  x={0} y={20} style={{ fontSize: '16px', fontWeight: 'bold' }}>
-                  {grafic.nom}
-              </text>
-              <PieChart width={400} height={300}>
-                <Pie
-                  data={transformarResultados(grafic.resultats)}
-                  cx={200}
-                  cy={150}
-                  startAngle={0}
-                  endAngle={360}
-                  outerRadius={80}
-                  dataKey="respuestas"
-                  label={({ percent }) => `${(percent * 100).toFixed(2)}%`} 
-                >
-                  {transformarResultados(grafic.resultats).map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={obtenerColorUnico(grafic.id, index)} />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-              </div>
-            }
+                Opción 1
+              </label>
+              <br />
+              <label>
+                <input
+                  type="checkbox"
+                  checked={checkbox2}
+                  onChange={handleCheckbox2Change}
+                />
+                Opción 2
+              </label>
+
+              {(checkbox2 || checkbox1) && (
+                <div style={{marginTop: '15px'}}>
+                  <label>
+                    Correo:   
+                    <input type="text" value={email2} onChange={handleEmail2Change} />
+                  </label>
+                </div>
+              )}
+            </div>
+            <button className="button" onClick={handleSave}>
+              <span>Guardar</span>
+              <svg class="svg-icon" height="24px" viewBox="0 0 24 20" width="24px" fill="none">
+                <path d="M7.629,14.566c0.125,0.125,0.291,0.188,0.456,0.188c0.164,0,0.329-0.062,0.456-0.188l8.219-8.221c0.252-0.252,0.252-0.659,0-0.911c-0.252-0.252-0.659-0.252-0.911,0l-7.764,7.763L4.152,9.267c-0.252-0.251-0.66-0.251-0.911,0c-0.252,0.252-0.252,0.66,0,0.911L7.629,14.566z" fill="currentColor" stroke="currentColor" stroke-width="1"></path>
+              </svg>
+            </button>
           </div>
-        ))}
+
+
+
+
+
+
+
+          {estadistiques.map((grafic, index) => (
+            <div className="information [ cardEnquesta ]" style={{width: 'calc(100% - 40px)'}}>
+              <h2 className="titleHome" style={{textAlign:'center'}}>{grafic.nom}</h2>
+              {grafic.tipusGrafic === 'Barplot' && 
+              <ResponsiveContainer width="95%" height={300}>
+                <BarChart data={transformarResultados(grafic.resultats)}  barCategoryGap={10} >    
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis
+                    dataKey="name"
+                    interval={0}
+                    dy={15}
+                    tick={(props) => (
+                      <text {...props} >
+                        {props.payload.value.length > 10 ? `${props.payload.value.substring(0, 10)}...` : props.payload.value}
+                      </text>
+                    )}
+                  />
+                  <YAxis />
+                  <Tooltip />
+                  
+                  <Bar dataKey="respuestas"  >
+                  {transformarResultados(grafic.resultats).map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={obtenerColorUnico(grafic.id, index)} />
+                  ))}
+                  </Bar>
+                </BarChart> 
+              </ResponsiveContainer>
+              }
+              {grafic.tipusGrafic === 'Temporal' &&
+              <ResponsiveContainer width="95%" height={300}>
+                <LineChart width={400} height={300} data={transformarResultados(grafic.resultats, grafic.tipusGrafic)}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="respuestas" stroke="#8884d8"  />
+                </LineChart>
+                </ResponsiveContainer>
+              }
+              {grafic.tipusGrafic === 'Piechart' &&
+              <ResponsiveContainer width="95%" height={300}>
+                <PieChart width={400} height={300}>
+                  <Pie
+                    data={transformarResultados(grafic.resultats)}
+                    cx={200}
+                    cy={150}
+                    startAngle={0}
+                    endAngle={360}
+                    outerRadius={80}
+                    dataKey="respuestas"
+                  >
+                    {transformarResultados(grafic.resultats).map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={obtenerColorUnico(grafic.id, index)} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                  <Legend />
+                </PieChart>
+                </ResponsiveContainer>
+              }
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
