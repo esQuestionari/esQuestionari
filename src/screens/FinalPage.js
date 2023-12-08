@@ -176,7 +176,7 @@ const FinalPage = () => {
               }
               {grafic.tipusGrafic === 'Temporal' &&
               <ResponsiveContainer width="95%" height={300}>
-                <LineChart width={400} height={300} data={transformarResultados(grafic.resultats, grafic.tipusGrafic)}>
+                <LineChart data={transformarResultados(grafic.resultats, grafic.tipusGrafic)}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
                   <YAxis />
@@ -187,15 +187,15 @@ const FinalPage = () => {
               }
               {grafic.tipusGrafic === 'Piechart' &&
               <ResponsiveContainer width="95%" height={300}>
-                <PieChart width={400} height={300}>
+                <PieChart>
                   <Pie
                     data={transformarResultados(grafic.resultats)}
-                    cx={200}
-                    cy={150}
+
                     startAngle={0}
                     endAngle={360}
                     outerRadius={80}
                     dataKey="respuestas"
+                    label={({ percent }) => `${(percent * 100).toFixed(2)}%`}
                   >
                     {transformarResultados(grafic.resultats).map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={obtenerColorUnico(grafic.id, index)} />
