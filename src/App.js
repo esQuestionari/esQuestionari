@@ -10,6 +10,7 @@ import InfoPage from "./screens/InfoPage";
 import FinalPage from "./screens/FinalPage";
 import EmailPage from "./screens/EmailPage";
 import LoginScreen from "./screens/LoginScreen";
+import AdminPage from "./screens/AdminPage";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/:enquestaId/infopage" element={<InfoPage/>} />
           <Route path="/:enquestaId/end" element={<FinalPage/>} />
           <Route path="/:enquestaId/login" element={<LoginScreen/>} />
+          <Route path="/:enquestaId/answers" element={<AdminPage />} />
         </Routes>
     </Router>
   );

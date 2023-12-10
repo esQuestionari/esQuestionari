@@ -157,11 +157,18 @@ const FinalPage = () => {
                     dataKey="name"
                     interval={0}
                     dy={15}
-                    tick={(props) => (
-                      <text {...props} >
-                        {props.payload.value.length > 10 ? `${props.payload.value.substring(0, 10)}...` : props.payload.value}
-                      </text>
-                    )}
+                    tick={(props) => {
+                      const maxLength = window.innerWidth > 768 ? 10 : 4; ; // Número máximo de caracteres a mostrar
+                      const truncatedValue = props.payload.value.length > maxLength
+                          ? `${props.payload.value.substring(0, maxLength)}...`
+                          : props.payload.value;
+              
+                      return (
+                          <text {...props}>
+                              {truncatedValue}
+                          </text>
+                      );
+                  }}
                   />
                   <YAxis />
                   <Tooltip />
