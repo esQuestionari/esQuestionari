@@ -4,7 +4,6 @@ import { isWithinInterval, isToday } from 'date-fns';
 import NavBar from "../components/NavBar";
 import { useNavigate } from 'react-router-dom';
 import Map from "../components/Map";
-import {  Card, CardBody, CardFooter, Typography, Button,} from "@material-tailwind/react";
 
 const Home = () => {
   const navigate = useNavigate();
