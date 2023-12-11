@@ -36,7 +36,7 @@ const Terms = () => {
 
   return (
     <>
-    <NavBar />
+    <NavBar className="navbar" />
     <div className="contenidor">
         <div className="cards">
           <div>

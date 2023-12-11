@@ -1,6 +1,7 @@
 import React from "react";
 import NavBar from "../components/NavBar";
 import { useNavigate, useParams } from 'react-router-dom';
+import Map from "../components/Map";
 
 const InfoPage = () => {
   const navigate = useNavigate();
@@ -45,7 +46,9 @@ const InfoPage = () => {
             </div>
           </div>
         </div>
+        <Map />
       </div>
+     
       </>
     </div>
   );

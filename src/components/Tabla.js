@@ -28,7 +28,7 @@ const TuTabla = ({ preguntes, info }) => {
       {/* Contenedor adicional para el desplazamiento vertical */}
       <div style={{ overflowY: 'auto', maxHeight: '63vh' }}>
         {/* Utiliza maxHeight con un porcentaje (70vh en este caso) */}
-        <table {...getTableProps()} style={{ borderCollapse: 'collapse', width: '100%' }}>
+        <table {...getTableProps()} style={{ borderCollapse: 'collapse',  width: '100%' }}>
           <thead style={{ position: 'sticky', top: 0, zIndex: 1, background: 'white' }}>
             <tr>
               <th colSpan={columns.length} style={{ borderBottom: '1px solid black' }}>
@@ -38,7 +38,7 @@ const TuTabla = ({ preguntes, info }) => {
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()} style={{ borderBottom: '1px solid black' }}>
                 {headerGroup.headers.map((column) => (
-                 <th {...column.getHeaderProps(column.getSortByToggleProps())} style={{ padding: '8px', textAlign: 'left', position: 'relative' }}>
+                 <th  {...column.getHeaderProps(column.getSortByToggleProps())} style={{ padding: '8px', textAlign: 'center', position: 'relative', minWidth: '80px' }} >
                  {column.render('Header')}
                  <div style={{ position: 'absolute', bottom: '0', left: '50%', transform: 'translateX(-50%)', color: 'rgba(128, 128, 128, 0.7)'}}>
                    {column.isSorted ? (column.isSortedDesc ? 'X' : '▲') : '▼'}
