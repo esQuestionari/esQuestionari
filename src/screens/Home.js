@@ -30,6 +30,10 @@ const Home = () => {
         result[0].tags =  [
           { name: 'Otros', color: '#FF2D2D', backgroundColor: '#FFE4E1' },
         ]; 
+        result[2].tags =  [
+          { name: 'Cáncer', color: '#2F9E09', backgroundColor: '#D9FFC4' },	
+          { name: 'Pulmón', color: '#6558d3', backgroundColor: '#f1eeff' },
+        ]; 
         result[0].duracio = '⌛ Duración: 5 minutos';
         result[1].duracio = '⌛ Duración: 30 minutos';
         result[1].descripcio += " Añado un poco más de información para que parezca más realista. Una única línea de descripción no es demasiado típico. Aquí se debería añadir una pequeña introducción sobre la temática del estudio y la información que se espera obtener."
@@ -62,8 +66,9 @@ const Home = () => {
   
 
   return (
-    <>
-      <NavBar />
+    <div className="screen">
+    <> 
+      <NavBar  />
       <div className="contenidor">
         <p className="titolHome"> Selecciona una encuesta </p>
         <div className="cards">
@@ -103,6 +108,7 @@ const Home = () => {
        
       </div>
     </>
+    </div>
   );
 };
 

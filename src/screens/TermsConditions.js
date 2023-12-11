@@ -35,8 +35,9 @@ const Terms = () => {
   }
 
   return (
-    <>
-    <NavBar className="navbar" />
+    <div className="screen">
+      < > 
+    <NavBar  />
     <div className="contenidor">
         <div className="cards">
           <div>
@@ -81,6 +82,7 @@ const Terms = () => {
         </div>
       </div>
     </>
+    </div>
   );
 };
 
