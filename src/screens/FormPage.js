@@ -79,7 +79,7 @@ const FormPage = () => {
   const [sectionValid, setSectionValid] = useState(true);
 
   const initializeData = async () => {
-    setCurrentSection(3);
+    setCurrentSection(0);
     const result = await handleInfoEnquesta();
     const apartats = await handleApartatsEnquesta();
     const seccio = await handleInfoApartat(apartats, currentSection);
