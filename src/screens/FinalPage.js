@@ -147,7 +147,7 @@ const FinalPage = () => {
 
 
           {estadistiques.map((grafic, index) => (
-            <div className="information [ cardEnquesta ]" style={{width: 'calc(100% - 40px)'}}>
+            <div className="information [ cardEnquesta ]" style={{width: '100%', paddingLeft: '0px', paddingRight: '0px'}}>
               <h2 className="titleHome" style={{textAlign:'center'}}>{grafic.nom}</h2>
               {grafic.tipusGrafic === 'Barplot' && 
               <ResponsiveContainer width="95%" height={300}>

@@ -61,7 +61,8 @@ const FormPage = () => {
   
       console.log(result); 
       setSection(result);
-      setAnswers(Array(result.preguntes.length).fill({}));
+      setAnswers(Array(section.preguntes.length).fill([]));
+
     } catch (error) {
       console.error("falla formPage info apartat", error); 
     }
@@ -78,14 +79,11 @@ const FormPage = () => {
   const [sectionValid, setSectionValid] = useState(true);
 
   const initializeData = async () => {
-    setCurrentSection(0);
+    setCurrentSection(3);
     const result = await handleInfoEnquesta();
-    //setInfoEnquesta(result);
     const apartats = await handleApartatsEnquesta();
-    //setApartatsIds(apartats);
     const seccio = await handleInfoApartat(apartats, currentSection);
-    //setSection(seccio);
-    //setLoading(false);
+
   };
 
 useEffect(() => {
@@ -99,51 +97,6 @@ useEffect(() => {
     setLoading(false);
   }
 }, [apartatsIds])
-
-// useEffect(() => {
-//   const fetchData = async () => {
-//     try {
-//       window.scrollTo(0, 0);
-//       setCurrentSection(0);
-//       const result = await handleInfoEnquesta();
-//       setInfoEnquesta(result);
-//       setLoadingEnquesta(false);
-//     } catch (error) {
-//       console.error("Error fetching info enquesta:", error);
-//     }
-//   };
-//   fetchData();
-//   console.log("info enquesta: ", infoEnquesta);
-// }, [setInfoEnquesta]);
-
-// useEffect(() => {
-//   const fetchData = async () => {
-//     try {
-//       const apartats = await handleApartatsEnquesta();
-//       setApartatsIds(apartats);
-//       setLoadingApartatsIds(false);
-//     } catch (error) {
-//       console.error("Error fetching apartats:", error);
-//     }
-//   };
-//   fetchData();
-//   console.log("apartats: ", apartatsIds);
-// }, [setApartatsIds]);
-
-// useEffect(() => {
-//   const fetchData = async () => {
-//     try {
-//       const seccio = await handleInfoApartat(apartatsIds, currentSection);
-//       setSection(seccio);
-//       setLoading(false);
-//     } catch (error) {
-//       console.error("Error fetching info apartat:", error);
-//     }
-//   };
-//   fetchData();
-//   console.log("preguntes apartat: ", section);
-// }, [apartatsIds]);
-
 
   
   const handleSelectOption = (questionIndex, option) => {
@@ -176,7 +129,7 @@ useEffect(() => {
 
   const checkSectionCompletion = (sectionAnswers) => {
     const questionsInCurrentSection = section.preguntes.length;
-  
+    return true;
     // Create a set of answered questions that are not dependent on other questions
     const independentQuestions = new Set(
       Object.keys(sectionAnswers).filter(
@@ -219,7 +172,21 @@ useEffect(() => {
     }
   };
   
-  
+  const handleSelectMultipleOption = (questionIndex, option) => {
+    let newAnswers = [...answers];
+    if (!newAnswers[questionIndex]) {
+      newAnswers[questionIndex] = [option];
+    } else {
+      const selectedIndex = newAnswers[questionIndex].indexOf(option);
+      if (selectedIndex === -1) {
+        newAnswers[questionIndex].push(option);
+      } else {
+        newAnswers[questionIndex].splice(selectedIndex, 1);
+      }
+    }
+    setAnswers(newAnswers);
+    checkSectionCompletion(newAnswers);
+  };
   
 
   const handleNextSection = () => {
@@ -312,7 +279,7 @@ useEffect(() => {
                     ) : (
                       question.tipus === 'certofals' ? (
                         <div className='scaleQuestion'>
-                          <p className='questionText'>{question.question}</p>
+                          <p className='questionText'>{question.text}</p>
                           <div className='trueFalseButtons'>
                             <button
                               className={`trueFalseButton ${answers[questionIndex] === true ? 'true' : ''}`}
@@ -331,7 +298,7 @@ useEffect(() => {
                       ) : (
                         question.tipus === 'escala' ? (
                           <div className='scaleQuestion'>
-                            <p className='questionText'>{question.question}</p>
+                            <p className='questionText'>{question.text}</p>
                             <div className='scaleOptions'>
                               {question.opcions.map((color, colorIndex) => (
                                 <button
@@ -350,10 +317,29 @@ useEffect(() => {
                             <input
                               type="text"
                               className="inputField"
-                              placeholder="Your Answer"
+                              placeholder=" Tu respuesta"
                               onChange={(e) => handleTextAnswer(questionIndex, e.target.value)}
                             />
-                          ) : null
+                          ) : (
+                            question.tipus === 'multiple' ? (
+                              <div className='optionContainer'>
+                                {question.opcions.map((option, optionIndex) => (
+                                  <button
+                                      key={optionIndex}
+                                      className={`multipleChoiceOption${answers[questionIndex] && answers[questionIndex].includes(option) ? 'Selected' : ''}`}
+                                      onClick={() => handleSelectMultipleOption(questionIndex, option)}
+                                    >
+                                      <input
+                                        type="checkbox"
+                                        checked={answers[questionIndex] && answers[questionIndex].includes(option)}
+                                        onChange={() => {}}
+                                      />
+                                      <p style={{marginLeft: '10px'}}>{option}</p>
+                                    </button>
+                                ))}
+                              </div>
+                            ) : null
+                          )
                         )
                       )
                     )

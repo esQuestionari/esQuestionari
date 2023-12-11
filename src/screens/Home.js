@@ -22,15 +22,18 @@ const Home = () => {
           },
         });
         console.log(result)
-        result[1].nom = "Cuestionario Estudio RADONCOM"
-        result[1].tags =  [
-          { name: 'Cáncer', color: '#2F9E09', backgroundColor: '#D9FFC4' },	
-          { name: 'Pulmón', color: '#6558d3', backgroundColor: '#f1eeff' },
+        result[2].tags =  [
+          { name: 'Radón', color: '#2F9E09', backgroundColor: '#D9FFC4' },	
+          { name: 'Ciencia Ciudadana', color: '#6558d3', backgroundColor: '#f1eeff' },
         ]; 
         result[0].tags =  [
           { name: 'Otros', color: '#FF2D2D', backgroundColor: '#FFE4E1' },
         ]; 
         result[0].duracio = '⌛ Duración: 5 minutos';
+        result[1].tags =  [
+          { name: 'Otros', color: '#FF2D2D', backgroundColor: '#FFE4E1' },
+        ]; 
+        result[2].duracio = '⌛ Duración: 5 minutos';
         result[1].duracio = '⌛ Duración: 30 minutos';
         result[1].descripcio += " Añado un poco más de información para que parezca más realista. Una única línea de descripción no es demasiado típico. Aquí se debería añadir una pequeña introducción sobre la temática del estudio y la información que se espera obtener."
         setEnquestes(result);
@@ -52,6 +55,10 @@ const Home = () => {
 
   const handleStart = (enquestaId) => {
     navigate(`/${enquestaId}/InfoPage`);
+  };
+
+  const handleResultats = (enquestaId) => {
+    navigate(`/${enquestaId}/answers`);
   };
 
   // const tags = [
@@ -90,9 +97,15 @@ const Home = () => {
                     <p className="duracio">{enquesta.duracio}</p> 
                     <button className="button" onClick={() => handleStart(enquesta.id)}>
                       <span>Empezar</span>
-                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="none">
+                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 20" width="24px" fill="none">
                         <path d="M0 0h24v24H0V0z" fill="none" />
                         <path d="M16.01 11H4v2h12.01v3L20 12l-3.99-4v3z" fill="currentColor" />
+                      </svg>
+                    </button>
+                    <button className="buttonResultats" onClick={() => handleResultats(enquesta.id)}>
+                      <span>Resultados</span>
+                      <svg class="svg-icon" viewBox="0 0 20 20" width="24px" fill="none">
+                      <path d="M17.431,2.156h-3.715c-0.228,0-0.413,0.186-0.413,0.413v6.973h-2.89V6.687c0-0.229-0.186-0.413-0.413-0.413H6.285c-0.228,0-0.413,0.184-0.413,0.413v6.388H2.569c-0.227,0-0.413,0.187-0.413,0.413v3.942c0,0.228,0.186,0.413,0.413,0.413h14.862c0.228,0,0.413-0.186,0.413-0.413V2.569C17.844,2.342,17.658,2.156,17.431,2.156 M5.872,17.019h-2.89v-3.117h2.89V17.019zM9.587,17.019h-2.89V7.1h2.89V17.019z M13.303,17.019h-2.89v-6.651h2.89V17.019z M17.019,17.019h-2.891V2.982h2.891V17.019z" fill="currentColor" stroke="currentColor" stroke-width="0.6"></path>
                       </svg>
                     </button>
                   </div>

@@ -9,10 +9,9 @@ const InfoPage = () => {
     <>
       Estimado participante,
       <br /><br />
-      Esta investigación busca estudiar el conocimiento y percepción de riesgo en relación con la exposición al RADÓN en nuestra sociedad, todo ello dentro del proyecto REBORN.
+      Usted está a punto de responder a la encuesta del proyecto RADONORM, un estudio promovido por el Hospital Clínic de Barcelona. El objetivo del proyecto es estudiar el grado de conocimiento, sensibilización y percepción de riesgo en relación con la exposición al RADÓN en nuestra sociedad.
       <br /><br />
-      No usaremos su nombre en ninguna fase de la gestión de datos. En todo momento puede retirarse o no responder a alguna pregunta. La información que proporcione será utilizada únicamente para esta encuesta y será guardada de forma anónima y confidencial. De acuerdo con el Reglamento General de Protección de Datos (GDPR), todos los datos de los participantes se destruirán tan pronto se finalice el análisis de datos.
-    </>
+      Nos complace contar con su participación en esta encuesta. Por favor, responda con sinceridad y atención a las siguientes preguntas. Su participación será voluntaria, anónima y confidencial. Sus respuestas desempeñarán un papel crucial en la recopilación de datos para este estudio, y nos ayudará a comprender mejor el conocimiento sobre RADÓN en España. Queremos agradecerle de antemano por su colaboración y contribución.    </>
   );
 
   const info = [
@@ -37,7 +36,7 @@ const InfoPage = () => {
               <p className="infoHome" style={{color:'#5E5E5E'}}>{info2}</p>
               <button className="button" onClick={() => handleStart()}>
                 <span>Empezar</span>
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="none">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 20" width="24px" fill="none">
                   <path d="M0 0h24v24H0V0z" fill="none" />
                   <path d="M16.01 11H4v2h12.01v3L20 12l-3.99-4v3z" fill="currentColor" />
                 </svg>

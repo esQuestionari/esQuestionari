@@ -301,14 +301,37 @@ th:hover {
 		}
 	}
 
+  .buttonResultats {
+    margin-left: 15px;
+		font: inherit;
+		line-height: 1;
+		background-color: var(--c-white);
+		border: 2px solid #4133B7;
+		color: #4133B7;
+		padding: 0.5em 1em;
+		border-radius: 6px;
+		font-weight: 500;
+		display: inline-flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.5rem;
+    max-width: fit-content;
+    cursor: pointer;
+		&:hover,
+		&:focus {
+			background-color: #4133B7;
+			color: var(--c-white);
+		}
+	}
+
   .button:disabled {
     cursor: default;
-    color: grey;
-    border: 2px solid grey;
+    color: #ccc;
+    border: 2px solid #ccc;
     &:hover,
 		&:focus {
 			background-color: var(--c-white);
-			color: grey;
+			color: #ccc;
 		}
   }
 	
