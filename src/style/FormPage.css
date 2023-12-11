@@ -50,15 +50,22 @@
     border: 3px solid gray;
     margin-bottom: 20px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 15px;
-    width: calc(100% - 10px);
+    border-radius: 10px;
+    width: calc(100% - 20px);
     font-size: 15px;
+    padding-left: 10px;
+    outline: none;
+  }
+
+  .inputField:focus {
+    border: 3px solid #08693e;
   }
 
   .optionContainer {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    margin-bottom: 15px;
   }
   
   .option {
@@ -131,13 +138,14 @@
   }
   
   .trueFalseButton {
-    border-radius: 25px;
-    width: 50px;
-    height: 50px;
+    border-radius: 20px;
+    width: 40px;
+    height: 40px;
     align-items: center;
     justify-content: center;
-    background-color: grey;
-    margin: 5px;
+    background-color: #fff;
+    border: none;
+    margin: 3px;
     font-size: 15px;
     font-weight: bold;
     color: #ffffff;
@@ -145,13 +153,7 @@
     cursor: pointer;
   }
   
-  .trueFalseButton.true {
-    background-color: green;
-  }
-  
-  .trueFalseButton.false {
-    background-color: red;
-  }
+
   
   .scaleQuestion {
     display: flex;
@@ -163,7 +165,7 @@
   .scaleOptions {
     flex-direction: row;
     margin-left: 15px;
-    min-width: 100px;
+    min-width: 130px;
   }
   
   .scaleOption {
@@ -178,10 +180,10 @@
   .scaleOptionSelected {
     border-width: 2px;
     border-color: black;
-    width: 30px;
-    height: 30px;
-    border-radius: 15px;
-    margin-right: 10px;
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    margin-right: 5px;
     text-align: center;
   }
   
