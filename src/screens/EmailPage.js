@@ -17,8 +17,9 @@ const EmailPage = () => {
   const login = useGoogleLogin({
       onSuccess: (codeResponse) => {
         setUser(codeResponse);
+        console.log(codeResponse)
         localStorage.setItem('user', JSON.stringify({
-          access_token: user.access_token
+          access_token: codeResponse.access_token
         }));
       },
       onError: (error) => console.log('Login Failed:', error)
@@ -26,8 +27,10 @@ const EmailPage = () => {
 
   useEffect(
       () => {
+          //const user = localStorage.getItem('user');
+          console.log('user:', user);
           if (user && user.access_token !== undefined) {
-              axios
+            axios
                   .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`, {
                       headers: {
                           Authorization: `Bearer ${user.access_token}`,
@@ -35,6 +38,7 @@ const EmailPage = () => {
                       }
                   })
                   .then((res) => {
+                    console.log("res", res);
                       setProfile(res.data);
                       setEmail(res.data.email);
                       localStorage.setItem('profile', JSON.stringify({
@@ -60,12 +64,42 @@ const EmailPage = () => {
     () => {
       if (!user || user.access_token === undefined) {
         const savedUser = localStorage.getItem('user');
-        console.log('user:', savedUser);
+        const userObject = savedUser ? JSON.parse(savedUser) : null;
+        console.log('user:', userObject ? userObject.access_token : null);
+        if (userObject) {
+          console.log("entra")
+          axios
+                .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${userObject.access_token}`, {
+                    headers: {
+                        Authorization: `Bearer ${userObject.access_token}`,
+                        Accept: 'application/json'
+                    }
+                })
+                .then((res) => {
+                  console.log("res", res);
+                    setProfile(res.data);
+                    setEmail(res.data.email);
+                    localStorage.setItem('profile', JSON.stringify({
+                      id: res.data.id,
+                      email: res.data.email,
+                      verified_email: res.data.verified_email,
+                      name: res.data.name,
+                      given_name: res.data.given_name,
+                      family_name: res.data.family_name,
+                      picture: res.data.picture,
+                      locale: res.data.locale,
+                      hd: res.data.hd
+                    }));
+                    //handleContinue(res.data.email)
+                })
+                .catch((err) => console.log(err));
+        }
         if (savedUser && savedUser.name){
           console.log('saved user:', savedUser);
-          setUser(savedUser);
+          setUser(JSON.parse(savedUser));
           const savedProfile = localStorage.getItem('profile');
-          setProfile(savedProfile);
+          console.log("profle", savedProfile)
+          setProfile(JSON.parse(savedProfile));
         }
         else {
           setUser([]);
@@ -81,6 +115,10 @@ const EmailPage = () => {
   const logOut = () => {
       googleLogout();
       setProfile(null);
+      setUser([]);
+      setEmail('');
+      localStorage.removeItem('user');
+      localStorage.removeItem('profile');
   };
 
   const isEmailValid = () => {
@@ -89,7 +127,7 @@ const EmailPage = () => {
   };
   
   const handleContinue = () => {
-    if (isEmailValid) {
+    if (isEmailValid()) {
       if (enquestaId) {
         const handleUser = async () => {
           try {
@@ -165,6 +203,7 @@ const EmailPage = () => {
               <p className='title'>Sign in with Google</p>
               {profile ? (
                 <div>
+                  {console.log("profile", profile)}
                   <img src={profile.picture} alt="user image" />
                   <h3>Hola, {String(profile.name).split(' ')[0]}!</h3>
                   <button className="google-logout" onClick={logOut}>

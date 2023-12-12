@@ -3,7 +3,7 @@ import sendRequest from "../components/utilFetch";
 import { isWithinInterval, isToday } from 'date-fns';
 import NavBar from "../components/NavBar";
 import { useNavigate } from 'react-router-dom';
-import Map from "../components/Map";
+
 
 const Home = () => {
   const navigate = useNavigate();
@@ -28,6 +28,10 @@ const Home = () => {
         ]; 
         result[0].tags =  [
           { name: 'Otros', color: '#FF2D2D', backgroundColor: '#FFE4E1' },
+        ]; 
+        result[2].tags =  [
+          { name: 'Cáncer', color: '#2F9E09', backgroundColor: '#D9FFC4' },	
+          { name: 'Pulmón', color: '#6558d3', backgroundColor: '#f1eeff' },
         ]; 
         result[0].duracio = '⌛ Duración: 5 minutos';
         result[1].tags =  [
@@ -69,8 +73,9 @@ const Home = () => {
   
 
   return (
-    <>
-      <NavBar />
+    <div className="screen">
+    <> 
+      <NavBar  />
       <div className="contenidor">
         <p className="titolHome"> Selecciona una encuesta </p>
         <div className="cards">
@@ -113,9 +118,10 @@ const Home = () => {
           </div>
         ))}
         </div>
-       <Map />
+       
       </div>
     </>
+    </div>
   );
 };
 

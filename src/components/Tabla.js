@@ -1,8 +1,9 @@
 import React from 'react';
 import { useTable, useSortBy } from 'react-table';
+import { saveAs } from 'file-saver';
+import Papa from 'papaparse';
 
 const TuTabla = ({ preguntes, info }) => {
-  // Construir columnas dinámicamente basándonos en las preguntas
   const columns = React.useMemo(() => {
     const preguntasColumns = preguntes[0];
     return Object.keys(preguntasColumns).map((key) => ({
@@ -11,10 +12,8 @@ const TuTabla = ({ preguntes, info }) => {
     }));
   }, [preguntes]);
 
-  // Construir datos de filas basándonos en la información de usuarios
   const data = React.useMemo(() => info, [info]);
 
-  // Configurar la tabla con las columnas y los datos, incluyendo useSortBy
   const {
     getTableProps,
     getTableBodyProps,
@@ -23,12 +22,27 @@ const TuTabla = ({ preguntes, info }) => {
     prepareRow,
   } = useTable({ columns, data }, useSortBy);
 
+  const downloadCSV = () => {
+    const csvData = rows.map((row) =>
+      row.cells.map((cell) => {
+        return typeof cell.value === 'object' ? JSON.stringify(cell.value) : cell.value;
+      }).join(',')
+    );
+
+    const csvString = [columns.map((column) => column.Header), ...csvData].join('\n');
+
+    const csvBlob = new Blob([csvString], { type: 'text/csv;charset=utf-8' });
+
+    saveAs(csvBlob, 'respostes.csv');
+  };
+
   return (
+    <>
     <div style={{ overflowX: 'auto', width: '100%', maxWidth: '100%' }}>
       {/* Contenedor adicional para el desplazamiento vertical */}
       <div style={{ overflowY: 'auto', maxHeight: '63vh' }}>
         {/* Utiliza maxHeight con un porcentaje (70vh en este caso) */}
-        <table {...getTableProps()} style={{ borderCollapse: 'collapse', width: '100%' }}>
+        <table {...getTableProps()} style={{ borderCollapse: 'collapse',  width: '100%' }}>
           <thead style={{ position: 'sticky', top: 0, zIndex: 1, background: 'white' }}>
             <tr>
               <th colSpan={columns.length} style={{ borderBottom: '1px solid black' }}>
@@ -38,7 +52,7 @@ const TuTabla = ({ preguntes, info }) => {
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()} style={{ borderBottom: '1px solid black' }}>
                 {headerGroup.headers.map((column) => (
-                 <th {...column.getHeaderProps(column.getSortByToggleProps())} style={{ padding: '8px', textAlign: 'left', position: 'relative' }}>
+                 <th  {...column.getHeaderProps(column.getSortByToggleProps())} style={{ padding: '8px', textAlign: 'center', position: 'relative', minWidth: '80px' }} >
                  {column.render('Header')}
                  <div style={{ position: 'absolute', bottom: '0', left: '50%', transform: 'translateX(-50%)', color: 'rgba(128, 128, 128, 0.7)'}}>
                    {column.isSorted ? (column.isSortedDesc ? 'X' : '▲') : '▼'}
@@ -66,6 +80,15 @@ const TuTabla = ({ preguntes, info }) => {
         </table>
       </div>
     </div>
+    <br/>
+    <button className="button" onClick={downloadCSV}>
+      <span>Descargar</span>
+      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="none">
+        <path d="M0 0h24v24H0V0z" fill="none" />
+        <path d="M16.01 11H4v2h12.01v3L20 12l-3.99-4v3z" fill="currentColor" />
+      </svg>
+    </button>
+   </>
   );
 };
 

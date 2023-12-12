@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import NavBar from "../components/NavBar";
 import Tabla from "../components/Tabla";
 import { useNavigate, useParams } from 'react-router-dom';
@@ -6,6 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 const AdminPage = () => {
   const navigate = useNavigate();
   const { enquestaId } = useParams();
+  const [searchTerm, setSearchTerm] = useState("");
 
   const preguntes = [
     {
@@ -63,9 +64,20 @@ const AdminPage = () => {
 
   ];
 
-  const handleStart = () => {
-    navigate(`/${enquestaId}/TermsConditions`);
-  }
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filteredInfo = info.filter((item) => {
+    return Object.entries(item)
+      .filter(([key]) => key !== 'usuari') // Excluir el campo 'usuari'
+      .some(([key, value]) => value.toLowerCase().includes(searchTerm.toLowerCase()));
+  });
+
+    const handleStart = () => {
+      navigate(`/${enquestaId}/TermsConditions`);
+    }
+  
 
 
   return (
@@ -76,15 +88,13 @@ const AdminPage = () => {
           <div>
             <div className="information [ cardEnquesta ]">
               <h2 className="titleHome">Descarga respuestas</h2>
-              <Tabla preguntes={preguntes} info={info} />
-              <br/>
-              <button className="button" disabled={true} onClick={() => handleStart()}>
-                <span>Descargar</span>
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="none">
-                  <path d="M0 0h24v24H0V0z" fill="none" />
-                  <path d="M16.01 11H4v2h12.01v3L20 12l-3.99-4v3z" fill="currentColor" />
-                </svg>
-              </button>
+              <input
+                type="text"
+                placeholder="Buscar..."
+                value={searchTerm}
+                onChange={handleSearchChange}
+              />
+              <Tabla preguntes={preguntes} info={filteredInfo} />
             </div>
           </div>
         </div>
