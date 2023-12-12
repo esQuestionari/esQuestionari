@@ -95,12 +95,11 @@ const FinalPage = () => {
   };
 
   return (
-    <>
+    <div className="screen">
+      < >
       <NavBar />
       <div className="contenidor">
         <p className="titolHome">¡Gracias por completar el cuestionario!</p>
-
-
         <div className="cards">
           <div className="information [ cardEnquesta ]" style={{flexDirection: 'row'}}>
             <h2 className="titleHome" style={{fontSize: '20px'}}>Selecciona las opciones deseadas</h2>
@@ -139,12 +138,6 @@ const FinalPage = () => {
               </svg>
             </button>
           </div>
-
-
-
-
-
-
 
           {estadistiques.map((grafic, index) => (
             <div className="information [ cardEnquesta ]" style={{width: '100%', paddingLeft: '0px', paddingRight: '0px'}}>
@@ -218,6 +211,7 @@ const FinalPage = () => {
         </div>
       </div>
     </>
+    </div>
   );
 };
 

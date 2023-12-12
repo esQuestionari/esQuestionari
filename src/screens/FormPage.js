@@ -1,4 +1,4 @@
-import React, {useState, useEffect } from 'react';
+import React, {useState, useEffect, useRef } from 'react';
 import NavBar from "../components/NavBar";
 import { useNavigate, useParams} from 'react-router-dom';
 import sendRequest from "../components/utilFetch";
@@ -69,6 +69,7 @@ const FormPage = () => {
   };
   
   const navigate = useNavigate();
+  const scrollContainerRef = useRef(null);
   const {enquestaId} = useParams(); 
   const [isLoading, setLoading] = useState(true);
   const [infoEnquesta, setInfoEnquesta] = useState({});
@@ -84,6 +85,7 @@ const FormPage = () => {
     const apartats = await handleApartatsEnquesta();
     const seccio = await handleInfoApartat(apartats, currentSection);
 
+    window.scrollTo({ top: 0 });
   };
 
 useEffect(() => {
@@ -97,7 +99,6 @@ useEffect(() => {
     setLoading(false);
   }
 }, [apartatsIds])
-
   
   const handleSelectOption = (questionIndex, option) => {
     let newAnswers = [...answers];
@@ -197,9 +198,9 @@ useEffect(() => {
       handleInfoApartat(apartatsIds, currentSection + 1);
       setCurrentSection(currentSection + 1);
       setSectionValid(true);
-      window.scrollTo({
-          top: 0,
-      });
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.scrollTop = 0;
+      }
     }
   };
 
@@ -230,7 +231,8 @@ useEffect(() => {
 
   if  (isLoading) {
     return (
-      <>
+      <div className="screen">
+      < >
         <NavBar />
         <div className="container">
           <div key={currentSection} className="card">
@@ -252,14 +254,16 @@ useEffect(() => {
           </div>
         </div>
       </>
+      </div>
     );
   }
 
   return (
-    <>
+    <div className="screen">
+      < >
       <NavBar />
       <div className="contenidor">
-        <div className="cards">
+        <div className="cards" ref={scrollContainerRef} >
           <div className="information [ cardEnquesta ]">
             {<p className='sectionNumber'>Sección {currentSection + 1} de {infoEnquesta.numApartats}</p>}
             <h2 className='titol'>{section.titol}</h2>
@@ -384,6 +388,7 @@ useEffect(() => {
         </div>
       </div>
     </>
+    </div>
   );
 };
   
