@@ -2,10 +2,13 @@ import React, { useState, useEffect} from "react";
 import NavBar from "../components/NavBar";
 import { useNavigate, useParams } from 'react-router-dom';
 import sendRequest from "../components/utilFetch";
+import Map from "../components/Map";
+
 
 const InfoPage = () => {
   const navigate = useNavigate();
   const { enquestaId } = useParams();
+
   const [titleText, setTitletext] = useState("");
   const [infoText, setInfotext] = useState("");
 
@@ -30,6 +33,7 @@ const InfoPage = () => {
     handleInfo();
   }, []);
 
+
   const handleStart = () => {
     navigate(`/${enquestaId}/TermsConditions`);
   }
@@ -46,7 +50,7 @@ const InfoPage = () => {
               <p className="infoHome" style={{color:'#5E5E5E'}}>{infoText}</p>
               <button className="button" onClick={() => handleStart()}>
                 <span>Empezar</span>
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="none">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 20" width="24px" fill="none">
                   <path d="M0 0h24v24H0V0z" fill="none" />
                   <path d="M16.01 11H4v2h12.01v3L20 12l-3.99-4v3z" fill="currentColor" />
                 </svg>
@@ -54,7 +58,9 @@ const InfoPage = () => {
             </div>
           </div>
         </div>
+        <Map />
       </div>
+     
       </>
     </div>
   );

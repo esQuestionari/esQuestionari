@@ -95,12 +95,11 @@ const FinalPage = () => {
   };
 
   return (
-    <>
+    <div className="screen">
+      < >
       <NavBar />
       <div className="contenidor">
         <p className="titolHome">¡Gracias por completar el cuestionario!</p>
-
-
         <div className="cards">
           <div className="information [ cardEnquesta ]" style={{flexDirection: 'row'}}>
             <h2 className="titleHome" style={{fontSize: '20px'}}>Selecciona las opciones deseadas</h2>
@@ -140,14 +139,8 @@ const FinalPage = () => {
             </button>
           </div>
 
-
-
-
-
-
-
           {estadistiques.map((grafic, index) => (
-            <div className="information [ cardEnquesta ]" style={{width: 'calc(100% - 40px)'}}>
+            <div className="information [ cardEnquesta ]" style={{width: '100%', paddingLeft: '0px', paddingRight: '0px'}}>
               <h2 className="titleHome" style={{textAlign:'center'}}>{grafic.nom}</h2>
               {grafic.tipusGrafic === 'Barplot' && 
               <ResponsiveContainer width="95%" height={300}>
@@ -157,11 +150,18 @@ const FinalPage = () => {
                     dataKey="name"
                     interval={0}
                     dy={15}
-                    tick={(props) => (
-                      <text {...props} >
-                        {props.payload.value.length > 10 ? `${props.payload.value.substring(0, 10)}...` : props.payload.value}
-                      </text>
-                    )}
+                    tick={(props) => {
+                      const maxLength = window.innerWidth > 768 ? 10 : 4; ; // Número máximo de caracteres a mostrar
+                      const truncatedValue = props.payload.value.length > maxLength
+                          ? `${props.payload.value.substring(0, maxLength)}...`
+                          : props.payload.value;
+              
+                      return (
+                          <text {...props}>
+                              {truncatedValue}
+                          </text>
+                      );
+                  }}
                   />
                   <YAxis />
                   <Tooltip />
@@ -211,6 +211,7 @@ const FinalPage = () => {
         </div>
       </div>
     </>
+    </div>
   );
 };
 
