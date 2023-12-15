@@ -33,11 +33,12 @@ const InfoPage = () => {
     handleInfo();
   }, []);
 
-
   const handleStart = () => {
     navigate(`/${enquestaId}/TermsConditions`);
   }
 
+  const lineas = infoText.split('\\n');
+  console.log(lineas)
 
   return (
     <div className="screen">
@@ -47,7 +48,9 @@ const InfoPage = () => {
           <div>
             <div className="information [ cardEnquesta ]">
               <h2 className="titleHome">{titleText}</h2>
-              <p className="infoHome" style={{color:'#5E5E5E'}}>{infoText}</p>
+              {lineas.map((linea, index) => (
+                <p key={index} style={{color:'#5E5E5E', textAlign: "justify" }}>{linea}</p>
+              ))}
               <button className="button" onClick={() => handleStart()}>
                 <span>Empezar</span>
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 20" width="24px" fill="none">
