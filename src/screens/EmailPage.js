@@ -21,7 +21,6 @@ const EmailPage = () => {
         localStorage.setItem('user', JSON.stringify({
           access_token: codeResponse.access_token
         }));
-        getInfoUser(codeResponse);
       },
       onError: (error) => console.log('Login Failed:', error)
   });
@@ -102,6 +101,13 @@ const EmailPage = () => {
           console.log("profle", savedProfile)
           setProfile(JSON.parse(savedProfile));
         }
+        else {
+          setUser(null);
+          setProfile(null);
+        }
+      }
+      else {
+        console.log('saved user');
       }
     }, []);
 
@@ -111,8 +117,8 @@ const EmailPage = () => {
       setProfile(null);
       setUser(null);
       setEmail('');
-      localStorage.setItem('profile', null);
-      localStorage.setItem('user', null);
+      localStorage.removeItem('user');
+      localStorage.removeItem('profile');
   };
 
   const isEmailValid = () => {
@@ -124,7 +130,6 @@ const EmailPage = () => {
   const handleContinue = () => {
     if (isEmailValid()) {
       if (enquestaId) {
-        console.log("no entra")
         const handleUser = async () => {
           try {
             const response = await sendRequestWithStatus({
@@ -197,9 +202,10 @@ const EmailPage = () => {
             {/* Google Login Card */}
             <div className="login-card google-login">
               <p className='title'>Sign in with Google</p>
-              {profile && profile.given_name ? (
+              {profile ? (
                 <div>
-                  {profile.picture && <img src={profile.picture} alt="user image" />}
+                  {console.log("profile", profile)}
+                  <img src={profile.picture} alt="user image" />
                   <h3>Hola, {profile.given_name}!</h3>
                   <button className="google-logout" onClick={logOut}>
                     Log out
