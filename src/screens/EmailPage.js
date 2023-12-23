@@ -140,7 +140,7 @@ const EmailPage = () => {
                 'Content-Type': 'application/json',
               },
             });
-            console.log(response);
+            console.log("response", response);
             if (response.status === 201) {
               console.log("status 201");
               // Server returned a 201 status code
@@ -151,6 +151,7 @@ const EmailPage = () => {
                 // Navigate to the form page with the unique ID as a query parameter
                 //navigate(`/form?id=${result.id}`);
                 console.log("id returned: ", result.id);
+                localStorage.setItem('userId', String(result.id));
                 navigate(`/${enquestaId}/FormPage`);
               } else {
                 // Handle the case where the server response is missing the expected ID
@@ -192,7 +193,7 @@ const EmailPage = () => {
   return (
     <>
       <NavBar />
-      <div className="contenidor" style = {{marginTop: '20px'}}>
+      <div className="contenidor" style = {{paddingTop: '20px'}}>
         <div className="information [ cardEnquesta ]">
           <h2 className="email-title">Correo Electrónico</h2>
           
@@ -200,20 +201,21 @@ const EmailPage = () => {
   
             {/* Google Login Card */}
             <div className="login-card google-login">
-              <p className='title'>Regístrate con Google</p>
               {profile ? (
                 <div>
-                  {console.log("profile", profile)}
-                  <img src={profile.picture} alt="user image" />
+                  <img src={profile.picture} alt="user image" style={{marginTop: '25px'}}/>
                   <h3>Hola, {profile.given_name}!</h3>
                   <button className="google-logout" onClick={logOut}>
                     Log out
                   </button>
                 </div>
               ) : (
-                <button className="google-login" onClick={() => login()}>
-                  Regístrate con Google 🚀
-                </button>
+                <div>
+                  <p className='title'>Regístrate con Google</p>
+                  <button className="google-login" onClick={() => login()}>
+                    Regístrate con Google 🚀
+                  </button>
+                </div>
               )}
             </div>
             {!profile && enquestaId && (

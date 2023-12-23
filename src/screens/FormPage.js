@@ -67,7 +67,7 @@ const FormPage = () => {
       }, {});
       console.log("preguntesOrdenades", preguntesOrdenades);
       setSection(result);
-      setAnswers(Array(section.preguntes.length).fill({}));
+      setAnswers({});
     } catch (error) {
       console.error("falla formPage info apartat", error); 
     }
@@ -82,8 +82,9 @@ const FormPage = () => {
   const [section, setSection] = useState({});
   const [currentSection, setCurrentSection] = useState(0);
   const [answers, setAnswers] = useState({});
-  const [sectionValid, setSectionValid] = useState(true);
+  const [sectionValid, setSectionValid] = useState(false);
   const [invalidUser, setInvalidUser] = useState(false);
+  const [userId, setUserId] = useState(null);
 
   const initializeData = async () => {
     setCurrentSection(0); 
@@ -99,12 +100,13 @@ useEffect(() => {
 }, [])
 
 useEffect(() => {
-  const user = JSON.parse(localStorage.getItem('profile'));
-  if (!user) {
+  const userId = localStorage.getItem('userId');
+  if (!userId) {
     setInvalidUser(true);
   }
   else {
-    console.log("user", user.given_name); //aqui tots els atributs que vulguis
+    console.log("userId:", userId); //aqui tots els atributs que vulguis
+    setUserId(userId);
     if(apartatsIds) {
       setLoading(false);
     }
@@ -127,7 +129,7 @@ useEffect(() => {
 
   const handleTrueFalseAnswer = (questionIndex, isTrue) => {
     let newAnswers = {...answers};
-    newAnswers[questionIndex] = isTrue;
+    newAnswers[questionIndex] = isTrue ? 'cierto' : 'falso';
     setAnswers(newAnswers);
     checkSectionCompletion(newAnswers);
   };
@@ -139,61 +141,21 @@ useEffect(() => {
     checkSectionCompletion(newAnswers);
   };
   
-  const handleNumericAnswer = (e) => {
+  const handleNumericAnswer = (e, questionIndex) => {
     let number = e.target.value;
 
     if (number.length > 4) {
       number = number.slice(0, 4);
     }
+
+    let newAnswers = {...answers};
+    newAnswers[questionIndex] =  number;
+    setAnswers(newAnswers);
+    checkSectionCompletion(newAnswers);
   }
 
-  const checkSectionCompletion = (sectionAnswers) => {
-    const questionsInCurrentSection = section.preguntes.length;
-    return true;
-    // Create a set of answered questions that are not dependent on other questions
-    const independentQuestions = new Set(
-      Object.keys(sectionAnswers).filter(
-        (questionIndex) =>
-          section.preguntes[questionIndex].enCasDe === null
-      )
-    );
-  
-    // Count the number of dependent questions that are currently hidden
-    const hiddenDependentQuestions = new Set(
-      Object.keys(questionsInCurrentSection).filter(
-        (questionIndex) =>
-          section.preguntes[questionIndex].enCasDe !== null &&
-          (section.preguntes[questionIndex].enCasDe !==
-            section.preguntes[questionIndex].opcioEnCasDe)
-      )
-    );
-  
-    // Count the number of dependent questions that have been answered and are currently visible
-    const answeredVisibleDependentQuestions = new Set(
-      Object.keys(sectionAnswers).filter(
-        (questionIndex) =>
-          section.preguntes[questionIndex].enCasDe !== null &&
-          section.preguntes[questionIndex].opcioEnCasDe !== null &&
-          sectionAnswers[section.preguntes[questionIndex].enCasDe] ===
-          section.preguntes[questionIndex].opcioEnCasDe &&
-          !hiddenDependentQuestions.has(questionIndex)
-      )
-    );
-  
-    console.log(independentQuestions.size, answeredVisibleDependentQuestions.size, questionsInCurrentSection, hiddenDependentQuestions.size);
-    // Check if the sum of answered questions and dependent questions is equal to or greater than the total questions
-    if (
-      independentQuestions.size + answeredVisibleDependentQuestions.size ===
-      questionsInCurrentSection - hiddenDependentQuestions.size
-    ) {
-      setSectionValid(true);
-    } else {
-      setSectionValid(true);
-    }
-  };
-  
   const handleSelectMultipleOption = (questionIndex, option) => {
-    let newAnswers = {...answers};;
+    let newAnswers = {...answers};
     if (!newAnswers[questionIndex]) {
       newAnswers[questionIndex] = [option];
     } else {
@@ -209,19 +171,119 @@ useEffect(() => {
   };
   
 
+  const checkSectionCompletion = (newAnswers) => {
+    const visibleQuestions = Object.entries(section.preguntes)
+      .filter(([id, question]) => shouldBeAnswered(question, newAnswers))
+      .reduce((accumulator, [key, value]) => {
+        accumulator.push(value.id);
+        return accumulator;
+      }, []);
+
+    console.log("visible questions: ", visibleQuestions);
+
+    let missingQuestions = false;
+  
+    for (let i = 0; i < visibleQuestions.length && !missingQuestions; i++) {
+      if (!isAnswered(newAnswers, visibleQuestions[i])) {
+        missingQuestions = true;
+        console.log("pregunta no resposta: ", section.preguntes[visibleQuestions[i]].text);
+      }
+    }
+
+    setSectionValid(!missingQuestions);
+  };
+
+  const isAnswered = (newAnswers, questionId) => {
+    console.log("question id: ", questionId);
+    const question = section.preguntes[questionId];
+    if (!newAnswers[questionId]) return false;
+    if (question.tipus !== 'multiple' && newAnswers[questionId]) return true;
+    if (question.tipus === 'multiple' && newAnswers[questionId].length > 0) {
+      console.log("length: ", newAnswers[questionId].length);
+      return true;
+    }
+    return false;
+  }
+
   const handleNextSection = () => {
+    sendAnswers();
     if (currentSection < infoEnquesta.numApartats - 1) {
       console.log("next section: ", currentSection+1);
       console.log("apartats: ", apartatsIds);
       console.log("next section id: ", apartatsIds[currentSection + 1])
       handleInfoApartat(apartatsIds, currentSection + 1);
       setCurrentSection(currentSection + 1);
-      setSectionValid(true);
+      setSectionValid(false);
       if (scrollContainerRef.current) {
         scrollContainerRef.current.scrollTop = 0;
       }
     }
   };
+
+  const sendAnswers = async () => {
+    console.log("comença")
+    const visibleQuestions = Object.entries(section.preguntes)
+      .filter(([id, question]) => shouldBeAnswered(question, answers))
+      .reduce((accumulator, [key, value]) => {
+        accumulator.push(value.id);
+        return accumulator;
+      }, []);
+
+      console.log("acaba ", visibleQuestions)
+    let answersArray = [];
+  
+    for (let id in visibleQuestions) {
+      answersArray.push(createAnswer(visibleQuestions[id]));
+    }
+
+    let template = {
+      usuari: userId,
+      respostes: answersArray
+    }
+
+    console.log("template: ", template);
+    
+    await postAnswers(template);
+  }
+
+  const createAnswer = (id) => {
+    console.log("id: ", id);
+    if (section.preguntes[id].tipus !== 'multiple') {
+      return {
+        pregunta: id,
+        valor: answers[id]
+      };
+    }
+    else {
+      return {
+        pregunta: id,
+        valor: answers[id].join(', ')
+      };
+    }
+  }
+
+  const postAnswers = async (template) => {
+    try {
+      const response = await sendRequest({
+        url: `http://nattech.fib.upc.edu:40511/api/respostes/bulk/`,
+        method: 'POST',
+        body: JSON.stringify(template),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+      console.log("response", response);
+      if (response.status >= 200 && response.status <= 299) {
+        console.log("Section posted correctly jeje");
+      }
+      else {
+        console.log("There has been a problem posting the answers");
+      }
+    } catch (error) {
+      console.error("falla formPage al enviar respostes", error); 
+    }
+  }
 
   const isFormComplete = () => {
     return currentSection === infoEnquesta.numApartats - 1 && sectionValid;
@@ -235,6 +297,19 @@ useEffect(() => {
     setSectionValid(false);
     navigate(`/${enquestaId}/end`);
   };
+
+  const shouldBeAnswered = (question, newAnswers) => {
+    if (question.enCasDe === null) {
+      return true;
+    }
+    if (section.preguntes[question.enCasDe].tipus !== 'multiple') {
+      return (newAnswers[question.enCasDe] === question.opcioEnCasDe);
+    }
+    else {
+      if (!newAnswers[question.enCasDe]) return false;
+      return newAnswers[question.enCasDe].map(str => str.toLowerCase()).includes(question.opcioEnCasDe.toLowerCase());
+    }
+  }
 
   const shouldShowQuestion = (question) => {
     if (question.enCasDe === null) {
@@ -344,14 +419,14 @@ useEffect(() => {
                     ) : (
                       question.tipus === 'certofals' ? (
                         <div className='scaleQuestion'>
-                          <p className='questionText'>{question.text} style={{marginTop: '2px'}}</p>
+                          <p className='questionText' style={{marginTop: '2px'}}>{question.text}</p>
                           <div className='trueFalseButtons'>
                             <button
                               className="trueFalseButton"
                               onClick={() => handleTrueFalseAnswer(question.id, true)}
                             >
                               <svg class="svg-icon" viewBox="0 0 20 20">
-                                <path fill="green" stroke={answers[question.id] === true ? 'green' : 'grey'} stroke-width='1' d="M10.219,1.688c-4.471,0-8.094,3.623-8.094,8.094s3.623,8.094,8.094,8.094s8.094-3.623,8.094-8.094S14.689,1.688,10.219,1.688 M10.219,17.022c-3.994,0-7.242-3.247-7.242-7.241c0-3.994,3.248-7.242,7.242-7.242c3.994,0,7.241,3.248,7.241,7.242C17.46,13.775,14.213,17.022,10.219,17.022 M15.099,7.03c-0.167-0.167-0.438-0.167-0.604,0.002L9.062,12.48l-2.269-2.277c-0.166-0.167-0.437-0.167-0.603,0c-0.166,0.166-0.168,0.437-0.002,0.603l2.573,2.578c0.079,0.08,0.188,0.125,0.3,0.125s0.222-0.045,0.303-0.125l5.736-5.751C15.268,7.466,15.265,7.196,15.099,7.03"></path>
+                                <path fill="green" stroke={answers[question.id] === 'cierto' ? 'green' : 'grey'} stroke-width='1' d="M10.219,1.688c-4.471,0-8.094,3.623-8.094,8.094s3.623,8.094,8.094,8.094s8.094-3.623,8.094-8.094S14.689,1.688,10.219,1.688 M10.219,17.022c-3.994,0-7.242-3.247-7.242-7.241c0-3.994,3.248-7.242,7.242-7.242c3.994,0,7.241,3.248,7.241,7.242C17.46,13.775,14.213,17.022,10.219,17.022 M15.099,7.03c-0.167-0.167-0.438-0.167-0.604,0.002L9.062,12.48l-2.269-2.277c-0.166-0.167-0.437-0.167-0.603,0c-0.166,0.166-0.168,0.437-0.002,0.603l2.573,2.578c0.079,0.08,0.188,0.125,0.3,0.125s0.222-0.045,0.303-0.125l5.736-5.751C15.268,7.466,15.265,7.196,15.099,7.03"></path>
                               </svg>
                               
                             </button>
@@ -360,7 +435,7 @@ useEffect(() => {
                               onClick={() => handleTrueFalseAnswer(question.id, false)}
                             >
                               <svg class="svg-icon" viewBox="0 0 20 20">
-                                <path fill="red" stroke={answers[question.id] === false ? 'red' : 'grey'} stroke-width='1' d="M10.185,1.417c-4.741,0-8.583,3.842-8.583,8.583c0,4.74,3.842,8.582,8.583,8.582S18.768,14.74,18.768,10C18.768,5.259,14.926,1.417,10.185,1.417 M10.185,17.68c-4.235,0-7.679-3.445-7.679-7.68c0-4.235,3.444-7.679,7.679-7.679S17.864,5.765,17.864,10C17.864,14.234,14.42,17.68,10.185,17.68 M10.824,10l2.842-2.844c0.178-0.176,0.178-0.46,0-0.637c-0.177-0.178-0.461-0.178-0.637,0l-2.844,2.841L7.341,6.52c-0.176-0.178-0.46-0.178-0.637,0c-0.178,0.176-0.178,0.461,0,0.637L9.546,10l-2.841,2.844c-0.178,0.176-0.178,0.461,0,0.637c0.178,0.178,0.459,0.178,0.637,0l2.844-2.841l2.844,2.841c0.178,0.178,0.459,0.178,0.637,0c0.178-0.176,0.178-0.461,0-0.637L10.824,10z"></path>
+                                <path fill="red" stroke={answers[question.id] === 'falso' ? 'red' : 'grey'} stroke-width='1' d="M10.185,1.417c-4.741,0-8.583,3.842-8.583,8.583c0,4.74,3.842,8.582,8.583,8.582S18.768,14.74,18.768,10C18.768,5.259,14.926,1.417,10.185,1.417 M10.185,17.68c-4.235,0-7.679-3.445-7.679-7.68c0-4.235,3.444-7.679,7.679-7.679S17.864,5.765,17.864,10C17.864,14.234,14.42,17.68,10.185,17.68 M10.824,10l2.842-2.844c0.178-0.176,0.178-0.46,0-0.637c-0.177-0.178-0.461-0.178-0.637,0l-2.844,2.841L7.341,6.52c-0.176-0.178-0.46-0.178-0.637,0c-0.178,0.176-0.178,0.461,0,0.637L9.546,10l-2.841,2.844c-0.178,0.176-0.178,0.461,0,0.637c0.178,0.178,0.459,0.178,0.637,0l2.844-2.841l2.844,2.841c0.178,0.178,0.459,0.178,0.637,0c0.178-0.176,0.178-0.461,0-0.637L10.824,10z"></path>
                               </svg>
                             </button>
                           </div>
@@ -400,7 +475,7 @@ useEffect(() => {
                                 maxLength = "4"
                                 placeholder="2024"
                                 onInput={maxLengthCheck}
-                                onChange={handleNumericAnswer}
+                                onChange={(e) => handleNumericAnswer(e, question.id)}
                               />
                             ) : (
                               question.tipus === 'multiple' ? (
@@ -432,12 +507,17 @@ useEffect(() => {
             ))}
           </div>
           <div className='buttonContainer'>
-            {!isFormComplete() && (<button
-              className={`nextButton${(sectionValid || isFormComplete()) ? '' : ' disabled'}`}
+            {!isFormComplete() && (            
+            <button 
+              className="button" 
               onClick={handleNextSection}
-              disabled={!sectionValid || isFormComplete()}
+              disabled={!sectionValid}
             >
-              Siguiente
+              <span>Siguiente</span>
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 20" width="24px" fill="none">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path d="M16.01 11H4v2h12.01v3L20 12l-3.99-4v3z" fill="currentColor" />
+              </svg>
             </button>)}
             {isFormComplete() && (
               <button className="nextButton" onClick={handleFinishForm}>

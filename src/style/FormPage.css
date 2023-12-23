@@ -273,5 +273,58 @@
     }
   }
 
+  :root {
+	--c-white: #fff;
+	--c-black: #000;
+
+	--c-ash: #eaeef6;
+	--c-charcoal: #a0a0a0;
+	--c-void: #141b22;
+
+	--c-fair-pink: #FFEDEC;
+	--c-apricot: #FBC8BE;
+	--c-coffee: #754D42;
+	--c-del-rio: #917072;
+
+	--c-java: #1FCAC5;
+
+	--c-titan-white: #f1eeff;
+	--c-cold-purple: #a69fd6;
+	--c-indigo: #6558d3;
+	--c-governor: #4133B7;
+}
+
+  .button {
+    font: inherit;
+    line-height: 1;
+    background-color: var(--c-white);
+    border: 2px solid #08693e;
+    color: #08693e;
+    padding: 0.5em 1em;
+    border-radius: 6px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    max-width: fit-content;
+    cursor: pointer;
+    &:hover,
+    &:focus {
+        background-color: #08693e;
+        color: var(--c-white);
+    }
+}
+
+.button:disabled {
+    cursor: default;
+    color: #ccc;
+    border: 2px solid #ccc;
+    &:hover,
+		&:focus {
+			background-color: var(--c-white);
+			color: #ccc;
+		}
+  }
  
 
