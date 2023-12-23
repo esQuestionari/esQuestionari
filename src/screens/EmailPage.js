@@ -8,8 +8,8 @@ import '../style//EmailPage.css';
 
 
 const EmailPage = () => {
-  const [ user, setUser ] = useState([]);
-  const [ profile, setProfile ] = useState([]);
+  const [ user, setUser ] = useState(null);
+  const [ profile, setProfile ] = useState(null);
   const { enquestaId } = useParams();
   const [ email, setEmail] = useState('');
   const navigate = useNavigate();
@@ -21,6 +21,7 @@ const EmailPage = () => {
         localStorage.setItem('user', JSON.stringify({
           access_token: codeResponse.access_token
         }));
+        getInfoUser(codeResponse);
       },
       onError: (error) => console.log('Login Failed:', error)
   });
@@ -101,13 +102,6 @@ const EmailPage = () => {
           console.log("profle", savedProfile)
           setProfile(JSON.parse(savedProfile));
         }
-        else {
-          setUser([]);
-          setProfile(null);
-        }
-      }
-      else {
-        console.log('saved user');
       }
     }, []);
 
@@ -115,20 +109,22 @@ const EmailPage = () => {
   const logOut = () => {
       googleLogout();
       setProfile(null);
-      setUser([]);
+      setUser(null);
       setEmail('');
-      localStorage.removeItem('user');
-      localStorage.removeItem('profile');
+      localStorage.setItem('profile', null);
+      localStorage.setItem('user', null);
   };
 
   const isEmailValid = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return email.trim() !== '' && emailRegex.test(email);
+    if (!profile || !profile.email) return false;
+    return profile.email.trim() !== '' && emailRegex.test(profile.email);
   };
   
   const handleContinue = () => {
     if (isEmailValid()) {
       if (enquestaId) {
+        console.log("no entra")
         const handleUser = async () => {
           try {
             const response = await sendRequestWithStatus({
@@ -180,7 +176,7 @@ const EmailPage = () => {
         //navigate(`/${enquestaId}/FormPage`);
       }
       else {
-        navigate(-1);
+        navigate(-2);
       }
     } 
     else {
@@ -201,11 +197,10 @@ const EmailPage = () => {
             {/* Google Login Card */}
             <div className="login-card google-login">
               <p className='title'>Sign in with Google</p>
-              {profile ? (
+              {profile && profile.given_name ? (
                 <div>
-                  {console.log("profile", profile)}
-                  <img src={profile.picture} alt="user image" />
-                  <h3>Hola, {String(profile.name).split(' ')[0]}!</h3>
+                  {profile.picture && <img src={profile.picture} alt="user image" />}
+                  <h3>Hola, {profile.given_name}!</h3>
                   <button className="google-logout" onClick={logOut}>
                     Log out
                   </button>

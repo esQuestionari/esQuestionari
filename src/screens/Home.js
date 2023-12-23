@@ -25,24 +25,7 @@ const Home = () => {
           },
         });
         console.log(result)
-        result[2].tags =  [
-          { name: 'Radón', color: '#2F9E09', backgroundColor: '#D9FFC4' },	
-          { name: 'Ciencia Ciudadana', color: '#6558d3', backgroundColor: '#f1eeff' },
-        ]; 
-        result[0].tags =  [
-          { name: 'Otros', color: '#FF2D2D', backgroundColor: '#FFE4E1' },
-        ]; 
-        result[2].tags =  [
-          { name: 'Cáncer', color: '#2F9E09', backgroundColor: '#D9FFC4' },	
-          { name: 'Pulmón', color: '#6558d3', backgroundColor: '#f1eeff' },
-        ]; 
-        result[0].duracio = '⌛ Duración: 5 minutos';
-        result[1].tags =  [
-          { name: 'Otros', color: '#FF2D2D', backgroundColor: '#FFE4E1' },
-        ]; 
-        result[2].duracio = '⌛ Duración: 5 minutos';
-        result[1].duracio = '⌛ Duración: 30 minutos';
-        result[1].descripcio += " Añado un poco más de información para que parezca más realista. Una única línea de descripción no es demasiado típico. Aquí se debería añadir una pequeña introducción sobre la temática del estudio y la información que se espera obtener."
+        result.sort((a, b) => a.id - b.id);
         setEnquestes(result);
       } catch (error) {
         console.error("falla home", error);
@@ -66,14 +49,7 @@ const Home = () => {
 
   const handleResultats = (enquestaId) => {
     navigate(`/${enquestaId}/answers`);
-  };
-
-  // const tags = [
-  //   { name: 'Cáncer', color: '#2F9E09', backgroundColor: '#D9FFC4' },	
-  //   { name: 'Pulmón', color: '#6558d3', backgroundColor: '#f1eeff' },
-  //   // Add more tags as needed
-  // ];
-  
+  };  
 
   return (
     <div className="screen">
@@ -87,22 +63,22 @@ const Home = () => {
               {enquestaDisponible(enquesta) ? (
                   <div className="information [ cardEnquesta ]">
                     <div className='tags'>
-                      {enquesta.tags.map((tag, index) => (
+                      {enquesta.etiquetes.map((tag, index) => (
                         <span
                           key={index}
                           className="tag"
                           style={{
                             color: tag.color,
-                            backgroundColor: tag.backgroundColor,
+                            backgroundColor: tag.colorFons,
                           }}
                         >
-                          {tag.name}
+                          {tag.nom}
                         </span>
                       ))}
                     </div>
                     <h2 className="titleHome">{enquesta.nom}</h2>
                     <p className="infoHome">{enquesta.descripcio}</p>
-                    <p className="duracio">{enquesta.duracio}</p> 
+                    <p className="duracio">⌛ Duración: {enquesta.durada}</p> 
                     <button className="button" onClick={() => handleStart(enquesta.id)}>
                       <span>Empezar</span>
                       <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 20" width="24px" fill="none">

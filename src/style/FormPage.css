@@ -41,14 +41,14 @@
     font-weight: bold;
     color: #333333;
     margin-bottom: 10px;
-    margin-top: 15px;
+    margin-top: 40px;
   }
   
   .inputField {
     background-color: #f0f0f0;
     height: 30px;
     border: 3px solid gray;
-    margin-bottom: 20px;
+    margin-bottom: 0px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     width: calc(100% - 20px);
@@ -135,6 +135,7 @@
     flex-direction: row;
     justify-content: center;
     margin: 10px;
+    min-width: 95px;
   }
   
   .trueFalseButton {
@@ -221,6 +222,8 @@
     color: currentColor;
     width: 20px;
     height: 20px;
+    min-width: 20px;
+    min-height: 20px;
     border: 2px solid #08693e;
     border-radius: 3px;
     display: grid;
@@ -248,6 +251,8 @@
     color: currentColor;
     width: 20px;
     height: 20px;
+    min-width: 20px;
+    min-height: 20px;
     border: 2px solid #08693e;
     border-radius: 3px;
     display: grid;
