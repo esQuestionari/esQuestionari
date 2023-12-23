@@ -123,8 +123,7 @@ const EmailPage = () => {
 
   const isEmailValid = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!profile || !profile.email) return false;
-    return profile.email.trim() !== '' && emailRegex.test(profile.email);
+    return email.trim() !== '' && emailRegex.test(email);
   };
   
   const handleContinue = () => {
@@ -193,15 +192,15 @@ const EmailPage = () => {
   return (
     <>
       <NavBar />
-      <div className="email-container">
-        <div className="email-card">
+      <div className="contenidor" style = {{marginTop: '20px'}}>
+        <div className="information [ cardEnquesta ]">
           <h2 className="email-title">Correo Electrónico</h2>
           
           <div className="login-options">
   
             {/* Google Login Card */}
             <div className="login-card google-login">
-              <p className='title'>Sign in with Google</p>
+              <p className='title'>Regístrate con Google</p>
               {profile ? (
                 <div>
                   {console.log("profile", profile)}
@@ -213,11 +212,11 @@ const EmailPage = () => {
                 </div>
               ) : (
                 <button className="google-login" onClick={() => login()}>
-                  Sign in with Google 🚀
+                  Regístrate con Google 🚀
                 </button>
               )}
             </div>
-            {!profile && (
+            {!profile && enquestaId && (
               <>
                 <div className="or-separator">
                   <span>OR</span>
@@ -225,7 +224,7 @@ const EmailPage = () => {
       
                 
                 <div className="login-card manual-email">
-                  <p className='title'>Enter Email Manually</p>
+                  <p className='title'>Introduce un correo manualmente</p>
                   <div className="email-input-container">
                     <input
                       type="email"
@@ -241,12 +240,16 @@ const EmailPage = () => {
           </div>
   
           <div className="email-buttonContainer">
-            <button
-              className="email-continueButton"
+            <button 
+              className="button" 
               onClick={handleContinue}
               disabled={!isEmailValid() && !profile}
             >
-              Continuar
+              <span>Continuar</span>
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 20" width="24px" fill="none">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path d="M16.01 11H4v2h12.01v3L20 12l-3.99-4v3z" fill="currentColor" />
+              </svg>
             </button>
           </div>
         </div>
