@@ -31,6 +31,17 @@ function NavBar() {
     navigate("/email");
   };
 
+  const getImage = () => {
+    const user = JSON.parse(localStorage.getItem('profile'));
+    if (!user) {
+      return userIcon;
+    }
+    else {
+      if (user.picture) return user.picture;
+      else return userIcon;
+      }
+  }
+
 
   return (
     <header>
@@ -57,11 +68,11 @@ function NavBar() {
             />
              <Link to="/email">
               <img
-                src={userIcon}
+                src={getImage()}
                 id="userLogo"
                 alt="Login"
                 onClick={handleLoginClick}
-                style={{ cursor: "pointer" }}
+                style={{ cursor: "pointer"}}
               />
             </Link>
             </>

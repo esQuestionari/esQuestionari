@@ -8,8 +8,8 @@ import '../style//EmailPage.css';
 
 
 const EmailPage = () => {
-  const [ user, setUser ] = useState([]);
-  const [ profile, setProfile ] = useState([]);
+  const [ user, setUser ] = useState(null);
+  const [ profile, setProfile ] = useState(null);
   const { enquestaId } = useParams();
   const [ email, setEmail] = useState('');
   const navigate = useNavigate();
@@ -102,7 +102,7 @@ const EmailPage = () => {
           setProfile(JSON.parse(savedProfile));
         }
         else {
-          setUser([]);
+          setUser(null);
           setProfile(null);
         }
       }
@@ -115,7 +115,7 @@ const EmailPage = () => {
   const logOut = () => {
       googleLogout();
       setProfile(null);
-      setUser([]);
+      setUser(null);
       setEmail('');
       localStorage.removeItem('user');
       localStorage.removeItem('profile');
@@ -140,7 +140,7 @@ const EmailPage = () => {
                 'Content-Type': 'application/json',
               },
             });
-            console.log(response);
+            console.log("response", response);
             if (response.status === 201) {
               console.log("status 201");
               // Server returned a 201 status code
@@ -151,6 +151,7 @@ const EmailPage = () => {
                 // Navigate to the form page with the unique ID as a query parameter
                 //navigate(`/form?id=${result.id}`);
                 console.log("id returned: ", result.id);
+                localStorage.setItem('userId', String(result.id));
                 navigate(`/${enquestaId}/FormPage`);
               } else {
                 // Handle the case where the server response is missing the expected ID
@@ -180,7 +181,7 @@ const EmailPage = () => {
         //navigate(`/${enquestaId}/FormPage`);
       }
       else {
-        navigate(-1);
+        navigate(-2);
       }
     } 
     else {
@@ -192,31 +193,32 @@ const EmailPage = () => {
   return (
     <>
       <NavBar />
-      <div className="email-container">
-        <div className="email-card">
+      <div className="contenidor" style = {{paddingTop: '20px'}}>
+        <div className="information [ cardEnquesta ]">
           <h2 className="email-title">Correo Electrónico</h2>
           
           <div className="login-options">
   
             {/* Google Login Card */}
             <div className="login-card google-login">
-              <p className='title'>Sign in with Google</p>
               {profile ? (
                 <div>
-                  {console.log("profile", profile)}
-                  <img src={profile.picture} alt="user image" />
-                  <h3>Hola, {String(profile.name).split(' ')[0]}!</h3>
+                  <img src={profile.picture} alt="user image" style={{marginTop: '25px'}}/>
+                  <h3>Hola, {profile.given_name}!</h3>
                   <button className="google-logout" onClick={logOut}>
                     Log out
                   </button>
                 </div>
               ) : (
-                <button className="google-login" onClick={() => login()}>
-                  Sign in with Google 🚀
-                </button>
+                <div>
+                  <p className='title'>Regístrate con Google</p>
+                  <button className="google-login" onClick={() => login()}>
+                    Regístrate con Google 🚀
+                  </button>
+                </div>
               )}
             </div>
-            {!profile && (
+            {!profile && enquestaId && (
               <>
                 <div className="or-separator">
                   <span>OR</span>
@@ -224,7 +226,7 @@ const EmailPage = () => {
       
                 
                 <div className="login-card manual-email">
-                  <p className='title'>Enter Email Manually</p>
+                  <p className='title'>Introduce un correo manualmente</p>
                   <div className="email-input-container">
                     <input
                       type="email"
@@ -240,12 +242,16 @@ const EmailPage = () => {
           </div>
   
           <div className="email-buttonContainer">
-            <button
-              className="email-continueButton"
+            <button 
+              className="button" 
               onClick={handleContinue}
               disabled={!isEmailValid() && !profile}
             >
-              Continuar
+              <span>Continuar</span>
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 20" width="24px" fill="none">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path d="M16.01 11H4v2h12.01v3L20 12l-3.99-4v3z" fill="currentColor" />
+              </svg>
             </button>
           </div>
         </div>
