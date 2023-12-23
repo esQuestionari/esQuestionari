@@ -1,12 +1,10 @@
 import React, {useState} from "react";
 import NavBar from "../components/NavBar";
 import Tabla from "../components/Tabla";
-import { useNavigate, useParams } from 'react-router-dom';
 
 const AdminPage = () => {
-  const navigate = useNavigate();
-  const { enquestaId } = useParams();
   const [searchTerm, setSearchTerm] = useState("");
+
 
   const preguntes = [
     {
@@ -73,12 +71,6 @@ const AdminPage = () => {
       .filter(([key]) => key !== 'usuari') // Excluir el campo 'usuari'
       .some(([key, value]) => value.toLowerCase().includes(searchTerm.toLowerCase()));
   });
-
-    const handleStart = () => {
-      navigate(`/${enquestaId}/TermsConditions`);
-    }
-  
-
 
   return (
     <div className="screen">

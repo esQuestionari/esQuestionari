@@ -19,16 +19,12 @@ function NavBar() {
   };
 
   const handleClinicClick = () => {
-    const userConfirmed = window.confirm("¿Seguro que deseas ir a la web del Hospital Clínic?");
-    
-    if (userConfirmed) {
-      window.location.href = "https://www.clinicbarcelona.org/";
-    }
+      window.open("https://www.clinicbarcelona.org/", "_blank");
   };
 
   const handleLoginClick = () => {
     // Redirect to the email page
-    navigate("/email");
+    navigate("/perfil");
   };
 
   const getImage = () => {
@@ -66,7 +62,7 @@ function NavBar() {
               onClick={handleClinicClick}
               style={{ cursor: "pointer" }}
             />
-             <Link to="/email">
+             <Link to="/perfil">
               <img
                 src={getImage()}
                 id="userLogo"

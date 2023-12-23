@@ -31,7 +31,7 @@ const Terms = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const [termsConditions, setTermsConditions] = useState([]);
   const handleContinue = () => {
-    navigate(`/${enquestaId}/email`);
+    navigate(`/encuestas/${enquestaId}/perfil`);
   }
 
   return (

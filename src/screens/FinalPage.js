@@ -3,6 +3,7 @@ import NavBar from "../components/NavBar";
 import { useNavigate, useParams } from 'react-router-dom';
 import sendRequest from "../components/utilFetch";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart, Line,  PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+import Map from "../components/Map";
 
 const FinalPage = () => {
   const navigate = useNavigate();
@@ -208,6 +209,9 @@ const FinalPage = () => {
               }
             </div>
           ))}
+           <div className="information [ cardEnquesta ]" style={{flexDirection: 'row'}}>
+            <Map/> 
+          </div>
         </div>
       </div>
     </>

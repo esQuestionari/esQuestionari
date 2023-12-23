@@ -67,7 +67,6 @@ const EmailPage = () => {
         const userObject = savedUser ? JSON.parse(savedUser) : null;
         console.log('user:', userObject ? userObject.access_token : null);
         if (userObject) {
-          console.log("entra")
           axios
                 .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${userObject.access_token}`, {
                     headers: {
@@ -76,7 +75,6 @@ const EmailPage = () => {
                     }
                 })
                 .then((res) => {
-                  console.log("res", res);
                     setProfile(res.data);
                     setEmail(res.data.email);
                     localStorage.setItem('profile', JSON.stringify({
@@ -94,11 +92,9 @@ const EmailPage = () => {
                 })
                 .catch((err) => console.log(err));
         }
-        if (savedUser && savedUser.name){
-          console.log('saved user:', savedUser);
+        if (savedUser && savedUser.name) {
           setUser(JSON.parse(savedUser));
           const savedProfile = localStorage.getItem('profile');
-          console.log("profle", savedProfile)
           setProfile(JSON.parse(savedProfile));
         }
         else {
@@ -164,10 +160,10 @@ const EmailPage = () => {
               );
       
               if (userWantsToGoToFinal) {
-                navigate(`/${enquestaId}/end`); 
+                navigate(`/encuestas/${enquestaId}/detalles`); 
               }
               else {
-                navigate(`/${enquestaId}/FormPage`);
+                navigate(`/encuestas/${enquestaId}/`);
               }
             } else {
               // Handle other status codes
@@ -178,7 +174,7 @@ const EmailPage = () => {
           }
         };
         handleUser();
-        //navigate(`/${enquestaId}/FormPage`);
+        //navigate(`encuestas/${enquestaId}/`);
       }
       else {
         navigate(-2);
@@ -203,7 +199,7 @@ const EmailPage = () => {
             <div className="login-card google-login">
               {profile ? (
                 <div>
-                  <img src={profile.picture} alt="user image" style={{marginTop: '25px'}}/>
+                  <img src={profile.picture} alt="user" style={{marginTop: '25px'}}/>
                   <h3>Hola, {profile.given_name}!</h3>
                   <button className="google-logout" onClick={logOut}>
                     Log out

@@ -44,11 +44,11 @@ const Home = () => {
   };
 
   const handleStart = (enquestaId) => {
-    navigate(`/${enquestaId}/InfoPage`);
+    navigate(`/encuestas/${enquestaId}/Info`);
   };
 
   const handleResultats = (enquestaId) => {
-    navigate(`/${enquestaId}/answers`);
+    navigate(`/encuestas/${enquestaId}/admin`);
   };  
 
   return (

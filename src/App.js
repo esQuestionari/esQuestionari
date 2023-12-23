@@ -17,14 +17,14 @@ function App() {
     <Router>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/email" element={<EmailPage/>} />
-          <Route path="/:enquestaId/formpage" element={<FormPage/>} />
-          <Route path="/:enquestaId/termsconditions" element={<TermsConditions/>} />
-          <Route path="/:enquestaId/email" element={<EmailPage/>} />
-          <Route path="/:enquestaId/infopage" element={<InfoPage/>} />
-          <Route path="/:enquestaId/end" element={<FinalPage/>} />
-          <Route path="/:enquestaId/login" element={<LoginScreen/>} />
-          <Route path="/:enquestaId/answers" element={<AdminPage />} />
+          <Route path="/perfil" element={<EmailPage/>} />
+          <Route path="/encuestas/:enquestaId/" element={<FormPage/>} />
+          <Route path="/encuestas/:enquestaId/termsconditions" element={<TermsConditions/>} />
+          <Route path="/encuestas/:enquestaId/perfil" element={<EmailPage/>} />
+          <Route path="/encuestas/:enquestaId/info" element={<InfoPage/>} />
+          <Route path="/encuestas/:enquestaId/detalles" element={<FinalPage/>} />
+          <Route path="/encuestas/:enquestaId/login" element={<LoginScreen/>} />
+          <Route path="/encuestas/:enquestaId/admin" element={<AdminPage />} />
         </Routes>
     </Router>
   );

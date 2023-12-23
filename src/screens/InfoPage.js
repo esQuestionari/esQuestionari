@@ -2,7 +2,7 @@ import React, { useState, useEffect} from "react";
 import NavBar from "../components/NavBar";
 import { useNavigate, useParams } from 'react-router-dom';
 import sendRequest from "../components/utilFetch";
-import Map from "../components/Map";
+
 
 
 const InfoPage = () => {
@@ -34,7 +34,7 @@ const InfoPage = () => {
   }, []);
 
   const handleStart = () => {
-    navigate(`/${enquestaId}/TermsConditions`);
+    navigate(`/encuestas/${enquestaId}/TermsConditions`);
   }
 
   const lineas = infoText.split('\\n');
@@ -61,7 +61,7 @@ const InfoPage = () => {
             </div>
           </div>
         </div>
-        <Map />
+        
       </div>
      
       </>

@@ -295,7 +295,7 @@ useEffect(() => {
     setAnswers(newAnswers);
     setCurrentSection(0);
     setSectionValid(false);
-    navigate(`/${enquestaId}/end`);
+    navigate(`/encuestas/${enquestaId}/detalles`);
   };
 
   const shouldBeAnswered = (question, newAnswers) => {

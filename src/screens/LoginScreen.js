@@ -54,7 +54,7 @@ function LoginScreen() {
             <br />
             {profile ? (
                 <div>
-                    <img src={profile.picture} alt="user image" />
+                    <img src={profile.picture} alt="user" />
                     <h3>User Logged in</h3>
                     <p>Name: {profile.name}</p>
                     <p>Email Address: {profile.email}</p>
