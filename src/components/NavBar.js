@@ -29,13 +29,9 @@ function NavBar() {
 
   const getImage = () => {
     const user = JSON.parse(localStorage.getItem('profile'));
-    if (!user) {
-      return userIcon;
-    }
-    else {
-      if (user.picture) return user.picture;
-      else return userIcon;
-      }
+    if (!user) return userIcon;
+    if (user.picture) return user.picture;
+    return userIcon;
   }
 
 

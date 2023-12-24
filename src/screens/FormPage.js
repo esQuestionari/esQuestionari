@@ -5,6 +5,7 @@ import sendRequest from "../components/utilFetch";
 
 import '../style/FormPage.css'; 
 import '../index.css'; 
+import { toInteger } from 'lodash';
 
 const FormPage = () => {
   const handleInfoEnquesta = async () => {
@@ -26,7 +27,7 @@ const FormPage = () => {
     }
   };
   
-  const handleApartatsEnquesta = async () => {
+  const handleApartatsEnquesta = async (section) => {
     try {
       const result = await sendRequest({
         url: `http://nattech.fib.upc.edu:40511/api/enquestes/${enquestaId}/apartats/`,
@@ -41,7 +42,7 @@ const FormPage = () => {
       let apartats = result.map(it => it.id); 
       console.log("apartats:", apartats);
       setApartatsIds(apartats);
-      handleInfoApartat(apartats, currentSection);
+      handleInfoApartat(apartats, section);
     } catch (error) {
       console.error("falla formPage get apartats", error); 
     }
@@ -49,6 +50,7 @@ const FormPage = () => {
 
   const handleInfoApartat = async (apartats, idx) => {
     console.log("apartatsIds after setApartats:", apartats);
+    console.log("index: ", idx)
     try {
       let result = await sendRequest({
         url: `http://nattech.fib.upc.edu:40511/api/enquestes/${enquestaId}/apartats/${apartats[idx]}/`,
@@ -84,13 +86,26 @@ const FormPage = () => {
   const [answers, setAnswers] = useState({});
   const [sectionValid, setSectionValid] = useState(false);
   const [invalidUser, setInvalidUser] = useState(false);
-  const [userId, setUserId] = useState(null);
+  const [infoUser, setInfoUser] = useState(null);
 
   const initializeData = async () => {
-    setCurrentSection(0); 
+    let section = 0;
+    const infoUser = JSON.parse(localStorage.getItem('infoUser'));
+    if (!infoUser) {
+      setInvalidUser(true);
+    }
+    else {
+      setInfoUser(infoUser);
+      const progres = toInteger(infoUser.progres[enquestaId]);
+      console.log("progres: ", progres)
+      if (progres && progres !== "ACABAT") {
+        section = progres;
+      }
+    }
+    setCurrentSection(section); 
     const result = await handleInfoEnquesta();
-    const apartats = await handleApartatsEnquesta();
-    const seccio = await handleInfoApartat(apartats, currentSection);
+    const apartats = await handleApartatsEnquesta(section);
+    const seccio = await handleInfoApartat(apartats, section);
 
     window.scrollTo({ top: 0 });
   };
@@ -100,16 +115,12 @@ useEffect(() => {
 }, [])
 
 useEffect(() => {
-  const userId = localStorage.getItem('userId');
-  if (!userId) {
+  const infoUser = JSON.parse(localStorage.getItem('infoUser'));
+  if (!infoUser) {
     setInvalidUser(true);
   }
-  else {
-    console.log("userId:", userId); //aqui tots els atributs que vulguis
-    setUserId(userId);
-    if(apartatsIds) {
+  else if(apartatsIds) {
       setLoading(false);
-    }
   }
 }, [apartatsIds])
   
@@ -237,7 +248,7 @@ useEffect(() => {
     }
 
     let template = {
-      usuari: userId,
+      usuari: infoUser.id,
       respostes: answersArray
     }
 
@@ -281,7 +292,7 @@ useEffect(() => {
         console.log("There has been a problem posting the answers");
       }
     } catch (error) {
-      console.error("falla formPage al enviar respostes", error); 
+      console.error("falla formPage al enviar respostes", error);
     }
   }
 
@@ -325,15 +336,10 @@ useEffect(() => {
   }
 
   const getColors = (colors) => {
-    if (colors === 3) {
-      return ['red', 'orange', 'green'];
-    }
-    else if (colors === 4) {
-      return ['red', 'orange', 'yellow', 'green'];
-    }
-    else {
-      return ['red', 'orange', 'yellow', 'greenyellow', 'green'];
-    }
+    if (colors === 2)  return ['red', 'green']
+    if (colors === 3)  return ['red', 'orange', 'green'];
+    if (colors === 4)  return ['red', 'orange', 'yellow', 'green'];
+    return ['red', 'orange', 'yellow', 'greenyellow', 'green'];
   }
 
   const maxLengthCheck = (object) => {
@@ -401,7 +407,7 @@ useEffect(() => {
             )}
             {section.preguntes && Object.values(section.preguntes).map((question, questionIndex) => (
               <div key={questionIndex}>
-                {question.tipus !== 'escala' && question.tipus !== 'certofals' && shouldShowQuestion(question) && <p className='questionText'>{question.text}</p>}
+                {question.tipus !== 'escala' && question.tipus !== 'punys' && question.tipus !== 'certofals' && shouldShowQuestion(question) && <p className='questionText'>{question.text}</p>}
                 {(
                   shouldShowQuestion(question) ? (
                     question.tipus === 'opcions' ? (
@@ -441,13 +447,13 @@ useEffect(() => {
                           </div>
                         </div>
                       ) : (
-                        question.tipus === 'escala' ? (
+                        question.tipus === 'escala' || question.tipus === 'punys' ? (
                           <div className='scaleQuestion' 
                               style={(section.preguntes[question.id-1] && section.preguntes[question.id-1].tipus !== 'escala') ? {borderTop: "2px solid #e0e0e0", borderBottom: "2px solid #e0e0e0"} : 
                               (section.preguntes[question.id+1] && section.preguntes[question.id+1].tipus !== 'escala') ? {paddingBottom: '5px', borderBottom: "2px solid #e0e0e0"} : {borderBottom: "2px solid #e0e0e0"}}>
                             <p className='questionText' style={{marginBottom: '2px', marginTop: '2px', textAlign: 'right'}}>{question.text}</p>
                             <div className='scaleOptions'>
-                              {getColors(question.opcions.size).map((color, colorIndex) => (
+                              {getColors(question.opcions.length).map((color, colorIndex) => (
                                 <button
                                   key={colorIndex}
                                   className={answers[question.id] === color ? 'scaleOptionSelected' : 'scaleOption'}
@@ -507,7 +513,7 @@ useEffect(() => {
             ))}
           </div>
           <div className='buttonContainer'>
-            {!isFormComplete() && (            
+            {!isFormComplete() && currentSection < infoEnquesta.numApartats - 1 && (            
             <button 
               className="button" 
               onClick={handleNextSection}
@@ -519,11 +525,18 @@ useEffect(() => {
                 <path d="M16.01 11H4v2h12.01v3L20 12l-3.99-4v3z" fill="currentColor" />
               </svg>
             </button>)}
-            {isFormComplete() && (
-              <button className="nextButton" onClick={handleFinishForm}>
-                Finalizar
-              </button>
-            )}
+            {currentSection >= infoEnquesta.numApartats - 1 && (
+              <button 
+              className="button" 
+              onClick={handleFinishForm}
+              disabled={!sectionValid}
+            >
+              <span>Finalizar</span>
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 20" width="24px" fill="none">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path d="M16.01 11H4v2h12.01v3L20 12l-3.99-4v3z" fill="currentColor" />
+              </svg>
+            </button>)}
           </div>
         </div>
       </div>

@@ -26,10 +26,58 @@ const EmailPage = () => {
   });
 
   useEffect(
+    () => {
+      if (!user || user.access_token === undefined) {
+        const savedUser = localStorage.getItem('user');
+        const userObject = savedUser ? JSON.parse(savedUser) : null;
+        console.log('useeer:', userObject ? userObject.access_token : null);
+        if (userObject) {
+          axios
+                .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${userObject.access_token}`, {
+                    headers: {
+                        Authorization: `Bearer ${userObject.access_token}`,
+                        Accept: 'application/json'
+                    }
+                })
+                .then((res) => {
+                    setProfile(res.data);
+                    setEmail(res.data.email);
+                    localStorage.setItem('profile', JSON.stringify({
+                      id: res.data.id,
+                      email: res.data.email,
+                      verified_email: res.data.verified_email,
+                      name: res.data.name,
+                      given_name: res.data.given_name,
+                      family_name: res.data.family_name,
+                      picture: res.data.picture,
+                      locale: res.data.locale,
+                      hd: res.data.hd
+                    }));
+                    //handleContinue(res.data.email)
+                })
+                .catch((err) => console.log(err));
+        }
+        if (savedUser && savedUser.name) {
+          setUser(JSON.parse(savedUser));
+          const savedProfile = localStorage.getItem('profile');
+          console.log("saved profile: ", savedProfile)
+          setProfile(JSON.parse(savedProfile));
+        }
+        else {
+          setUser(null);
+          setProfile(null);
+        }
+      }
+      else {
+        console.log('saved user');
+      }
+    }, []);
+
+  useEffect(
       () => {
           //const user = localStorage.getItem('user');
-          console.log('user:', user);
           if (user && user.access_token !== undefined) {
+            console.log('user:', user);
             axios
                   .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`, {
                       headers: {
@@ -60,53 +108,6 @@ const EmailPage = () => {
       [ user ]
   );
 
-  useEffect(
-    () => {
-      if (!user || user.access_token === undefined) {
-        const savedUser = localStorage.getItem('user');
-        const userObject = savedUser ? JSON.parse(savedUser) : null;
-        console.log('user:', userObject ? userObject.access_token : null);
-        if (userObject) {
-          axios
-                .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${userObject.access_token}`, {
-                    headers: {
-                        Authorization: `Bearer ${userObject.access_token}`,
-                        Accept: 'application/json'
-                    }
-                })
-                .then((res) => {
-                    setProfile(res.data);
-                    setEmail(res.data.email);
-                    localStorage.setItem('profile', JSON.stringify({
-                      id: res.data.id,
-                      email: res.data.email,
-                      verified_email: res.data.verified_email,
-                      name: res.data.name,
-                      given_name: res.data.given_name,
-                      family_name: res.data.family_name,
-                      picture: res.data.picture,
-                      locale: res.data.locale,
-                      hd: res.data.hd
-                    }));
-                    //handleContinue(res.data.email)
-                })
-                .catch((err) => console.log(err));
-        }
-        if (savedUser && savedUser.name) {
-          setUser(JSON.parse(savedUser));
-          const savedProfile = localStorage.getItem('profile');
-          setProfile(JSON.parse(savedProfile));
-        }
-        else {
-          setUser(null);
-          setProfile(null);
-        }
-      }
-      else {
-        console.log('saved user');
-      }
-    }, []);
-
   // log out function to log the user out of google and set the profile array to null
   const logOut = () => {
       googleLogout();
@@ -115,74 +116,100 @@ const EmailPage = () => {
       setEmail('');
       localStorage.removeItem('user');
       localStorage.removeItem('profile');
+      localStorage.removeItem('infoUser');
   };
 
   const isEmailValid = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return email.trim() !== '' && emailRegex.test(email);
   };
-  
-  const handleContinue = () => {
-    if (isEmailValid()) {
-      if (enquestaId) {
-        const handleUser = async () => {
-          try {
-            const response = await sendRequestWithStatus({
-              url: 'http://nattech.fib.upc.edu:40511/api/usuaris/',
-              method: 'POST',
-              body: JSON.stringify({ email: email }),
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-              },
-            });
-            console.log("response", response);
-            if (response.status === 201) {
-              console.log("status 201");
-              // Server returned a 201 status code
-              const result = response.data;
-    
-              // Check if the response includes a unique ID
-              if (result.id) {
-                // Navigate to the form page with the unique ID as a query parameter
-                //navigate(`/form?id=${result.id}`);
-                console.log("id returned: ", result.id);
-                localStorage.setItem('userId', String(result.id));
-                navigate(`/${enquestaId}/FormPage`);
-              } else {
-                // Handle the case where the server response is missing the expected ID
-                alert('Unexpected response from the server. Please try again.');
-              }
-            } else if (response.status === 400) {
-              // Handle specific status code 400 (Bad Request)
-              const userWantsToGoToFinal = window.confirm(
-                'Este correo ya ha completado la encuesta. ¿Quiere ver información relacionada con la encuesta? (si le das a Cancelar podrás contestar de nuevo la encuesta)'
-              );
-      
-              if (userWantsToGoToFinal) {
-                navigate(`/encuestas/${enquestaId}/detalles`); 
-              }
-              else {
-                navigate(`/encuestas/${enquestaId}/`);
-              }
-            } else {
-              // Handle other status codes
-              alert('Server error. Please try again.');
-            }
-          } catch (error) {
-            console.error("falla email", error);
-          }
-        };
-        handleUser();
-        //navigate(`encuestas/${enquestaId}/`);
+
+  const handleUser = async () => {
+    try {
+      const response = await sendRequestWithStatus({
+        url: `http://nattech.fib.upc.edu:40511/api/usuaris?email=${email}`,
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+      console.log("response", response);
+      return response;
+
+    } catch (error) {
+      console.error("falla email", error);
+    }
+  };
+
+  const postUser = async () => {
+    try {
+      const response = await sendRequestWithStatus({
+        url: 'http://nattech.fib.upc.edu:40511/api/usuaris/',
+        method: 'POST',
+        body: JSON.stringify({ email: email }),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+
+      console.log("response", response);
+      return response;
+
+    } catch (error) {
+      console.error("falla email", error);
+    }
+  };
+
+  const createUser = async () => {
+    const response = await postUser();
+    console.log("response post user? ", response);
+    if (response.status === 201) {
+      console.log("status 201");
+      // Server returned a 201 status code
+      const result = response.data;
+
+      // Check if the response includes a unique ID
+      if (result.id) {
+        console.log("info user returned: ", result);
+        localStorage.setItem('infoUser', JSON.stringify(result));
       }
-      else {
-        navigate(-2);
-      }
-    } 
+    }
     else {
-      // Handle invalid email case, show an error message or take appropriate action
-      alert('Por favor, introduzca una dirección de correo válida.');
+      alert('Server error1. Please try again.'); 
+    }
+  };
+  
+  const handleContinue = async () => {
+    const response = await handleUser();
+    console.log("response peta? ", response);
+    if (response.status === 200) {
+      const result = response.data;
+
+      // Check if the response includes a unique ID
+      if (result.length > 0) {
+
+        console.log("info user returned: ", result[0]);
+        localStorage.setItem('infoUser', JSON.stringify(result[0]));
+      } 
+
+      // No id (not registered user with that email)
+      else {
+        await createUser();
+      }
+    }
+    else {
+      // Handle other status codes
+      alert('Server error2. Please try again.');
+    }
+
+    // Once the user is logged, go back to the previous question or begin the form
+    if (enquestaId) {
+      navigate(`/encuestas/${enquestaId}/`);      
+    }
+    else {
+      navigate(-2);
     }
   };
 
@@ -192,7 +219,6 @@ const EmailPage = () => {
       <div className="contenidor" style = {{paddingTop: '20px'}}>
         <div className="information [ cardEnquesta ]">
           <h2 className="email-title">Correo Electrónico</h2>
-          
           <div className="login-options">
   
             {/* Google Login Card */}
