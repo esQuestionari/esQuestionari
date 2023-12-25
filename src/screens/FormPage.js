@@ -19,7 +19,6 @@ const FormPage = () => {
         },
       });
   
-      console.log("enquesta: ", result); 
       setInfoEnquesta(result);
       return(result);
     } catch (error) {
@@ -38,9 +37,7 @@ const FormPage = () => {
         },
       });
   
-      console.log("apartats enquesta: ", result); 
       let apartats = result.map(it => it.id); 
-      console.log("apartats:", apartats);
       setApartatsIds(apartats);
       handleInfoApartat(apartats, section);
     } catch (error) {
@@ -49,8 +46,6 @@ const FormPage = () => {
   };
 
   const handleInfoApartat = async (apartats, idx) => {
-    console.log("apartatsIds after setApartats:", apartats);
-    console.log("index: ", idx)
     try {
       let result = await sendRequest({
         url: `http://nattech.fib.upc.edu:40511/api/enquestes/${enquestaId}/apartats/${apartats[idx]}/`,
@@ -61,13 +56,11 @@ const FormPage = () => {
         }
       });
   
-      console.log(result); 
       const preguntesOrdenades = result.preguntes.sort((a, b) => a.id - b.id);
       result.preguntes = preguntesOrdenades.reduce((acc, obj) => {
         acc[obj.id] = obj;
         return acc;
       }, {});
-      console.log("preguntesOrdenades", preguntesOrdenades);
       setSection(result);
       setAnswers({});
     } catch (error) {
@@ -97,7 +90,6 @@ const FormPage = () => {
     else {
       setInfoUser(infoUser);
       const progres = toInteger(infoUser.progres[enquestaId]);
-      console.log("progres: ", progres)
       if (progres && progres !== "ACABAT") {
         section = progres;
       }
@@ -304,6 +296,7 @@ useEffect(() => {
     //alert('You have completed the form. Thank you for your feedback.');
     const newAnswers = Array(section.preguntes.length).fill({});
     setAnswers(newAnswers);
+    sendAnswers();
     setCurrentSection(0);
     setSectionValid(false);
     navigate(`/encuestas/${enquestaId}/detalles`);

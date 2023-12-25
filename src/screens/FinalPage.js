@@ -25,7 +25,7 @@ const FinalPage = () => {
         console.log(result);
         setEstadistiques(result);
       } catch (error) {
-        console.error("falla home", error);
+        console.error("falla final", error);
       }
     };
 

@@ -373,3 +373,23 @@ th:hover {
   align-self: center;
   align-content: center;
 }
+
+.header-cell {
+  position: relative;
+  padding: 8px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.header-cell-content {
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out; /* Agregado para una transición suave */
+}
+
+.sort-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(128, 128, 128, 0.7);
+}

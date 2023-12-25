@@ -2,7 +2,7 @@ export default async function sendRequest({ url, method, headers, body }) {
     const response = await fetch(url, {
         method,
         headers,
-        body
+        body,
     });
     if(!response.ok) {
         throw new Error(`Request failed with ${response.status}`);

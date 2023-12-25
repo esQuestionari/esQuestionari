@@ -1,17 +1,24 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { useTable, useSortBy } from 'react-table';
 import { saveAs } from 'file-saver';
-import Papa from 'papaparse';
 
-const TuTabla = ({ preguntes, info }) => {
+const Tabla = ({ preguntes, info }) => {
+  const [hoveredColumn, setHoveredColumn] = useState(null);
+
   const columns = React.useMemo(() => {
-    const preguntasColumns = preguntes[0];
-    return Object.keys(preguntasColumns).map((key) => ({
-      Header: preguntasColumns[key],
-      accessor: key,
-    }));
-  }, [preguntes]);
+    const columnas = preguntes.map((pregunta) => {
+      const key = Object.keys(pregunta)[0];
+      const value = pregunta[key];
 
+      return {
+        Header: value,
+        accessor: key,
+      };
+    });
+
+    return columnas;
+  }, [preguntes]);
+  
   const data = React.useMemo(() => info, [info]);
 
   const {
@@ -52,11 +59,17 @@ const TuTabla = ({ preguntes, info }) => {
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()} style={{ borderBottom: '1px solid black' }}>
                 {headerGroup.headers.map((column) => (
-                 <th  {...column.getHeaderProps(column.getSortByToggleProps())} style={{ padding: '8px', textAlign: 'center', position: 'relative', minWidth: '80px' }} >
-                 {column.render('Header')}
-                 <div style={{ position: 'absolute', bottom: '0', left: '50%', transform: 'translateX(-50%)', color: 'rgba(128, 128, 128, 0.7)'}}>
-                   {column.isSorted ? (column.isSortedDesc ? 'X' : '▲') : '▼'}
-                 </div>
+                 <th  {...column.getHeaderProps(column.getSortByToggleProps())} 
+                      style={{ padding: '8px', textAlign: 'center', position: 'relative', minWidth: '130px', cursor: 'pointer' }} 
+                      onMouseEnter={() => setHoveredColumn(column.id)}
+                      onMouseLeave={() => setHoveredColumn(null)}
+                  >
+                  <div className="header-cell-content" style={{ maxHeight: hoveredColumn === column.id ? 'none' : '100px', overflow: 'hidden' }}>
+                    {column.render('Header')}
+                  </div>
+                  <div className="sort-indicator" style={{ position: 'absolute', bottom: '0', left: '50%', transform: 'translateX(-50%)', color: 'rgba(128, 128, 128, 0.7)' }}>
+                    {column.isSorted ? (column.isSortedDesc ? 'X' : '▲') : '▼'}
+                  </div>
                </th>
                 ))}
               </tr>
@@ -69,7 +82,7 @@ const TuTabla = ({ preguntes, info }) => {
               return (
                 <tr {...row.getRowProps()} style={{ borderBottom: isLastRow ? 'none' : '1px solid black' }}>
                   {row.cells.map((cell) => (
-                    <td {...cell.getCellProps()} style={{ padding: '8px', textAlign: 'left' }}>
+                    <td {...cell.getCellProps()} style={{ padding: '8px', textAlign: 'left', height: '100px', overflow:'hidden'}}>
                       {cell.render('Cell')}
                     </td>
                   ))}
@@ -92,4 +105,4 @@ const TuTabla = ({ preguntes, info }) => {
   );
 };
 
-export default TuTabla;
+export default Tabla;

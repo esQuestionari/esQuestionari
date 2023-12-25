@@ -158,7 +158,7 @@ const Home = () => {
             <div key={enquesta.id}>
               {enquestaDisponible(enquesta) ? (
                   <div className="information [ cardEnquesta ]">
-                    {enquesta.progres !== 0 && 
+                    {enquesta.progres !== 0 && enquesta.progres !== 100 && 
                     (<div style={{paddingBottom: '15px'}}>
                       <div className="w3-light-grey w3-round-xlarge" style={{height: '8px'}}>
                         <div className={getColorProgresBar(enquesta.progres)} style={{width: `calc(${enquesta.progres} * 0.9%)`, height: '8px', fontSize: '10px'}}></div>

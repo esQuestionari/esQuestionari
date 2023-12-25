@@ -1,76 +1,77 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import NavBar from "../components/NavBar";
 import Tabla from "../components/Tabla";
+import sendRequest from "../components/utilFetch";
+import { useParams } from 'react-router-dom';
 
 const AdminPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [preguntes, setPreguntes] = useState(null);
+  const [respostes, setRespostes] = useState(null);
+  const { enquestaId } = useParams();
 
+  useEffect(() => {
+    const handlePreguntes = async () => {
+      try {
+        const result = await sendRequest({
+          url: `http://nattech.fib.upc.edu:40511/api/preguntes/?apartat__enquesta__in=${enquestaId}`,
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+        });
 
-  const preguntes = [
-    {
-        1: "¿Ha oído hablar del gas radón?",
-        2: "¿menjar preferit?",
-        3: "¿estado?",
-        4: "aquesta pregunta la fare bastant llarga per probar que pasa?",
-        5: "curta pero important",
-        6: "aixo es fa fent petit i no funcional",
-        7: "pq no es crea el scroollroll",
-        8: "no hi ha manera",
-        9: "porque",
-        10: 'no quierw',
-        11: 'ara no hi ha'
-    }
-  ]
+        const formattedPreguntes = result.map((pregunta) => {
+          const formattedPregunta = {};
+          formattedPregunta[pregunta.id] = pregunta.text;
+          return formattedPregunta;
+        });
+        setPreguntes(formattedPreguntes);
+      } catch (error) {
+        console.error("falla admin preguntes", error);
+      }
+    };
 
-  const info = [
-    {
-        usuari: '1',
-        1: "no",
-        2: "patata", 
-        3: "estado",
-        4: "no funciona be la resposta es molt llarga"
-    },
-    {
-        usuari: '2',
-        1: "si",
-        2: "patata2",
-        3: "estado2",
-        4: "be"
-    },
-    {
-        usuari: '3',
-        1: "no",
-        2: "patata2",
-        3: "estado3 pero la faig mes llarga perque puc",
-        4: "malament"
-    },
-    {
-        usuari: '4',
-        1: "no",
-        2: "patata2",
-        3: "estado3 pero la faig mes llarga perque puc",
-        4: "malament"
-        
-    },
-    {
-        usuari: '5',
-        1: "no",
-        2: "patata2",
-        3: "estado3 pero la faig mes llarga perque puc",
-        4: "malament"
-    },
+    const handleRespostes = async () => {
+      try {
+        const result = await sendRequest({
+          url: `http://nattech.fib.upc.edu:40511/api/respostes/?pregunta__apartat__enquesta=${enquestaId}`,
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+        });
 
-  ];
+        const info = {};
+        result.forEach((resposta) => {
+          if (!info[resposta.usuari]) {
+            info[resposta.usuari] = {
+              usuari: resposta.usuari,
+              data: resposta.data,
+            };
+          }
+          info[resposta.usuari][resposta.pregunta] = resposta.valor;
+        });
+        const infoArray = Object.values(info);
+
+        setRespostes(infoArray);
+      } catch (error) {
+        console.error("falla admin preguntes", error);
+      }
+    };
+
+    handlePreguntes();
+    handleRespostes();
+  }, [enquestaId]);
+
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
 
-  const filteredInfo = info.filter((item) => {
-    return Object.entries(item)
-      .filter(([key]) => key !== 'usuari') // Excluir el campo 'usuari'
-      .some(([key, value]) => value.toLowerCase().includes(searchTerm.toLowerCase()));
-  });
+
 
   return (
     <div className="screen">
@@ -86,7 +87,11 @@ const AdminPage = () => {
                 value={searchTerm}
                 onChange={handleSearchChange}
               />
-              <Tabla preguntes={preguntes} info={filteredInfo} />
+              {(preguntes !== null && respostes !== null) ? (
+                <Tabla preguntes={preguntes} info={respostes} />
+              ) : (
+                <p>Loading...</p>
+              )}
             </div>
           </div>
         </div>
