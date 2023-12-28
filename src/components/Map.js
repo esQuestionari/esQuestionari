@@ -7,7 +7,6 @@ import "leaflet.markercluster";
 import "leaflet-dvf";
 
 const Map = (props) => {
-  console.log("info", props.info)
   const postalCodes = [];
 
   for (const [codigoPostal, poblacion] of Object.entries(props.info)) {
@@ -38,7 +37,6 @@ const Map = (props) => {
           const coordinates = resultadosEspaña.map((resultado) => {
             const latitud = resultado.geometry.lat;
             const longitud = resultado.geometry.lng;
-            console.log(`Latitud: ${latitud}, Longitud: ${longitud}`);
             return { lat: latitud, lng: longitud };
           });
           if (coordinates.length > 0) {

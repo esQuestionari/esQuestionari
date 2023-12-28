@@ -18,8 +18,10 @@ const EmailPage = () => {
       onSuccess: (codeResponse) => {
         setUser(codeResponse);
         console.log(codeResponse)
+        const expirationTime = Date.now() + codeResponse.expires_in * 60 * 1000;
         localStorage.setItem('user', JSON.stringify({
-          access_token: codeResponse.access_token
+          access_token: codeResponse.access_token,
+          expires_at: expirationTime,
         }));
       },
       onError: (error) => console.log('Login Failed:', error)

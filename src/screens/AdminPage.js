@@ -71,7 +71,11 @@ const AdminPage = () => {
     setSearchTerm(event.target.value);
   };
 
-
+  const filteredInfo = respostes?.filter((item) => {
+    return Object.entries(item)
+      .filter(([key]) => key !== 'usuari') 
+      .some(([key, value]) => value.toLowerCase().includes(searchTerm.toLowerCase()));
+  });
 
   return (
     <div className="screen">
@@ -88,7 +92,7 @@ const AdminPage = () => {
                 onChange={handleSearchChange}
               />
               {(preguntes !== null && respostes !== null) ? (
-                <Tabla preguntes={preguntes} info={respostes} />
+                <Tabla preguntes={preguntes} info={filteredInfo} />
               ) : (
                 <p>Loading...</p>
               )}

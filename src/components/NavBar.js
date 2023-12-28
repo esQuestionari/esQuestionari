@@ -29,11 +29,16 @@ function NavBar() {
 
   const getImage = () => {
     const user = JSON.parse(localStorage.getItem('profile'));
-    if (!user) return userIcon;
-    if (user.picture) return user.picture;
-    return userIcon;
+    const savedUser = localStorage.getItem('user');
+    const userObject = savedUser ? JSON.parse(savedUser) : null;
+    
+    if (!user || !userObject || userObject.expires_at < Date.now() || !user.picture) {
+      return userIcon; 
+    }
+    else return user.picture;
   }
 
+  
 
   return (
     <header>
