@@ -207,11 +207,11 @@ const FinalPage = () => {
                 </PieChart>
                 </ResponsiveContainer>
               }
+              {grafic.tipusGrafic === 'Mapa' &&
+                 <Map info={grafic.resultats} /> 
+               }
             </div>
           ))}
-           <div className="information [ cardEnquesta ]" style={{flexDirection: 'row'}}>
-            <Map/> 
-          </div>
         </div>
       </div>
     </>

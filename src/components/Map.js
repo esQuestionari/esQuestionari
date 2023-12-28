@@ -6,15 +6,16 @@ import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import "leaflet.markercluster";
 import "leaflet-dvf";
 
-const Map = () => {
-  const postalCodes = [
-    { postalCode: "08020", population: 3 },
-    { postalCode: "08001", population: 75 },
-    { postalCode: "08032", population: 30 },
-    { postalCode: "08012", population: 50 },
-    { postalCode: "28002", population: 2 },
-    { postalCode: "41006", population: 5 },
-  ];
+const Map = (props) => {
+  console.log("info", props.info)
+  const postalCodes = [];
+
+  for (const [codigoPostal, poblacion] of Object.entries(props.info)) {
+    postalCodes.push({
+      postalCode: codigoPostal,
+      population: poblacion
+    });
+  }
 
     const [map, setMap] = useState(null); 
 
