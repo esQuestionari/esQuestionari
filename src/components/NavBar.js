@@ -33,7 +33,8 @@ function NavBar() {
     const userObject = savedUser ? JSON.parse(savedUser) : null;
     
     if (!user || !userObject || userObject.expires_at < Date.now() || !user.picture) {
-      return userIcon; 
+      console.log("usuari caducat")
+      return userIcon;  
     }
     else return user.picture;
   }

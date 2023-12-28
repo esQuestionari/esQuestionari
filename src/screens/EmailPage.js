@@ -57,7 +57,16 @@ const EmailPage = () => {
                     }));
                     //handleContinue(res.data.email)
                 })
-                .catch((err) => console.log(err));
+                .catch((err) => {console.log(err) 
+                  console.log("error")  
+                  googleLogout();
+                  setProfile(null);
+                  setUser(null);
+                  setEmail('');
+                  localStorage.removeItem('user');
+                  localStorage.removeItem('profile');
+                  localStorage.removeItem('infoUser');
+                });
         }
         if (savedUser && savedUser.name) {
           setUser(JSON.parse(savedUser));
@@ -104,7 +113,10 @@ const EmailPage = () => {
                       }));
                       //handleContinue(res.data.email)
                   })
-                  .catch((err) => console.log(err));
+                  .catch((err) => {
+                    console.log("error")
+                    console.log(err)
+                  });
           }
       },
       [ user ]
