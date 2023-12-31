@@ -208,6 +208,14 @@ th:hover {
   overflow-y: auto;
 }
 
+.cardsHome {
+  display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(min(19rem, 100%), 1fr));
+  grid-gap: 1rem;
+  margin: 20px auto;
+  width: 100%;
+}
+
 .cardsTabla {
 	display: block;
   display: inline-block;
@@ -228,7 +236,8 @@ th:hover {
 	border-radius: 16px;
   padding: 15px;
   box-shadow: 0 30px 30px -40px rgba(65, 51, 183, 0.25), 0 10px 10px rgba(0, 0, 0, 0.15);
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  height: 85%;
 }
 
 .information {
@@ -393,3 +402,82 @@ th:hover {
   transform: translateX(-50%);
   color: rgba(128, 128, 128, 0.7);
 }
+.searchBar {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  background: white;
+  box-sizing: content-box;
+  padding: 12px 10px;
+  border-radius: 4px;
+  line-height: 8px;
+  margin: 0px;
+  margin-top: 15px;
+  width: calc(100% - 20px);
+  height: auto; /* Set height to auto for flexibility */
+  border-radius: 16px;
+  cursor: pointer;
+  transition: 0.1s all;
+  flex-direction: row;
+  display: flex;
+  flex-wrap: wrap; /* Allow items to wrap to the next line */
+}
+
+.searchBar input[name="search"] {
+  flex: 1;
+  width: calc(100% - 20px);
+  min-width: 150px;
+  border: 1px solid transparent;
+  font-size: 16px;
+  padding-left: 8px;
+  margin: 5px 5px 5px 5px;
+  height: 27px;
+  background-color: #f1f1f1;
+  border: 1px solid gray;
+  border-radius: 6px;
+  line-height: 1;
+  outline: none;
+  &:hover,&:focus {
+    border: 1px solid black;
+  }
+}
+
+.tagFilter {
+  background: #333;
+  margin: 5px;
+  color: white;
+  font-weight: 650;
+  font-size: 14px;
+  padding: 7px 10px 10px 10px;
+  line-height: 1;
+  border-radius: 6px;
+  overflow: hidden;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.tagFilter:hover {
+  background: #222;
+}
+
+.tagFilter .remove:before {
+  content: '×';
+  padding-left: 15px;
+}
+
+
+.tagsContainer {
+  margin-right: 10px; /* Adjust margin as needed */
+  flex-direction: row;
+  display: flex;
+  align-items: center;
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+
+}
+
+.inputContainer {
+  flex: 1;
+}
+
