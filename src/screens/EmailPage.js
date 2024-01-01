@@ -58,7 +58,7 @@ const EmailPage = () => {
                     //handleContinue(res.data.email)
                 })
                 .catch((err) => {console.log(err) 
-                  console.log("error")  
+                  console.log("error llavors borro datos")  
                   googleLogout();
                   setProfile(null);
                   setUser(null);

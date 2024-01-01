@@ -48,7 +48,7 @@ const Home = () => {
     setEtiquetes(etiquetes);
     return etiquetes;
       
-    try {
+    /*try {
       const result = await sendRequest({
         url: 'http://nattech.fib.upc.edu:40511/api/etiquetes/',
         method: 'GET',
@@ -62,7 +62,7 @@ const Home = () => {
       return result;
     } catch (error) {
       console.error("falla etiquetes home", error);
-    }
+    }*/
   };
 
   const initializeData = async () => {
@@ -98,13 +98,14 @@ const Home = () => {
 
 
   const setProgres = async (enquestes) => {
-    const info = JSON.parse(localStorage.getItem('infoUser'));
-    console.log('infoUser: ', info);
+    const user = JSON.parse(localStorage.getItem('profile'));
+    const savedUser = localStorage.getItem('user');
+    const userObject = savedUser ? JSON.parse(savedUser) : null;
 
     let progres = {};
 
-    if (info && info.email) {
-      const response = await updateUserInfo(info.email);
+    if (user && user.email && userObject && userObject.expires_at >= Date.now()) {
+      const response = await updateUserInfo(user.email);
 
       if (response.status === 200) {
         let result = response.data;
@@ -118,11 +119,11 @@ const Home = () => {
         } 
       }
       else {
-        // Handle other status codes
-        alert('Server error2. Please try again.');
+        alert('Server error. Please try again.');
       }
       console.log("progres: ", progres)
     }
+    
     updateprogres(progres, enquestes);  
   };
 

@@ -295,6 +295,7 @@ th:hover {
 	}
 
 	.button {
+    margin-right: 15px;
 		font: inherit;
 		line-height: 1;
 		background-color: var(--c-white);
@@ -317,7 +318,6 @@ th:hover {
 	}
 
   .buttonResultats {
-    margin-left: 15px;
 		font: inherit;
 		line-height: 1;
 		background-color: var(--c-white);
