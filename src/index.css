@@ -430,7 +430,7 @@ th:hover {
   border: 1px solid transparent;
   font-size: 16px;
   padding-left: 8px;
-  margin: 5px 5px 5px 5px;
+  margin: 5px 5px 0 5px;
   height: 27px;
   background-color: #f1f1f1;
   border: 1px solid gray;
@@ -481,3 +481,35 @@ th:hover {
   flex: 1;
 }
 
+.suggestedTags {
+
+  background-color: #fff;
+  border: 1px solid #ccc;
+  max-height: 150px;
+  overflow-y: auto;
+  border-radius: 5px;
+  margin: 0 5px 5px 5px;
+}
+
+.tag {
+  display: flex;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.tag:hover {
+  background-color: #f1f1f1;
+}
+
+.tag.selected {
+  background-color: #cccccc; 
+  color: #000; 
+}
+
+.remove2 {
+  cursor: pointer;
+  color: #000; 
+  margin-left: auto;
+  font-size: 20px;
+  margin-right: 5px;
+}

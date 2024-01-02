@@ -16,6 +16,24 @@ const Home = () => {
   const [filter, setFilter] = useState(['Radón', 'Otros']);
   const [searchQuery, setSearchQuery] = useState("");
   const scrollContainerRef = useRef(null);
+  const user = JSON.parse(localStorage.getItem('profile'));
+  const savedUser = localStorage.getItem('user');
+  const userObject = savedUser ? JSON.parse(savedUser) : null;
+  const [showOptions, setShowOptions] = useState(false);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (inputRef.current && !inputRef.current.contains(event.target)) {
+        setShowOptions(false);
+      }
+    };
+  
+    document.addEventListener("click", handleClickOutside);
+  
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
   const handleEnquestes = async () => {
     try {
@@ -36,19 +54,8 @@ const Home = () => {
     }
   };
 
-  const handleEtiquetes = async () => {
-    const etiquetes =
-     [
-      {id: 1, nom: 'Radón', color: '#2F9E09', colorFons: '#D9FFC4'},
-      {id: 2, nom: 'Ciencia ciudadana', color: '#6558D3', colorFons: '#F1EEFF'},
-      {id: 3, nom: 'Otros', color: '#FF2D2D', colorFons: '#FFE4E1'}
-    ]
-
-    console.log("etiquetes: ", etiquetes);
-    setEtiquetes(etiquetes);
-    return etiquetes;
-      
-    /*try {
+  const handleEtiquetes = async () => {      
+    try {
       const result = await sendRequest({
         url: 'http://nattech.fib.upc.edu:40511/api/etiquetes/',
         method: 'GET',
@@ -62,7 +69,7 @@ const Home = () => {
       return result;
     } catch (error) {
       console.error("falla etiquetes home", error);
-    }*/
+    }
   };
 
   const initializeData = async () => {
@@ -76,7 +83,7 @@ const Home = () => {
       scrollContainerRef.current.scrollTop = 0;
     }
     initializeData();
-  }, []);
+  }, [savedUser]);
 
   const updateUserInfo = async (email) => {
     try {
@@ -98,9 +105,6 @@ const Home = () => {
 
 
   const setProgres = async (enquestes) => {
-    const user = JSON.parse(localStorage.getItem('profile'));
-    const savedUser = localStorage.getItem('user');
-    const userObject = savedUser ? JSON.parse(savedUser) : null;
 
     let progres = {};
 
@@ -193,6 +197,7 @@ const Home = () => {
   const handleInputClick = () => {
     // Focus on the input when clicking on the search bar
     inputRef.current.focus();
+    setShowOptions(true);
   };
 
   const handleInputChange = (event) => {
@@ -221,11 +226,22 @@ const Home = () => {
     if (event.which === 8 && searchQuery === "") {
       const lastTag = filter[filter.length - 1];
       setFilter(filter.filter(tag => tag !== lastTag));
+      setShowOptions(false);
     }
+   
   };
 
-  const handleTagClick = (text) => {
+  const handleDeleteTag = (text) => {
     setFilter(filter.filter(tag => tag !== text));
+    setShowOptions(false);
+  };
+
+  const handleTagClick = (tag) => {
+    if (!filter.includes(tag)) {
+      setFilter([...filter, tag]);
+      setSearchQuery('');
+    }
+    setShowOptions(false);
   };
 
   const getColorTag = (etiqueta) => {
@@ -251,7 +267,7 @@ const Home = () => {
         <div className="searchBar" onClick={handleInputClick}>
           <div className="tagsContainer">
             {filter.map((tag, index) => (
-              <span key={index} className="tagFilter" style={getColorTag(tag)} onClick={() => handleTagClick(tag)}>
+              <span key={index} className="tagFilter" style={getColorTag(tag)} onClick={() => handleDeleteTag(tag)}>
                 {tag}
                 <span className="remove"></span>
               </span>
@@ -265,8 +281,23 @@ const Home = () => {
               value={searchQuery}
               onChange={handleInputChange}
               onKeyDown={handleInputKeyDown}
+              onClick={handleInputClick}
               ref={inputRef}
             />
+            {showOptions && etiquetes.length > 0 && (
+              <div className="suggestedTags">
+                {etiquetes.map((tag) => (
+                  <div key={tag} className={`tag ${filter.includes(tag.nom) ? 'selected' : ''}`} onClick={() => handleTagClick(tag.nom)}>
+                    {tag.nom}
+                    {filter.includes(tag.nom) && (
+                       <span className="flex remove2" onClick={(e) => handleDeleteTag(tag.nom)}>
+                       &#10005;
+                     </span>
+                      )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           
         </div>

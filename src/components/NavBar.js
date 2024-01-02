@@ -1,13 +1,31 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../img/logo.jpeg";
 import logoClinic from "../img/logoClinic.png";
+import logoHGT from "../img/logoHGT.png";
 import userIcon from "../img/user.png";
 
 
 function NavBar() {
   const navigate = useNavigate();
   const [redirectToHome, setRedirectToHome] = useState(false);
+  const user = JSON.parse(localStorage.getItem('profile'));
+  const savedUser = localStorage.getItem('user');
+  const userObject = savedUser ? JSON.parse(savedUser) : null;
+  //const hospital = JSON.parse(localStorage.getItem('hospital'));
+
+ /* useEffect(() => {
+    getHospital();
+  }, [hospital]);
+
+  const getHospital = () => {
+
+    if (hospital === "Hospital Germans Trias") {
+      return logoHGT;  
+    }
+    else return logoClinic;
+  }
+*/
 
   const handleLogoClick = () => {
     const userConfirmed = window.confirm("¿Seguro que deseas ir a la página inicial?");
@@ -27,19 +45,18 @@ function NavBar() {
     navigate("/perfil");
   };
 
+  useEffect(() => {
+    getImage();
+  }, [savedUser]);
+
   const getImage = () => {
-    const user = JSON.parse(localStorage.getItem('profile'));
-    const savedUser = localStorage.getItem('user');
-    const userObject = savedUser ? JSON.parse(savedUser) : null;
-    
+
     if (!user || !userObject || userObject.expires_at < Date.now() || !user.picture) {
       console.log("usuari caducat")
       return userIcon;  
     }
-    else return user.picture;
+    else return user.picture || userIcon;
   }
-
-  
 
   return (
     <header>
@@ -58,7 +75,7 @@ function NavBar() {
             />
             {/*logo clinic*/}
             <img
-              src={logoClinic}
+              src={logoClinic} 
               id="hospitalClinic"
               alt="Hospital Clínic"
               onClick={handleClinicClick}
