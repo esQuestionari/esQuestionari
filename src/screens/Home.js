@@ -13,7 +13,7 @@ const Home = () => {
   const [enquestes, setEnquestes] = useState([]);
   const [etiquetes, setEtiquetes] = useState([]);
   const [infoUser, setInfoUser] = useState(null);
-  const [filter, setFilter] = useState(['Radón', 'Otros']);
+  const [filter, setFilter] = useState(['Radón', 'VIH']);
   const [searchQuery, setSearchQuery] = useState("");
   const scrollContainerRef = useRef(null);
   const user = JSON.parse(localStorage.getItem('profile'));
@@ -169,8 +169,8 @@ const Home = () => {
       return true;
     }
 
-    const lowerCaseFilter = filter.map(tag => tag.toLowerCase());
-    return enquesta.etiquetes.some(tag => lowerCaseFilter.includes(tag.nom.toLowerCase()));
+    const lowerCaseFilter = filter.map(tag => tag.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase());
+    return enquesta.etiquetes.some(tag => lowerCaseFilter.includes(tag.nom.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()));
   }
 
   const handleStart = (enquesta) => {
@@ -265,14 +265,15 @@ const Home = () => {
       <div className="contenidor">
         <p className="titolHome"> Selecciona una encuesta </p>
         <div className="searchBar" onClick={handleInputClick}>
-          <div className="tagsContainer">
+          {filter.length > 0 &&
+          (<div className="tagsContainer">
             {filter.map((tag, index) => (
               <span key={index} className="tagFilter" style={getColorTag(tag)} onClick={() => handleDeleteTag(tag)}>
                 {tag}
                 <span className="remove"></span>
               </span>
             ))}
-          </div>
+          </div>)}
           <div className="inputContainer">
             <input
               type="text"
@@ -307,16 +308,16 @@ const Home = () => {
           {enquestes.map((enquesta) => (enquestaDisponible(enquesta) && enquestaVisible(enquesta) &&
             <div key={enquesta.id}>
               {enquestaDisponible(enquesta) && enquestaVisible(enquesta) ? (
-                  <div className="information [ cardEnquesta ]">
-                    <div style={{paddingBottom: '15px'}}>
+                  <div className="information [ cardEnquesta ]" style={{marginBottom: '0px'}}>
+                    <div>
                     {enquesta.progres !== 0 && enquesta.progres !== 100 && 
                     (
-                      <div className="w3-light-grey w3-round-xlarge" style={{height: '8px'}}>
+                      <div className="w3-light-grey w3-round-xlarge" style={{height: '8px', marginBottom: '15px'}}>
                         <div className={getColorProgresBar(enquesta.progres)} style={{width: `calc(${enquesta.progres} * 0.9%)`, height: '8px', fontSize: '10px'}}></div>
                       </div>
                     )}
                     </div>
-                    <div className='tags'>
+                    <div className='tagsContainer'>
                       {enquesta.etiquetes.map((tag, index) => (
                         <span
                           key={index}

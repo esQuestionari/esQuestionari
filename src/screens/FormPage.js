@@ -7,6 +7,8 @@ import '../style/FormPage.css';
 import '../index.css'; 
 import { toInteger } from 'lodash';
 
+import infoIcon from "../img/info.png";
+
 const FormPage = () => {
   const handleInfoEnquesta = async () => {
     try {
@@ -80,6 +82,8 @@ const FormPage = () => {
   const [sectionValid, setSectionValid] = useState(false);
   const [invalidUser, setInvalidUser] = useState(false);
   const [infoUser, setInfoUser] = useState(null);
+  const [missingQuestion, setMissingQuestion] = useState(null);
+  const [isPopupVisible, setPopupVisible] = useState(false);
 
   const initializeData = async () => {
     let section = 0;
@@ -189,11 +193,16 @@ useEffect(() => {
     for (let i = 0; i < visibleQuestions.length && !missingQuestions; i++) {
       if (!isAnswered(newAnswers, visibleQuestions[i])) {
         missingQuestions = true;
+        setMissingQuestion(section.preguntes[visibleQuestions[i]].text);
         console.log("pregunta no resposta: ", section.preguntes[visibleQuestions[i]].text);
       }
     }
 
     setSectionValid(!missingQuestions);
+
+    // if (firstMissingQuestion) {
+    //   alert(`Falta por contestar la pregunta: ${firstMissingQuestion}`);
+    // }
   };
 
   const isAnswered = (newAnswers, questionId) => {
@@ -211,9 +220,6 @@ useEffect(() => {
   const handleNextSection = () => {
     sendAnswers();
     if (currentSection < infoEnquesta.numApartats - 1) {
-      console.log("next section: ", currentSection+1);
-      console.log("apartats: ", apartatsIds);
-      console.log("next section id: ", apartatsIds[currentSection + 1])
       handleInfoApartat(apartatsIds, currentSection + 1);
       setCurrentSection(currentSection + 1);
       setSectionValid(false);
@@ -338,8 +344,12 @@ useEffect(() => {
   const maxLengthCheck = (object) => {
     if (object.target.value.length > object.target.maxLength) {
      object.target.value = object.target.value.slice(0, object.target.maxLength)
-      }
     }
+  }
+
+  const togglePopup = () => {
+    setPopupVisible(!isPopupVisible);
+  };
 
   if (invalidUser) {
     return  (
@@ -530,6 +540,21 @@ useEffect(() => {
                 <path d="M16.01 11H4v2h12.01v3L20 12l-3.99-4v3z" fill="currentColor" />
               </svg>
             </button>)}
+            {missingQuestion && 
+              (<div className={`popup ${isPopupVisible ? 'show' : ''}`} onClick={togglePopup}>
+                <img
+                  src={infoIcon}
+                  alt={isPopupVisible ? 'Close' : 'Open'}
+                  className="toggle-image"
+                  style={{width: '25px', height: '25px'}}
+                />
+                <div className="popuptext">
+                  <strong>Falta por contestar: </strong><br />
+                  {missingQuestion}
+                  <div className="popup-arrow"></div>
+                </div>
+              </div>
+              )}
           </div>
         </div>
       </div>

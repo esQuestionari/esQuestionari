@@ -94,9 +94,11 @@
   .buttonContainer {
     width: 100%;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     margin-top: 20px;
+    justify-content: center;
+    gap: 15px;
   }
   
   .nextButton {
@@ -336,3 +338,59 @@
   }
  
 
+  .popup {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
+  /* The actual popup */
+  .popup .popuptext {
+    visibility: hidden;
+    width: 160px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -90px;
+    padding: 10px;
+    transition: visibility 0.5s, opacity 0.5s; /* Added transition for smoother effect */
+  }
+  
+  /* Popup arrow */
+  .popup .popuptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+  }
+  
+  /* Toggle this class - hide and show the popup */
+  .popup.show .popuptext {
+    visibility: visible;
+    opacity: 1;
+  }
+  
+  /* Add animation (fade in the popup) */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  /* Apply fadeIn animation to show class */
+  .popup.show .popuptext {
+    animation: fadeIn 1s;
+  }
