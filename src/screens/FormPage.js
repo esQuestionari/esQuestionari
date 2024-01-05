@@ -207,7 +207,7 @@ useEffect(() => {
       }
     }
     
-    if (!missingQuestion) {
+    if (!missingQuestions) {
       setMissingQuestion(null);
     }
     setSectionValid(!missingQuestions);
