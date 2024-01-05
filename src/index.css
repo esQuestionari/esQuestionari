@@ -534,6 +534,7 @@ th:hover {
   border: 2px solid black;
   cursor: pointer;
   width: 100%;
+  min-width: 175px;
   height: 27px;
   font-size: 16px;
   margin: 0px;
