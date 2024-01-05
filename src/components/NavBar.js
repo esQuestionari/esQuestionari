@@ -1,8 +1,7 @@
 import React, {useState, useEffect} from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams} from "react-router-dom";
 import logo from "../img/logo.jpeg";
 import logoClinic from "../img/logoClinic.png";
-import logoHGT from "../img/logoHGT.png";
 import userIcon from "../img/user.png";
 
 
@@ -12,18 +11,36 @@ function NavBar() {
   const user = JSON.parse(localStorage.getItem('profile'));
   const savedUser = localStorage.getItem('user');
   const userObject = savedUser ? JSON.parse(savedUser) : null;
-  //const hospital = JSON.parse(localStorage.getItem('hospital'));
+  // const [hospital, setHospital] = useState(null);
+  // const [logo, setLogo] = useState(null);
+  //  const {enquestaId} = useParams();  
 
  /* useEffect(() => {
     getHospital();
-  }, [hospital]);
+  }, [enquestaId]);
 
-  const getHospital = () => {
-
-    if (hospital === "Hospital Germans Trias") {
-      return logoHGT;  
-    }
-    else return logoClinic;
+  const getHospital = async () => {
+      try {
+        const result = await sendRequest({
+          url: `http://nattech.fib.upc.edu:40511/api/enquestes/${enquestaId}`,
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type' : 'application/json',
+          },
+        });
+        console.log(result);
+        setHospital(result.creador)
+        setLogo(result.logo)
+        return result.logo;
+      } catch(error) {
+        console.error("Falla logo", error);
+      }
+    };
+   if (hospital === "Hospital Germans Tries") {
+          return logoHGT;  
+        }
+        else return logoClinic;
   }
 */
 
