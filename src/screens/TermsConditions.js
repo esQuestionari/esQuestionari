@@ -88,9 +88,7 @@ const Terms = () => {
 
 const styles = {
   info: {
-    fontSize: "15px",
     textAlign: "justify",
-    lineHeight: "1.5",
   },
 
   listContainer: {
