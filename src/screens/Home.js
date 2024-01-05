@@ -14,26 +14,16 @@ const Home = () => {
   const [etiquetes, setEtiquetes] = useState([]);
   const [infoUser, setInfoUser] = useState(null);
   const [filter, setFilter] = useState(['Ciencia ciudadana']);
+  const [hospitalsSeleccionats, sethospitalsSeleccionats] = useState(['Hospital Clínic', 'Hospital Germans Tries']);
   const [searchQuery, setSearchQuery] = useState("");
   const scrollContainerRef = useRef(null);
   const user = JSON.parse(localStorage.getItem('profile'));
   const savedUser = localStorage.getItem('user');
   const userObject = savedUser ? JSON.parse(savedUser) : null;
-  const [showOptions, setShowOptions] = useState(false);
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (inputRef.current && !inputRef.current.contains(event.target)) {
-        setShowOptions(false);
-      }
-    };
-  
-    document.addEventListener("click", handleClickOutside);
-  
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, []);
+
+  const hospitals = ['Hospital Clínic', 'Hospital Germans Tries', `Hospital Vall d'Hebron`, 'Clínica Teknon', 'Anònima'];
+
 
   const handleEnquestes = async () => {
     try {
@@ -165,12 +155,12 @@ const Home = () => {
   };
 
   const enquestaVisible = (enquesta) => {
-    if (filter.length < 1) {
-      return true;
-    }
-
     const lowerCaseFilter = filter.map(tag => tag.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase());
-    return enquesta.etiquetes.some(tag => lowerCaseFilter.includes(tag.nom.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()));
+
+    const conteEtiqueta =  filter.length < 1 || enquesta.etiquetes.some(tag => lowerCaseFilter.includes(tag.nom.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()));
+    const conteHospital =  hospitalsSeleccionats.length < 1 || hospitalsSeleccionats.includes(enquesta.creador);
+
+    return conteEtiqueta && conteHospital;
   }
 
   const handleStart = (enquesta) => {
@@ -194,54 +184,13 @@ const Home = () => {
     return `w3-container w3-${color} w3-round-xlarge`;
   }
 
-  const handleInputClick = () => {
-    // Focus on the input when clicking on the search bar
-    inputRef.current.focus();
-    setShowOptions(true);
-  };
-
-  const handleInputChange = (event) => {
-    // Set the size of the text as the size of the input
-    const val = event.target.value.length;
-    const newSize = val ? val : 1;
-    inputRef.current.setAttribute("size", newSize);
-    setSearchQuery(event.target.value);
-  };
-
-  const handleInputKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      // Handle Space key - Add tag
-      event.preventDefault();
-      const val = searchQuery;
-
-      if (val === "") return false;
-
-      if (!filter.includes(val)) {
-        setFilter([...filter, val]);
-        setSearchQuery('');
-      }
-    }
-
-    // Handle Backspace key
-    if (event.which === 8 && searchQuery === "") {
-      const lastTag = filter[filter.length - 1];
-      setFilter(filter.filter(tag => tag !== lastTag));
-      setShowOptions(false);
-    }
-   
-  };
 
   const handleDeleteTag = (text) => {
     setFilter(filter.filter(tag => tag !== text));
-    setShowOptions(false);
   };
 
-  const handleTagClick = (tag) => {
-    if (!filter.includes(tag)) {
-      setFilter([...filter, tag]);
-      setSearchQuery('');
-    }
-    setShowOptions(false);
+  const handleDeleteHospital = (text) => {
+    sethospitalsSeleccionats(hospitalsSeleccionats.filter(hospi => hospi !== text));
   };
 
   const getColorTag = (etiqueta) => {
@@ -256,6 +205,40 @@ const Home = () => {
     return {backgroundColor: background, color: color}
   }
 
+  const handleHospitalClick = (option) => {
+    if (hospitalsSeleccionats.includes(option)) {
+      sethospitalsSeleccionats(hospitalsSeleccionats.filter((item) => item !== option));
+    } else {
+      sethospitalsSeleccionats([...hospitalsSeleccionats, option]);
+    }
+  };
+
+  const handleTagClick = (option) => {
+    if (filter.includes(option)) {
+      setFilter(filter.filter((item) => item !== option));
+    } else {
+      setFilter([...filter, option]);
+    }
+  };
+
+  const seleccionarTodosHospitales = () => {
+    // Assuming optionsArray contains all available options
+    sethospitalsSeleccionats(hospitals);
+  };
+
+  const borrarTodosHospitales = () => {
+    sethospitalsSeleccionats([]);
+  };
+
+  const seleccionarTodosTags = () => {
+    // Assuming optionsArray contains all available options
+    setFilter(etiquetes.map(tag => tag.nom));
+  };
+
+  const borrarTodosTags = () => {
+    setFilter([]);
+  };
+
   const inputRef = useRef(null);
 
   return (
@@ -264,7 +247,7 @@ const Home = () => {
       <NavBar  />
       <div className="contenidorHome">
         <p className="titolHome"> Selecciona una encuesta </p>
-        <div className="searchBar" onClick={handleInputClick}>
+        <div className="searchBar" >
           {filter.length > 0 &&
           (<div className="tagsContainer">
             {filter.map((tag, index) => (
@@ -274,41 +257,72 @@ const Home = () => {
               </span>
             ))}
           </div>)}
-          <div className="inputContainer">
-            <input
-              type="text"
-              name="search"
-              placeholder="Filtrar por etiquetas"
-              value={searchQuery}
-              onChange={handleInputChange}
-              onKeyDown={handleInputKeyDown}
-              onClick={handleInputClick}
-              ref={inputRef}
-            />
-            {showOptions && etiquetes.length > 0 && (
-              <div className="suggestedTags">
-                {etiquetes.map((tag) => (
-                  <div key={tag} className={`tag ${filter.includes(tag.nom) ? 'selected' : ''}`} onClick={() => handleTagClick(tag.nom)}>
-                    {tag.nom}
-                    {filter.includes(tag.nom) && (
-                       <span className="flex remove2" onClick={(e) => handleDeleteTag(tag.nom)}>
-                       &#10005;
-                     </span>
-                      )}
-                  </div>
-                ))}
+          <div className="dropdown" style={{ position: 'relative', display: 'inline-block', zIndex: 10 }}>
+            <button className="dropdown-btn" >
+              Selector de etiquetas
+            </button>            
+            <div className="dropdown-content" style={{ boxShadow: '0px 8px 16px rgba(0, 0, 0, 0.1)', borderRadius: '8px' }}>
+              {etiquetes.map((tag) => (
+                <label key={tag.nom}>
+                  <input
+                    type="checkbox"
+                    checked={filter.includes(tag.nom)}
+                    onChange={() => handleTagClick(tag.nom)}
+                  />
+                  {tag.nom}
+                </label>
+              ))}
+              <div className="dropdown-actions">
+                <span className="action-left" onClick={seleccionarTodosTags}>Seleccionar Todas</span>
+                <span className="action-right"onClick={borrarTodosTags}>Borrar Todas</span>
               </div>
-            )}
-          </div>
-          
+            </div>
+          </div>   
         </div>
+
+
+        <div className="searchBar" >
+          {hospitalsSeleccionats.length > 0 &&
+          (<div className="tagsContainer">
+            {hospitalsSeleccionats.map((hospital, index) => (
+              <span key={index} className="tagFilter" style={getColorTag(hospital)} onClick={() => handleDeleteHospital(hospital)}>
+                {hospital}
+                <span className="remove"></span>
+              </span>
+            ))}
+          </div>)}
+          <div className="dropdown" style={{ position: 'relative', display: 'inline-block' }}>
+            <button className="dropdown-btn" >
+              Selector de hospitales
+            </button>
+            <div className="dropdown-content" style={{ boxShadow: '0px 8px 16px rgba(0, 0, 0, 0.1)', borderRadius: '8px' }}>
+              {hospitals.map((option) => (
+                <label key={option}>
+                  <input
+                    type="checkbox"
+                    checked={hospitalsSeleccionats.includes(option)}
+                    onChange={() => handleHospitalClick(option)}
+                  />
+                  {option}
+                </label>
+              ))}
+              <div className="dropdown-actions">
+                <span className="action-left" onClick={seleccionarTodosHospitales}>Seleccionar Todos</span>
+                <span className="action-right"onClick={borrarTodosHospitales}>Borrar Todos</span>
+              </div>
+            </div>
+          </div>   
+        </div>
+
+
+        
 
     
         <div className="cardsHome" ref={scrollContainerRef}>
           {enquestes.map((enquesta) => (enquestaDisponible(enquesta) && enquestaVisible(enquesta) &&
             <div key={enquesta.id}>
               {enquestaDisponible(enquesta) && enquestaVisible(enquesta) ? (
-                  <div className="information [ cardEnquesta ]" style={{marginBottom: '0px',   margin: '20px 0px'}}>
+                  <div className="information [ cardEnquesta ]" style={{margin: '0px'}}>
                     <div>
                       <div> {enquesta.progres !== 0 && enquesta.progres !== 100 && 
                         (<div className="w3-light-grey w3-round-xlarge" style={{height: '8px', marginBottom: '15px'}}>

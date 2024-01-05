@@ -148,12 +148,19 @@ useEffect(() => {
     checkSectionCompletion(newAnswers);
   };
   
-  const handleNumericAnswer = (e, questionIndex) => {
-    let number = e.target.value;
+  const handleNumericAnswer = (e, questionIndex, min, max) => {
+    let number = parseInt(e.target.value);
+    console.log('numero:', number);
+    //number = Math.max(Math.min(number, max), min);
+    number = Math.min(number, max);
 
-    if (number.length > 4) {
-      number = number.slice(0, 4);
+    const maxDigitsAllowed = Math.abs(max).toString().length;
+
+    if (Math.abs(number).toString().length > maxDigitsAllowed) {
+      number = number.slice(0, maxDigitsAllowed);
     }
+
+    console.log('numero despres: ', number)
 
     let newAnswers = {...answers};
     newAnswers[questionIndex] =  number;
@@ -193,11 +200,16 @@ useEffect(() => {
     for (let i = 0; i < visibleQuestions.length && !missingQuestions; i++) {
       if (!isAnswered(newAnswers, visibleQuestions[i])) {
         missingQuestions = true;
-        setMissingQuestion(section.preguntes[visibleQuestions[i]].text);
+        if (isAnswered(newAnswers, visibleQuestions[visibleQuestions.length - 1])) {
+          setMissingQuestion(section.preguntes[visibleQuestions[i]].text);
+        }
         console.log("pregunta no resposta: ", section.preguntes[visibleQuestions[i]].text);
       }
     }
-
+    
+    if (!missingQuestion) {
+      setMissingQuestion(null);
+    }
     setSectionValid(!missingQuestions);
 
     // if (firstMissingQuestion) {
@@ -481,10 +493,11 @@ useEffect(() => {
                               <input
                                 type="number"
                                 className="inputField"
-                                maxLength = "4"
-                                placeholder="2024"
-                                onInput={maxLengthCheck}
-                                onChange={(e) => handleNumericAnswer(e, question.id)}
+                                placeholder={question.opcions[0]}
+                                value={answers[question.id] ? answers[question.id] : null}
+                                min={question.opcions[0]}
+                                max={question.opcions[1]}
+                                onChange={(e) => handleNumericAnswer(e, question.id, question.opcions[0], question.opcions[1])}
                               />
                             ) : (
                               question.tipus === 'multiple' ? (
@@ -540,7 +553,7 @@ useEffect(() => {
                 <path d="M16.01 11H4v2h12.01v3L20 12l-3.99-4v3z" fill="currentColor" />
               </svg>
             </button>)}
-            {missingQuestion && 
+            {missingQuestion && !sectionValid && 
               (<div className={`popup ${isPopupVisible ? 'show' : ''}`} onClick={togglePopup}>
                 <img
                   src={infoIcon}
