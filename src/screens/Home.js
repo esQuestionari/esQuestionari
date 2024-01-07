@@ -13,8 +13,8 @@ const Home = () => {
   const [enquestes, setEnquestes] = useState([]);
   const [etiquetes, setEtiquetes] = useState([]);
   const [infoUser, setInfoUser] = useState(null);
-  const [filter, setFilter] = useState(['Ciencia ciudadana']);
-  const [hospitalsSeleccionats, sethospitalsSeleccionats] = useState(['Hospital Clínic', 'Hospital Germans Tries']);
+  const [filter, setFilter] = useState([]);
+  const [hospitalsSeleccionats, sethospitalsSeleccionats] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const scrollContainerRef = useRef(null);
   const user = JSON.parse(localStorage.getItem('profile'));

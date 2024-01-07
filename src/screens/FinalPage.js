@@ -102,7 +102,7 @@ const FinalPage = () => {
       <div className="contenidor">
         <p className="titolHome">¡Gracias por completar el cuestionario!</p>
         <div className="cards">
-          <div className="information [ cardEnquesta ]" style={{flexDirection: 'row'}}>
+          <div className="information [ cardEnquesta ]" style={{flexDirection: 'column', marginLeft: '20px', marginRight: '20px'}}>
             <h2 className="titleHome" style={{fontSize: '20px'}}>Selecciona las opciones deseadas</h2>
             <div style={{margin: '15px 0 15px 0'}}>
               <label>
@@ -124,10 +124,10 @@ const FinalPage = () => {
               </label>
 
               {(checkbox2 || checkbox1) && (
-                <div style={{marginTop: '15px'}}>
+                <div style={{marginTop: '15px', display: 'flex'}}>
                   <label>
                     Correo:   
-                    <input type="text" value={email2} onChange={handleEmail2Change} />
+                    <input type="text" value={email2} style={{marginLeft: '10px', flex:'1'}}onChange={handleEmail2Change} />
                   </label>
                 </div>
               )}
@@ -139,79 +139,92 @@ const FinalPage = () => {
               </svg>
             </button>
           </div>
-
-          {estadistiques.map((grafic, index) => (
-            <div className="information [ cardEnquesta ]" style={{width: '100%', paddingLeft: '0px', paddingRight: '0px'}}>
-              <h2 className="titleHome" style={{textAlign:'center'}}>{grafic.nom}</h2>
-              {grafic.tipusGrafic === 'Barplot' && 
-              <ResponsiveContainer width="95%" height={300}>
-                <BarChart data={transformarResultados(grafic.resultats)}  barCategoryGap={10} >    
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis
-                    dataKey="name"
-                    interval={0}
-                    dy={15}
-                    tick={(props) => {
-                      const maxLength = window.innerWidth > 768 ? 10 : 4; ; // Número máximo de caracteres a mostrar
-                      const truncatedValue = props.payload.value.length > maxLength
-                          ? `${props.payload.value.substring(0, maxLength)}...`
-                          : props.payload.value;
-              
-                      return (
-                          <text {...props}>
-                              {truncatedValue}
-                          </text>
-                      );
-                  }}
-                  />
-                  <YAxis />
-                  <Tooltip />
-                  
-                  <Bar dataKey="respuestas"  >
-                  {transformarResultados(grafic.resultats).map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={obtenerColorUnico(grafic.id, index)} />
-                  ))}
-                  </Bar>
-                </BarChart> 
-              </ResponsiveContainer>
-              }
-              {grafic.tipusGrafic === 'Temporal' &&
-              <ResponsiveContainer width="95%" height={300}>
-                <LineChart data={transformarResultados(grafic.resultats, grafic.tipusGrafic)}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="respuestas" stroke="#8884d8"  />
-                </LineChart>
-                </ResponsiveContainer>
-              }
-              {grafic.tipusGrafic === 'Piechart' &&
-              <ResponsiveContainer width="95%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={transformarResultados(grafic.resultats)}
-
-                    startAngle={0}
-                    endAngle={360}
-                    outerRadius={80}
-                    dataKey="respuestas"
-                    label={({ percent }) => `${(percent * 100).toFixed(2)}%`}
-                  >
+        
+          <div className='cardsHome' style={{gridTemplateColumns: 'repeat(auto-fit, minmax(min(28rem, 100%), 1fr))',margin: '0px 20px 20px 20px', width: 'auto'}}>
+            {estadistiques.map((grafic, index) => grafic.tipusGrafic !== 'Mapa' && (
+            <div key={index}>
+              <div className="information [ cardEnquesta ]" style={{margin: '0px', paddingLeft: '0px', paddingRight: '0px'}}>
+                <h2 className="titleHome" style={{textAlign:'center'}}>{grafic.nom}</h2>
+                {grafic.tipusGrafic === 'Barplot' && 
+                <ResponsiveContainer width="95%" height={300}>
+                  <BarChart data={transformarResultados(grafic.resultats)}  barCategoryGap={10} >    
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis
+                      dataKey="name"
+                      interval={0}
+                      dy={15}
+                      tick={(props) => {
+                        const maxLength = window.innerWidth > 768 ? 10 : 4; ; // Número máximo de caracteres a mostrar
+                        const truncatedValue = props.payload.value.length > maxLength
+                            ? `${props.payload.value.substring(0, maxLength)}...`
+                            : props.payload.value;
+                
+                        return (
+                            <text {...props}>
+                                {truncatedValue}
+                            </text>
+                        );
+                    }}
+                    />
+                    <YAxis />
+                    <Tooltip />
+                    
+                    <Bar dataKey="respuestas"  >
                     {transformarResultados(grafic.resultats).map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={obtenerColorUnico(grafic.id, index)} />
+                        <Cell key={`cell-${index}`} fill={obtenerColorUnico(grafic.id, index)} />
                     ))}
-                  </Pie>
-                  <Tooltip />
-                  <Legend />
-                </PieChart>
+                    </Bar>
+                  </BarChart> 
                 </ResponsiveContainer>
-              }
-              {grafic.tipusGrafic === 'Mapa' &&
-                 <Map info={grafic.resultats} /> 
-               }
+                }
+                {grafic.tipusGrafic === 'Temporal' &&
+                <ResponsiveContainer width="95%" height={300}>
+                  <LineChart data={transformarResultados(grafic.resultats, grafic.tipusGrafic)}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Line type="monotone" dataKey="respuestas" stroke="#8884d8"  />
+                  </LineChart>
+                  </ResponsiveContainer>
+                }
+                {grafic.tipusGrafic === 'Piechart' &&
+                <ResponsiveContainer width="95%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={transformarResultados(grafic.resultats)}
+
+                      startAngle={0}
+                      endAngle={360}
+                      outerRadius={80}
+                      dataKey="respuestas"
+                      label={({ percent }) => `${(percent * 100).toFixed(2)}%`}
+                    >
+                      {transformarResultados(grafic.resultats).map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={obtenerColorUnico(grafic.id, index)} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                    <Legend />
+                  </PieChart>
+                  </ResponsiveContainer>
+                }
+              </div>
             </div>
-          ))}
+            ))}
+          </div>
+
+          <div className='cardsHome' style={{marginBottom: '10px'}}>
+            {estadistiques.map((grafic, index) => (
+              grafic.tipusGrafic === 'Mapa' &&
+              (<div key={index}>
+                <div className="information [ cardEnquesta ]" style={{paddingLeft: '0px', paddingRight: '0px'}}>
+                  <h2 className="titleHome" style={{textAlign:'center'}}>{grafic.nom}</h2>
+                    <Map info={grafic.resultats} /> 
+                </div>
+              </div>)
+            ))}
+          </div>
         </div>
       </div>
     </>

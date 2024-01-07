@@ -597,6 +597,7 @@ input[type="checkbox"] {
 /* Styles for the left action */
 .action-left {
   font-size: 14px;
+  line-height: 1.2;
   cursor: pointer;
   color: #3498db;
 }
@@ -604,6 +605,7 @@ input[type="checkbox"] {
 /* Styles for the right action */
 .action-right {
   font-size: 14px;
+  line-height: 1.2;
   cursor: pointer;
   color: #e74c3c;
 }
