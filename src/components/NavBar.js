@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams} from "react-router-dom";
 import logo from "../img/logo.jpeg";
 import logoClinic from "../img/logoClinic.png";
 import userIcon from "../img/user.png";
-
+import sendRequest from "../components/utilFetch";
 
 function NavBar() {
   const navigate = useNavigate();
@@ -12,10 +12,10 @@ function NavBar() {
   const savedUser = localStorage.getItem('user');
   const userObject = savedUser ? JSON.parse(savedUser) : null;
   // const [hospital, setHospital] = useState(null);
-  // const [logo, setLogo] = useState(null);
-  //  const {enquestaId} = useParams();  
+  const [logoHospital, setLogo] = useState(null);
+  const {enquestaId} = useParams();  
 
- /* useEffect(() => {
+  useEffect(() => {
     getHospital();
   }, [enquestaId]);
 
@@ -30,19 +30,16 @@ function NavBar() {
           },
         });
         console.log(result);
-        setHospital(result.creador)
-        setLogo(result.logo)
-        return result.logo;
+        //setHospital(result.creador)
+        //setLogo(result.creador.imatge)
+        setLogo(result.imatge);
       } catch(error) {
         console.error("Falla logo", error);
       }
     };
-   if (hospital === "Hospital Germans Tries") {
-          return logoHGT;  
-        }
-        else return logoClinic;
-  }
-*/
+
+  
+
 
   const handleLogoClick = () => {
     const userConfirmed = window.confirm("¿Seguro que deseas ir a la página inicial?");
@@ -91,13 +88,15 @@ function NavBar() {
               style={{ cursor: "pointer" }}
             />
             {/*logo clinic*/}
+            {logoHospital ? (
             <img
-              src={logoClinic} 
+              src={logoHospital} 
               id="hospitalClinic"
               alt="Hospital Clínic"
               onClick={handleClinicClick}
               style={{ cursor: "pointer" }}
             />
+            ) : ( null )}
              <Link to="/perfil">
               <img
                 src={getImage()}

@@ -190,6 +190,25 @@ const EmailPage = () => {
         localStorage.setItem('infoUser', JSON.stringify(result));
       }
     }
+    //mirar que si ja esta creat et retonra id i mires el progres d'aquella enquesta. 
+    /* else if (response.status === 301)
+    try {
+      const response = await sendRequestWithStatus({
+        url: `http://nattech.fib.upc.edu:40511/api/usuaris?id=${result.id}`,
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+      console.log("response", response);
+      return response;
+      //mirar progres[enquestaid] i llavors decidir si pot o no 
+
+    } catch (error) {
+      console.error("falla email", error);
+    }
+    */
     else {
       alert('Server error1. Please try again.'); 
     }
@@ -220,7 +239,17 @@ const EmailPage = () => {
 
     // Once the user is logged, go back to the previous question or begin the form
     if (enquestaId) {
-      navigate(`/encuestas/${enquestaId}/`);      
+      //mirar el progres de l'usuari:
+      const progres = response.data[0].progres;
+      console.log("progres", progres);
+      if (progres[enquestaId] === null) {
+        navigate(`/encuestas/${enquestaId}/`);
+      }
+      else if (progres[enquestaId] === "ACABADA") {
+        navigate(`/encuestas/${enquestaId}/detalles `);
+      }
+      //else per anar a la seccion on es trobi*/
+      //navigate(`/encuestas/${enquestaId}/`);      
     }
     else {
       navigate(-2);
