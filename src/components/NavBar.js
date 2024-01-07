@@ -77,7 +77,7 @@ function NavBar() {
 
   return (
     <header>
-        <nav>
+        <nav style={{zIndex: '20'}}>
           {redirectToHome ? (
             // Redireccionar a la página principal
             window.location.assign("/")
