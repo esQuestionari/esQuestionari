@@ -2,6 +2,8 @@ import React, {useState, useEffect, useRef } from 'react';
 import NavBar from "../components/NavBar";
 import { useNavigate, useParams} from 'react-router-dom';
 import sendRequest from "../components/utilFetch";
+// import Dropdown from 'react-bootstrap/Dropdown';
+// import DropdownButton from 'react-bootstrap/DropdownButton';
 
 import '../style/FormPage.css'; 
 import '../index.css'; 
@@ -63,6 +65,7 @@ const FormPage = () => {
         acc[obj.id] = obj;
         return acc;
       }, {});
+      console.log("preguntes: ", result);
       setSection(result);
       setAnswers({});
     } catch (error) {
@@ -84,6 +87,8 @@ const FormPage = () => {
   const [infoUser, setInfoUser] = useState(null);
   const [missingQuestion, setMissingQuestion] = useState(null);
   const [isPopupVisible, setPopupVisible] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const initializeData = async () => {
     let section = 0;
@@ -119,8 +124,36 @@ useEffect(() => {
       setLoading(false);
   }
 }, [apartatsIds])
+
+
+useEffect(() => {
+  const handleWindowClick = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsOpen(false);
+    }
+  };
+
+  window.addEventListener('click', handleWindowClick);
+
+  return () => {
+    window.removeEventListener('click', handleWindowClick);
+  };
+}, []);
+
+  const handleDropdownClick = () => {
+    console.log("isOpen: ", isOpen)
+    setIsOpen(!isOpen);
+  };
   
   const handleSelectOption = (questionIndex, option) => {
+    let newAnswers = {...answers};
+    newAnswers[questionIndex] = option;
+    setAnswers(newAnswers);
+    checkSectionCompletion(newAnswers);
+  };
+
+  const handleSelectOptionDesplegable = (questionIndex, option) => {
+    setIsOpen(false);
     let newAnswers = {...answers};
     newAnswers[questionIndex] = option;
     setAnswers(newAnswers);
@@ -220,6 +253,7 @@ useEffect(() => {
   const isAnswered = (newAnswers, questionId) => {
     console.log("question id: ", questionId);
     const question = section.preguntes[questionId];
+    if (!question.obligatoria) return true;
     if (!newAnswers[questionId]) return false;
     if (question.tipus !== 'multiple' && newAnswers[questionId]) return true;
     if (question.tipus === 'multiple' && newAnswers[questionId].length > 0) {
@@ -517,7 +551,25 @@ useEffect(() => {
                                       </button>
                                   ))}
                                 </div>
-                              ) : null
+                              ) : (
+                                question.tipus === 'desplegable' ? (
+                                  <div className="desplegable" ref={dropdownRef} style={{marginBottom: '40px'}}>
+                                    <div className={`select ${isOpen ? 'active' : ''}`} onClick={handleDropdownClick}>
+                                      <span>{answers[question.id] ? answers[question.id] : 'Selecciona una opción'}</span>
+                                      <i className={`fa fa-chevron-${isOpen ? 'up' : 'down'}`}></i>
+                                    </div>
+                                    {true && (
+                                      <ul className="dropdown-menu">
+                                        {question.opcions.map((option, optionIndex) => (
+                                          <li key={optionIndex}  className="dropdown-item"  onClick={() => handleSelectOptionDesplegable(question.id, option)}>
+                                            {option}
+                                          </li>
+                                        ))}
+                                      </ul>
+                                    )}
+                                  </div>
+                                ) : null
+                              )
                             )
                           )
                         )

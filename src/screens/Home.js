@@ -15,6 +15,7 @@ const Home = () => {
   const [infoUser, setInfoUser] = useState(null);
   const [filter, setFilter] = useState([]);
   const [hospitalsSeleccionats, sethospitalsSeleccionats] = useState([]);
+  const [hospitals, setHospitals] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const scrollContainerRef = useRef(null);
   const user = JSON.parse(localStorage.getItem('profile'));
@@ -22,8 +23,27 @@ const Home = () => {
   const userObject = savedUser ? JSON.parse(savedUser) : null;
 
 
-  const hospitals = ['Hospital Clínic', 'Hospital Germans Tries', `Hospital Vall d'Hebron`, 'Clínica Teknon', 'Anònima'];
+  //const hospitals = ['Hospital Clínic', 'Hospital Germans Tries', `Hospital Vall d'Hebron`, 'Clínica Teknon', 'Anònima'];
 
+
+  const handleHospitals = async () => {
+    try {
+      const result = await sendRequest({
+        url: 'http://nattech.fib.upc.edu:40511/api/entitats',
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+      console.log(result)
+      const entitats = result.map(it => it.nom);
+      setHospitals(entitats);
+      return result;
+    } catch (error) {
+      console.error("falla home", error);
+    }
+  }
 
   const handleEnquestes = async () => {
     try {
@@ -65,6 +85,7 @@ const Home = () => {
   const initializeData = async () => {
     const enquestes = await handleEnquestes();
     await handleEtiquetes();
+    await handleHospitals();
     await setProgres(enquestes);
   }
 
@@ -158,7 +179,7 @@ const Home = () => {
     const lowerCaseFilter = filter.map(tag => tag.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase());
 
     const conteEtiqueta =  filter.length < 1 || enquesta.etiquetes.some(tag => lowerCaseFilter.includes(tag.nom.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()));
-    const conteHospital =  hospitalsSeleccionats.length < 1 || hospitalsSeleccionats.includes(enquesta.creador);
+    const conteHospital =  hospitalsSeleccionats.length < 1 || hospitalsSeleccionats.includes(enquesta.creador.nom);
 
     return conteEtiqueta && conteHospital;
   }
@@ -345,10 +366,11 @@ const Home = () => {
                         ))}
                       </div>
                       <h2 className="titleHome">{enquesta.nom}</h2>
+                      <p className="duracio"> 🏥 Autor: {enquesta.creador.nom}</p> 
                       <p className="infoHome">{enquesta.descripcio}</p>
                     </div>
                     <div>
-                      <p className="duracio">⌛ Duración: {enquesta.durada}</p> 
+                      <p className="duracio">⌛ {enquesta.durada}</p> 
                       <div className='tagsContainer'>
                         {enquesta.progres !== 100 && (
                         <button className="button" onClick={() => handleStart(enquesta)}>
