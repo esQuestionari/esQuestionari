@@ -11,7 +11,6 @@ function NavBar() {
   const user = JSON.parse(localStorage.getItem('profile'));
   const savedUser = localStorage.getItem('user');
   const userObject = savedUser ? JSON.parse(savedUser) : null;
-  // const [hospital, setHospital] = useState(null);
   const [logoHospital, setLogo] = useState(null);
   const {enquestaId} = useParams();  
 
@@ -29,10 +28,8 @@ function NavBar() {
             'Content-Type' : 'application/json',
           },
         });
-        console.log(result);
-        //setHospital(result.creador)
-        //setLogo(result.creador.imatge)
-        setLogo(result.imatge);
+        //console.log(result);
+        setLogo(result.creador.imatge)
       } catch(error) {
         console.error("Falla logo", error);
       }

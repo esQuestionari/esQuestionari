@@ -240,16 +240,17 @@ const EmailPage = () => {
     // Once the user is logged, go back to the previous question or begin the form
     if (enquestaId) {
       //mirar el progres de l'usuari:
-      const progres = response.data[0].progres;
-      console.log("progres", progres);
-      if (progres[enquestaId] === null) {
-        navigate(`/encuestas/${enquestaId}/`);
+      const result = response.data
+      if (result.length > 0) {
+        const progres = result[0].progres;
+        console.log("progres", progres);
+        if (progres[enquestaId] === "ACABADA") {
+          navigate(`/encuestas/${enquestaId}/detalles `);
+        }
+        //else per anar a la seccion on es trobi
+        else navigate(`/encuestas/${enquestaId}/`);      
       }
-      else if (progres[enquestaId] === "ACABADA") {
-        navigate(`/encuestas/${enquestaId}/detalles `);
-      }
-      //else per anar a la seccion on es trobi*/
-      //navigate(`/encuestas/${enquestaId}/`);      
+      else  navigate(`/encuestas/${enquestaId}/`);  
     }
     else {
       navigate(-2);
