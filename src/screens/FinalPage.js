@@ -76,25 +76,6 @@ const FinalPage = () => {
   };
 
 
-  const handleCheckbox1Change = () => {
-    setCheckbox1(!checkbox1);
-  };
-
-  const handleCheckbox2Change = () => {
-    setCheckbox2(!checkbox2);
-  };
-
-  const handleEmail2Change = (e) => {
-    setEmail2(e.target.value);
-  };
-
-  const handleSave = () => {
-    console.log("checkbox1", checkbox1);
-    console.log("checkbox2", checkbox2);
-    console.log("email2", email2);
-    navigate("/");
-  };
-
   return (
     <div className="screen">
       < >
@@ -102,44 +83,6 @@ const FinalPage = () => {
       <div className="contenidor">
         <p className="titolHome">¡Gracias por completar el cuestionario!</p>
         <div className="cards">
-          <div className="information [ cardEnquesta ]" style={{flexDirection: 'column', marginLeft: '20px', marginRight: '20px'}}>
-            <h2 className="titleHome" style={{fontSize: '20px'}}>Selecciona las opciones deseadas</h2>
-            <div style={{margin: '15px 0 15px 0'}}>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={checkbox1}
-                  onChange={handleCheckbox1Change}
-                />
-                Opción 1
-              </label>
-              <br />
-              <label>
-                <input
-                  type="checkbox"
-                  checked={checkbox2}
-                  onChange={handleCheckbox2Change}
-                />
-                Opción 2
-              </label>
-
-              {(checkbox2 || checkbox1) && (
-                <div style={{marginTop: '15px', display: 'flex'}}>
-                  <label>
-                    Correo:   
-                    <input type="text" value={email2} style={{marginLeft: '10px', flex:'1'}}onChange={handleEmail2Change} />
-                  </label>
-                </div>
-              )}
-            </div>
-            <button className="button" onClick={handleSave}>
-              <span>Guardar</span>
-              <svg class="svg-icon" height="24px" viewBox="0 0 24 20" width="24px" fill="none">
-                <path d="M7.629,14.566c0.125,0.125,0.291,0.188,0.456,0.188c0.164,0,0.329-0.062,0.456-0.188l8.219-8.221c0.252-0.252,0.252-0.659,0-0.911c-0.252-0.252-0.659-0.252-0.911,0l-7.764,7.763L4.152,9.267c-0.252-0.251-0.66-0.251-0.911,0c-0.252,0.252-0.252,0.66,0,0.911L7.629,14.566z" fill="currentColor" stroke="currentColor" stroke-width="1"></path>
-              </svg>
-            </button>
-          </div>
-        
           <div className='cardsHome' style={{gridTemplateColumns: 'repeat(auto-fit, minmax(min(28rem, 100%), 1fr))',margin: '0px 20px 20px 20px', width: 'auto'}}>
             {estadistiques.map((grafic, index) => grafic.tipusGrafic !== 'Mapa' && (
             <div key={index}>

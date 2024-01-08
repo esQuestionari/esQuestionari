@@ -90,6 +90,7 @@ const FormPage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
+  console.log("QUESTION", section.preguntes) 
   const initializeData = async () => {
     let section = 0;
     const infoUser = JSON.parse(localStorage.getItem('infoUser'));
@@ -455,6 +456,7 @@ useEffect(() => {
               </div>
             )}
             {section.preguntes && Object.values(section.preguntes).map((question, questionIndex) => (
+              
               <div key={questionIndex}>
                 {question.tipus !== 'escala' && question.tipus !== 'punys' && question.tipus !== 'certofals' && shouldShowQuestion(question) && <p className='questionText'>{question.text}</p>}
                 {(
