@@ -160,6 +160,13 @@
   
   .scaleQuestion {
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .scaleQuestionContainer {
+    display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
@@ -169,6 +176,8 @@
     flex-direction: row;
     margin-left: 15px;
     min-width: 130px;
+    display: flex;
+    justify-content: center;
   }
   
   .scaleOption {
@@ -476,4 +485,28 @@
   
   .desplegable .dropdown-menu li:active {
     background-color: #e2e2e2;
+  }
+
+  .llegenda {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 15px;
+    border-radius: 10px;
+
+    background-color: #fff;
+    height: 65px;
+    border: 2px solid gray;
+    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
+
+  .colorLlegenda {
+    margin-top: 3px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(5rem, 100%), 100rem));
+    grid-gap: 0px 20px;
+    justify-items: center;
   }

@@ -1,0 +1,71 @@
+/* DropdownSelector.css */
+.dropdown-container {
+    position: relative;
+    z-index: 6;
+  }
+  
+  .dropdown-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 10px;
+    cursor: pointer;
+    color: #000;
+    transition: background-color 0.3s ease;
+
+    background-color: #f0f0f0;
+    height: 35px;
+    border: 3px solid gray;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    font-size: 15px;
+    outline: none;
+  }
+  
+  .dropdown-container.expanded .dropdown-button {
+    background-color: #d7d6d6;
+  }
+  
+  .arrow {
+    font-size: 12px;
+    transition: transform 0.3s ease;
+  }
+  
+  .arrow.up {
+    transform: rotate(180deg);
+  }
+  
+  .dropdown-menu {
+    border-radius: 10px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    visibility: hidden;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transform-origin: top center;
+    transform: scaleY(0);
+    transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+  }
+  
+  .dropdown-container.expanded .dropdown-menu {
+    transform: scaleY(1);
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .dropdown-option {
+    width: 100%;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .dropdown-option:hover {
+    background-color: #f0f0f0;
+  }
+  

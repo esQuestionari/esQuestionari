@@ -2,6 +2,8 @@ import React, {useState, useEffect, useRef } from 'react';
 import NavBar from "../components/NavBar";
 import { useNavigate, useParams} from 'react-router-dom';
 import sendRequest from "../components/utilFetch";
+import DropdownSelector from '../components/Dropdown';
+
 // import Dropdown from 'react-bootstrap/Dropdown';
 // import DropdownButton from 'react-bootstrap/DropdownButton';
 
@@ -162,6 +164,7 @@ useEffect(() => {
   };
 
   const handleScaleAnswer = (questionIndex, selectedColor) => {
+    console.log("selected color: ", selectedColor)
     let newAnswers = {...answers};;
     newAnswers[questionIndex] = selectedColor;
     setAnswers(newAnswers);
@@ -452,7 +455,11 @@ useEffect(() => {
             {section.introduccio !== undefined && (
               <div className='infoSection'>
                 <p className='infoText'>{section.introduccio}</p>
-                {/* Handle image rendering if needed */}
+                {section.imatge && (<img
+                  src={section.imatge}
+                  width="375" // Set the desired width
+                  height="550" // Set the desired height
+                />)}
               </div>
             )}
             {section.preguntes && Object.values(section.preguntes).map((question, questionIndex) => (
@@ -475,7 +482,7 @@ useEffect(() => {
                       </div>
                     ) : (
                       question.tipus === 'certofals' ? (
-                        <div className='scaleQuestion'>
+                        <div className='scaleQuestion' style={{flexDirection: 'row'}}>
                           <p className='questionText' style={{marginTop: '2px'}}>{question.text}</p>
                           <div className='trueFalseButtons'>
                             <button
@@ -500,20 +507,38 @@ useEffect(() => {
                       ) : (
                         question.tipus === 'escala' || question.tipus === 'punys' ? (
                           <div className='scaleQuestion' 
-                              style={(section.preguntes[question.id-1] && section.preguntes[question.id-1].tipus !== 'escala') ? {borderTop: "2px solid #e0e0e0", borderBottom: "2px solid #e0e0e0"} : 
+                              style={(question.tipus === 'escala' && section.preguntes[question.id-1] && section.preguntes[question.id-1].tipus !== 'escala') ? {} : 
                               (section.preguntes[question.id+1] && section.preguntes[question.id+1].tipus !== 'escala') ? {paddingBottom: '5px', borderBottom: "2px solid #e0e0e0"} : {borderBottom: "2px solid #e0e0e0"}}>
-                            <p className='questionText' style={{marginBottom: '2px', marginTop: '2px', textAlign: 'right'}}>{question.text}</p>
-                            <div className='scaleOptions'>
-                              {getColors(question.opcions.length).map((color, colorIndex) => (
-                                <button
-                                  key={colorIndex}
-                                  className={answers[question.id] === color ? 'scaleOptionSelected' : 'scaleOption'}
-                                  style={answers[question.id] === color
-                                    ? { backgroundColor: color, opacity: 1 }
-                                    : { backgroundColor: color, opacity: 0.4 }}
-                                  onClick={() => handleScaleAnswer(question.id, color)}
-                                />
-                              ))}
+                            {(question.tipus === 'escala' && section.preguntes[question.id-1] && section.preguntes[question.id-1].tipus !== 'escala') && (
+                                <div className='llegenda'>
+                                   {getColors(question.opcions.length).map((color, colorIndex) => (
+                                    <div className='colorLlegenda'>
+                                    {(section.preguntes[question.id-1] && section.preguntes[question.id-1].tipus !== 'escala') && (
+                                    <div style={{margin: '0px'}}>{question.opcions[colorIndex]}</div>
+                                    )}
+                                    <button
+                                      key={colorIndex}
+                                      className={'scaleOptionSelected'}
+                                      style={{ backgroundColor: color, opacity: 1, marginRight: '0px' }}
+                                    />
+                                    </div>
+                                  ))}
+                                </div>
+                            )}
+                            <div className='scaleQuestionContainer'>
+                              <p className='questionText' style={{marginBottom: '2px', marginTop: '2px', textAlign: 'right'}}>{question.text}</p>
+                              <div className='scaleOptions'>
+                                {getColors(question.opcions.length).map((color, colorIndex) => (
+                                  <button
+                                    key={colorIndex}
+                                    className={answers[question.id] === question.opcions[colorIndex] ? 'scaleOptionSelected' : 'scaleOption'}
+                                    style={answers[question.id] === question.opcions[colorIndex]
+                                      ? { backgroundColor: color, opacity: 1 }
+                                      : { backgroundColor: color, opacity: 0.4 }}
+                                    onClick={() => handleScaleAnswer(question.id, question.opcions[colorIndex])}
+                                  />
+                                ))}
+                              </div>
                             </div>
                           </div>
                         ) : (
@@ -555,21 +580,7 @@ useEffect(() => {
                                 </div>
                               ) : (
                                 question.tipus === 'desplegable' ? (
-                                  <div className="desplegable" ref={dropdownRef} style={{marginBottom: '40px'}}>
-                                    <div className={`select ${isOpen ? 'active' : ''}`} onClick={handleDropdownClick}>
-                                      <span>{answers[question.id] ? answers[question.id] : 'Selecciona una opción'}</span>
-                                      <i className={`fa fa-chevron-${isOpen ? 'up' : 'down'}`}></i>
-                                    </div>
-                                    {true && (
-                                      <ul className="dropdown-menu">
-                                        {question.opcions.map((option, optionIndex) => (
-                                          <li key={optionIndex}  className="dropdown-item"  onClick={() => handleSelectOptionDesplegable(question.id, option)}>
-                                            {option}
-                                          </li>
-                                        ))}
-                                      </ul>
-                                    )}
-                                  </div>
+                                  <DropdownSelector options={question.opcions} label={answers[question.id] ? answers[question.id] : 'Seleccione una opción '} onSelect={(opcio) => handleSelectOption(question.id, opcio)} />
                                 ) : null
                               )
                             )
