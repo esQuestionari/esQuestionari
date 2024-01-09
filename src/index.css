@@ -225,6 +225,8 @@ th:hover {
   grid-gap: 20px;
   margin: 0px auto;
   width: 100%;
+  max-height: calc(100vh - 300px);
+  overflow: scroll;
 }
 
 .cardsTabla {

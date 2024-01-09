@@ -78,7 +78,7 @@ const Map = (props) => {
           const coords = await Promise.all(
             postalCodes.map(async ({ postalCode, population }) => {
               const c = await getLatLngFromPostalCode(postalCode);
-              if (c[0].lat !== undefined && c[0].lng !== undefined) {
+              if (c && c.length > 0 && c[0].lat !== undefined && c[0].lng !== undefined) {
                 return L.marker([c[0].lat, c[0].lng, population], {
                   icon: L.divIcon({
                     className: "custom-pin",

@@ -27,26 +27,38 @@ const BarChartPro = ({ grafic }) => {
       
   const resultadosTransformados = transformarResultados(grafic.resultats);
 
-  // Función para obtener la opción más escogida
   const obtenerOpcionMasEscogida = () => {
     const opcionMasEscogida = resultadosTransformados.reduce((max, current) =>
       current.respuestas > max.respuestas ? current : max
     );
-    return opcionMasEscogida.name;
+  
+    return (
+      <>
+        {opcionMasEscogida.name}
+        <span style={{ marginLeft: '5px', fontWeight: 'normal' }}>
+          ({opcionMasEscogida.porcentaje}%)
+        </span>
+      </>
+    );
   };
-
-  // Función para obtener la opción menos escogida
+  
   const obtenerOpcionMenosEscogida = () => {
+    console.log(resultadosTransformados);
     const opcionMenosEscogida = resultadosTransformados.reduce((min, current) =>
       current.respuestas < min.respuestas ? current : min
     );
-    return opcionMenosEscogida.name;
+
+  
+    return (
+      <>
+        {opcionMenosEscogida.name}
+        <span style={{ marginLeft: '5px', fontWeight: 'normal' }}>
+          ({(opcionMenosEscogida.respuestas).toFixed(2)}%)
+        </span>
+      </>
+    );
   };
 
-  // Función para obtener la cantidad de opciones únicas
-  const obtenerCantidadOpcionesUnicas = () => {
-    return resultadosTransformados.length;
-  };
 
   // Función para obtener el porcentaje de valores faltantes
   const obtenerPorcentajeValoresFaltantes = () => {
@@ -99,7 +111,7 @@ const BarChartPro = ({ grafic }) => {
                   </ResponsiveContainer>
     <div className="information [ cardEnquesta ]" style={{margin: '0px', paddingLeft: '0px', paddingRight: '0px'}}>
       <h2 className="titleHome" style={{textAlign:'center'}}>Resumen</h2>
-      <div className="resumen">
+      <div className="resumen" style={{margin: '10px'}}>
         <p>
           <strong>Opción más escogida: </strong>
           {obtenerOpcionMasEscogida()}
@@ -107,10 +119,6 @@ const BarChartPro = ({ grafic }) => {
         <p>
           <strong>Opción menos escogida: </strong>
           {obtenerOpcionMenosEscogida()}
-        </p>
-        <p>
-          <strong>Cantidad de opciones únicas: </strong>
-          {obtenerCantidadOpcionesUnicas()}
         </p>
         <p>
           <strong>Porcentaje de valores faltantes: </strong>
