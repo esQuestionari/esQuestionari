@@ -1,3 +1,9 @@
+# Authors
+Tània Alonso Lobato
+Par Duran Manzano
+Marc Ordóñez Redondo
+Marc Tacons Vega
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
