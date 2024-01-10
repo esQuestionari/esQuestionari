@@ -70,7 +70,7 @@ const BarChartPro = ({ grafic }) => {
   const mesMenosRespuestas = encontrarMesConMenosRespuestas(resultadosTransformados);
 
   return (
-    <div className="information [ cardEnquesta ]" style={{margin: '0px', paddingLeft: '0px', paddingRight: '0px'}}>
+    <div >
         <ResponsiveContainer width="95%" height={300}>
             <LineChart data={transformarResultados(grafic.resultats, grafic.tipusGrafic)}>
             <CartesianGrid strokeDasharray="3 3" />
@@ -80,7 +80,6 @@ const BarChartPro = ({ grafic }) => {
             <Line type="monotone" dataKey="respuestas" stroke="#8884d8"  />
             </LineChart>
         </ResponsiveContainer>
-    <div className="information [ cardEnquesta ]" style={{margin: '0px', paddingLeft: '0px', paddingRight: '0px'}}>
       <h2 className="titleHome" style={{textAlign:'center'}}>Resumen</h2>
       <div className="resumen" style={{margin: '10px'}}>
         <p>
@@ -93,7 +92,6 @@ const BarChartPro = ({ grafic }) => {
           </p>
       </div>
 
-    </div>
     </div>
   );
 };

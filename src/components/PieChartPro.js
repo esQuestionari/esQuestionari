@@ -95,7 +95,7 @@ const BarChartPro = ({ grafic }) => {
 
 
   return (
-    <div className="information [ cardEnquesta ]" style={{margin: '0px', paddingLeft: '0px', paddingRight: '0px'}}>
+    <div >
         <ResponsiveContainer width="95%" height={300}>
                   <PieChart>
                     <Pie
@@ -115,7 +115,6 @@ const BarChartPro = ({ grafic }) => {
                     <Legend />
                   </PieChart>
                   </ResponsiveContainer>
-    <div className="information [ cardEnquesta ]" style={{margin: '0px', paddingLeft: '0px', paddingRight: '0px'}}>
       <h2 className="titleHome" style={{textAlign:'center'}}>Resumen</h2>
       <div className="resumen" style={{margin: '10px'}}>
         <p>
@@ -127,8 +126,6 @@ const BarChartPro = ({ grafic }) => {
           {obtenerOpcionMenosEscogida()}
         </p>
       </div>
-
-    </div>
     </div>
   );
 };

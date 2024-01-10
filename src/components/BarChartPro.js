@@ -69,20 +69,6 @@ const BarChartPro = ({ grafic }) => {
     }
   };
 
-  // Función para obtener la cantidad de opciones únicas
-  const obtenerCantidadOpcionesUnicas = () => {
-    return resultadosTransformados.length;
-  };
-
-  // Función para obtener el porcentaje de valores faltantes
-  const obtenerPorcentajeValoresFaltantes = () => {
-    const totalRespuestas = resultadosTransformados.reduce((total, current) => total + current.respuestas, 0);
-    const totalPosiblesRespuestas = resultadosTransformados.length * (resultadosTransformados.length + 1) / 2;
-    const porcentajeFaltante = ((totalPosiblesRespuestas - totalRespuestas) / totalPosiblesRespuestas) * 100;
-
-    return porcentajeFaltante.toFixed(2); // Limita el resultado a dos decimales
-  };
-
   function obtenerColorUnico(graficoIndex, entryIndex) {
     const base = 150;
     const factor = 50;
@@ -107,7 +93,7 @@ const BarChartPro = ({ grafic }) => {
 
 
   return (
-    <div className="information [ cardEnquesta ]" style={{margin: '0px', paddingLeft: '0px', paddingRight: '0px'}}>
+    <div >
     <ResponsiveContainer width="95%" height={300}>
       <BarChart data={resultadosTransformados} barCategoryGap={10}>
         <CartesianGrid strokeDasharray="3 3" />
@@ -135,7 +121,6 @@ const BarChartPro = ({ grafic }) => {
         </Bar>
       </BarChart>
     </ResponsiveContainer>
-    <div className="information [ cardEnquesta ]" style={{margin: '0px', paddingLeft: '0px', paddingRight: '0px'}}>
       <h2 className="titleHome" style={{textAlign:'center'}}>Resumen</h2>
       <div className="resumen" style={{margin: '10px'}}>
         <p>
@@ -147,8 +132,6 @@ const BarChartPro = ({ grafic }) => {
           {opcion2} ({porcentaje2}%)
         </p>
       </div>
-
-    </div>
     </div>
   );
 };
