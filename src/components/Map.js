@@ -42,7 +42,7 @@ const Map = (props) => {
           if (coordinates.length > 0) {
             return coordinates;
           } else return [];
-        } else console.log('error global funcion coordenadas');
+        } //else console.log('error global funcion coordenadas');
     
       } catch (error) {
         console.error(`Error al geocodificar el código postal ${postalCode}:`, error);
@@ -86,7 +86,7 @@ const Map = (props) => {
                   }),
                 }).bindPopup(`Postal Code: ${postalCode}<br>Population: ${population}`);
               } else {
-                console.log(`No se pudieron obtener coordenadas para el código postal ${postalCode}`);
+                //console.log(`No se pudieron obtener coordenadas para el código postal ${postalCode}`);
                 return null;
               }
             })

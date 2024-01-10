@@ -28,32 +28,38 @@ const BarChartPro = ({ grafic }) => {
   const resultadosTransformados = transformarResultados(grafic.resultats);
 
   const obtenerOpcionMasEscogida = () => {
+    const totalRespuestas = resultadosTransformados.reduce((total, current) => total + current.respuestas, 0);
+
     const opcionMasEscogida = resultadosTransformados.reduce((max, current) =>
       current.respuestas > max.respuestas ? current : max
     );
+
+    const porcentajeEscogida = (opcionMasEscogida.respuestas / totalRespuestas) * 100;
   
     return (
       <>
         {opcionMasEscogida.name}
         <span style={{ marginLeft: '5px', fontWeight: 'normal' }}>
-          ({opcionMasEscogida.porcentaje}%)
+          ({porcentajeEscogida}%)
         </span>
       </>
     );
   };
   
   const obtenerOpcionMenosEscogida = () => {
-    console.log(resultadosTransformados);
+    const totalRespuestas = resultadosTransformados.reduce((total, current) => total + current.respuestas, 0);
+
     const opcionMenosEscogida = resultadosTransformados.reduce((min, current) =>
       current.respuestas < min.respuestas ? current : min
     );
 
-  
+    const porcentajeEscogida = (opcionMenosEscogida.respuestas / totalRespuestas) * 100;
+
     return (
       <>
         {opcionMenosEscogida.name}
         <span style={{ marginLeft: '5px', fontWeight: 'normal' }}>
-          ({(opcionMenosEscogida.respuestas).toFixed(2)}%)
+          ({(porcentajeEscogida).toFixed(2)}%)
         </span>
       </>
     );
@@ -119,10 +125,6 @@ const BarChartPro = ({ grafic }) => {
         <p>
           <strong>Opción menos escogida: </strong>
           {obtenerOpcionMenosEscogida()}
-        </p>
-        <p>
-          <strong>Porcentaje de valores faltantes: </strong>
-          {obtenerPorcentajeValoresFaltantes()}%
         </p>
       </div>
 
