@@ -1,8 +1,8 @@
 # Authors
-Tània Alonso Lobato
-Par Duran Manzano
-Marc Ordóñez Redondo
-Marc Tacons Vega
+Tània Alonso Lobato \
+Par Duran Manzano \
+Marc Ordóñez Redondo \
+Marc Tacons Vega \
 
 # Getting Started with Create React App
 
