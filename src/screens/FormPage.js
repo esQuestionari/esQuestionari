@@ -467,8 +467,8 @@ useEffect(() => {
                 <p className='infoText'>{section.introduccio}</p>
                 {section.imatge && (<img
                   src={section.imatge}
-                  width="375" // Set the desired width
-                  height="550" // Set the desired height
+                  width='100%' // Set the desired width
+                  height='90%' // Set the desired height
                 />)}
               </div>
             )}
