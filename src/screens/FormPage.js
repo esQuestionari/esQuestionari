@@ -70,6 +70,9 @@ const FormPage = () => {
       console.log("preguntes: ", result);
       setSection(result);
       setAnswers({});
+      if (Object.keys(result.preguntes).length === 1 && Object.values(result.preguntes).some(element => element.obligatoria === false)) {
+        setSectionValid(true);
+      }
     } catch (error) {
       console.error("falla formPage info apartat", error); 
     }
@@ -259,7 +262,7 @@ useEffect(() => {
     const question = section.preguntes[questionId];
     if (!question.obligatoria) return true;
     if (!newAnswers[questionId]) return false;
-    if (question.tipus !== 'multiple' && newAnswers[questionId]) return true;
+    if (question.tipus !== 'multiple' && newAnswers[questionId] !== null && newAnswers[questionId] !== undefined) return true;
     if (question.tipus === 'multiple' && newAnswers[questionId].length > 0) {
       console.log("length: ", newAnswers[questionId].length);
       return true;
@@ -270,9 +273,10 @@ useEffect(() => {
   const handleNextSection = () => {
     sendAnswers();
     if (currentSection < infoEnquesta.numApartats - 1) {
-      handleInfoApartat(apartatsIds, currentSection + 1);
-      setCurrentSection(currentSection + 1);
       setSectionValid(false);
+      const nextSection = currentSection + 1;
+      setCurrentSection(nextSection);
+      handleInfoApartat(apartatsIds, nextSection);
       if (scrollContainerRef.current) {
         scrollContainerRef.current.scrollTop = 0;
       }
@@ -345,7 +349,13 @@ useEffect(() => {
   }
 
   const isFormComplete = () => {
-    return currentSection === infoEnquesta.numApartats - 1 && sectionValid;
+    console.log("apartatsids", apartatsIds);
+    console.log("current section", currentSection);
+    console.log("sectionValid", sectionValid);
+    if (apartatsIds) {
+      return currentSection === apartatsIds.length - 1 && sectionValid;
+    }
+    return false;
   };
 
   const handleFinishForm = () => {
