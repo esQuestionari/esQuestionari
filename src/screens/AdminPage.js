@@ -102,47 +102,9 @@ const AdminPage = () => {
   const filteredInfo = respostes?.filter((item) => {
     return Object.entries(item)
       .filter(([key]) => key !== 'usuari') 
-      .some(([key, value]) => value.toLowerCase().includes(searchTerm.toLowerCase()));
+      .some(([key, value]) => value && value.toLowerCase().includes(searchTerm.toLowerCase()));
   });
-
-  function obtenerColorUnico(graficoIndex, entryIndex) {
-    const base = 150;
-    const factor = 50;
   
-    const red = (base + (graficoIndex ) * factor) % 256;
-    const green = (base + (graficoIndex ) * factor * 2) % 256;
-    const blue = (base + (graficoIndex ) * factor * 3) % 256;
-  
-    const entryFactor = 20;
-    const adjustedEntryIndex = (entryIndex + 1) * entryFactor;
-  
-    const finalRed = (red + adjustedEntryIndex) % 256;
-    const finalGreen = (green + adjustedEntryIndex * 2) % 256;
-    const finalBlue = (blue + adjustedEntryIndex * 3) % 256;
-  
-    return `rgb(${finalRed}, ${finalGreen}, ${finalBlue})`;
-  }
-
-  const transformarResultados = (resultados, tipus) => {
-    if (tipus === 'Temporal') {
-      const resultadosArray = Object.entries(resultados);
-      const inici = [{ name: 'Inicio', respuestas: 0 }];
-      let acumulado = 0;
-      const resultadosTransformados = resultadosArray.map(([clave, valor, index]) => {
-        acumulado += valor;
-        return {
-          name: clave,
-          respuestas:  acumulado,
-        };
-      });
-      const datosTransformados = inici.concat(resultadosTransformados);
-      return datosTransformados;   
-    }
-    return Object.keys(resultados).map((key) => ({
-      name: key,
-      respuestas: resultados[key],
-    }));
-  };
 
   return (
     <div className="screen">
