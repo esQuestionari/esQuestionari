@@ -261,7 +261,7 @@ useEffect(() => {
     console.log("question id: ", questionId);
     const question = section.preguntes[questionId];
     if (!question.obligatoria) return true;
-    if (!newAnswers[questionId]) return false;
+    if (!newAnswers.hasOwnProperty(questionId)) return false;
     if (question.tipus !== 'multiple' && newAnswers[questionId] !== null && newAnswers[questionId] !== undefined) return true;
     if (question.tipus === 'multiple' && newAnswers[questionId].length > 0) {
       console.log("length: ", newAnswers[questionId].length);
