@@ -193,6 +193,10 @@ const Home = () => {
     }
   };
 
+  const handleDetalles = (enquestaId) => {
+    navigate(`/encuestas/${enquestaId}/detalles`);
+  };  
+
   const handleResultats = (enquestaId) => {
     navigate(`/encuestas/${enquestaId}/admin`);
   };  
@@ -314,7 +318,7 @@ const Home = () => {
           </div>)}
           <div className="dropdown" style={{ position: 'relative', display: 'inline-block' }}>
             <button className="dropdown-btn" >
-              Selector de hospitales
+              Selector de entidades
             </button>
             <div className="dropdown-content" style={{ boxShadow: '0px 8px 16px rgba(0, 0, 0, 0.1)', borderRadius: '8px' }}>
               {hospitals.map((option) => (
@@ -375,6 +379,14 @@ const Home = () => {
                         {enquesta.progres !== 100 && (
                         <button className="button" onClick={() => handleStart(enquesta)}>
                           <span>{enquesta.progres > 0 ? "Reanudar" : "Empezar" }</span>
+                          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 20" width="24px" fill="none">
+                            <path d="M0 0h24v24H0V0z" fill="none" />
+                            <path d="M16.01 11H4v2h12.01v3L20 12l-3.99-4v3z" fill="currentColor" />
+                          </svg>
+                        </button>)}
+                        {enquesta.progres === 100 && (
+                        <button className="button" onClick={() => handleDetalles(enquesta.id)}>
+                          <span>{"Detalles" }</span>
                           <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 20" width="24px" fill="none">
                             <path d="M0 0h24v24H0V0z" fill="none" />
                             <path d="M16.01 11H4v2h12.01v3L20 12l-3.99-4v3z" fill="currentColor" />
