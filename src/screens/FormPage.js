@@ -320,7 +320,7 @@ useEffect(() => {
     else {
       return {
         pregunta: id,
-        valor: answers[id].join(', ')
+        valor: answers[id]?.join(', ')
       };
     }
   }
