@@ -1,76 +1,76 @@
+# Health Research Form Project: esQuestionari
+## Table of Contents
+- [Introduction](#introduction)
+- [Project Overview](#project-overview)
+- [Features](#features)
+- [Getting Started](#getting-started)
+- [Usage](#usage)
+
 # Authors
 Tània Alonso Lobato \
 Par Duran Manzano \
 Marc Ordóñez Redondo \
-Marc Tacons Vega \
+Marc Tacons Vega
 
-# Getting Started with Create React App
+## Introduction
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Welcome to the Health Research Form Project repository! This project aims to create a web application that allows users to participate in medical and health-related research surveys. The primary goals of this project are to facilitate research, enhance user education on medical topics, and promote awareness of health issues.
 
-## Available Scripts
+## Project Overview
 
-In the project directory, you can run:
+The Health Research Form Project is designed to meet the following objectives:
 
-### `npm start`
+- Provide an intuitive web application for users to easily respond to medical and health-related questions.
+- Offer informative content and resources to help users learn more about the research topic.
+- Generate graphical representations and results based on user demographics and geographical location.
+- Encourage both users and medical experts to participate in surveys and contribute to valuable research.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Features
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+The project includes the following key features:
 
-### `npm test`
+1. **User-Friendly Surveys**: Users can answer survey questions in a user-friendly interface designed for ease of use and accessibility.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+2. **Educational Resources**: The platform offers informative articles, videos, and links related to the research topic, allowing users to expand their knowledge.
 
-### `npm run build`
+3. **Demographic Analysis**: Users can view personalized results and graphs based on their demographics, helping them better understand the data.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+4. **Geographical Insights**: The platform provides regional data analysis, enabling users to compare their results to the broader population in their area.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+5. **Motivation and Engagement**: Users and experts can access research findings and insights, encouraging participation in future surveys.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Getting Started
 
-### `npm run eject`
+To get started with the Health Research Form Project, follow these steps:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+1. Clone the repository to your local machine:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+git clone https://github.com/your-username/health-research-form.git
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+2. Install the necessary dependencies by running:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```bash
+npm install
+```
 
-## Learn More
+3. Launch the web application locally (the command may change, use the one that works in your computer):
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```bash
+expo start
+npm run start
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+4. Access the application in your web browser at http://localhost:19006.
 
-### Code Splitting
+## Usage
+Here are some common usage scenarios for the Health Research Form Project:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- Users can visit the web app, select a survey, and respond to questions related to medical and health topics.
 
-### Analyzing the Bundle Size
+- Users can explore educational resources to learn more about the research subject.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- Researchers and experts can access survey results and graphical representations for analysis.
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- The platform can be used to encourage users to participate in additional surveys and contribute to ongoing research efforts.
